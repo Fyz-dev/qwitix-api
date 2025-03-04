@@ -1,4 +1,0 @@
-services:
-  qwitix-api:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
