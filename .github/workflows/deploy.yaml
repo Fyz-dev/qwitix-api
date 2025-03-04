@@ -1,0 +1,33 @@
+name: 'Api: Build and deploy'
+
+on:
+  push:
+    branches:
+      - main
+env:
+  IMAGE_NAME: qwitix-api
+  TAG: latest
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: development
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          
+      - name: Container registry login
+        run: az acr login --name ${{ secrets.CONTAINER_NAME }}
+
+      - name: Build and push to Azure Container Registry
+        working-directory: ./
+        run: |
+          docker compose build
+          docker tag ${{ env.IMAGE_NAME }} ${{ secrets.CONTAINER_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ env.TAG }}
+          docker push ${{ secrets.CONTAINER_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ env.TAG }}
