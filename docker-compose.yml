@@ -1,11 +1,29 @@
 services:
   qwitix-api:
+    container_name: qwitix-api
+    image: qwitix-api
     build:
       context: .
       dockerfile: qwitix-api/Dockerfile
     environment:
       - ASPNETCORE_HTTP_PORTS=8080
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - BookStoreDatabase__ConnectionString=${BookStoreDatabase__ConnectionString}
     ports:
-      - "8080"
-    image: qwitix-api
+      - "8080:8080"
+    depends_on:
+      - mongo
+
+  mongo:
+    container_name: mongo
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb-data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+
+volumes:
+  mongodb-data:
