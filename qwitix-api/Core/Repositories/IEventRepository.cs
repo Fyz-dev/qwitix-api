@@ -2,16 +2,15 @@
 
 namespace qwitix_api.Core.Repositories.EventRepository
 {
-    public interface IEventRepository<TVenue>
-        where TVenue : IVenue
+    public interface IEventRepository
     {
-        Task Create(IEvent<TVenue> eventDTO);
+        Task Create(IEvent<IVenue> eventDTO);
 
-        Task<IEnumerable<IEvent<TVenue>>> GetAll(string organizerId, int offset, int limit);
+        Task<IEnumerable<IEvent<IVenue>>> GetAll(string organizerId, int offset, int limit);
 
-        Task<IEvent<TVenue>> GetById(string id);
+        Task<IEvent<IVenue>> GetById(string id);
 
-        Task UpdateById(string id, IEvent<TVenue> eventDTO);
+        Task UpdateById(string id, IEvent<IVenue> eventDTO);
 
         Task DeleteById(string id);
     }
