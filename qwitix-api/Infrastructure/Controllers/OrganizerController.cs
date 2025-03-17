@@ -9,7 +9,7 @@ using qwitix_api.Core.Services.TicketService.DTOs;
 namespace qwitix_api.Infrastructure.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/")]
     public class OrganizerController : ControllerBase
     {
         private readonly OrganizerService _organizerService;
@@ -19,7 +19,7 @@ namespace qwitix_api.Infrastructure.Controllers
             _organizerService = organizerService;
         }
 
-        [HttpPost("/organizer")]
+        [HttpPost("organizer")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Create(CreateOrganizerDTO organizerDTO)
@@ -36,7 +36,7 @@ namespace qwitix_api.Infrastructure.Controllers
             }
         }
 
-        [HttpGet("/organizers")]
+        [HttpGet("organizers")]
         [ProducesResponseType(
             StatusCodes.Status200OK,
             Type = typeof(IEnumerable<ResponseOrganizerDTO>)
@@ -59,7 +59,7 @@ namespace qwitix_api.Infrastructure.Controllers
             }
         }
 
-        [HttpGet("/organizer/{id}")]
+        [HttpGet("organizer/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseOrganizerDTO))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetById(string id)
@@ -76,7 +76,7 @@ namespace qwitix_api.Infrastructure.Controllers
             }
         }
 
-        [HttpPatch("/organizer/{id}")]
+        [HttpPatch("organizer/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateById(string id, UpdateOrganizerDTO organizerDTO)

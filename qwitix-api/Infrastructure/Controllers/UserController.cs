@@ -5,7 +5,7 @@ using qwitix_api.Core.Services.UserService.DTOs;
 namespace qwitix_api.Infrastructure.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/")]
     public class UserController : ControllerBase
     {
         private readonly UserService _userService;
@@ -15,7 +15,7 @@ namespace qwitix_api.Infrastructure.Controllers
             _userService = userService;
         }
 
-        [HttpPost("/user/{id}")]
+        [HttpPost("user/{id}")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Create(CreateUserDTO userDTO)
@@ -32,7 +32,7 @@ namespace qwitix_api.Infrastructure.Controllers
             }
         }
 
-        [HttpGet("/user/{id}")]
+        [HttpGet("user/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseDTO))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetById(string id)
@@ -49,7 +49,7 @@ namespace qwitix_api.Infrastructure.Controllers
             }
         }
 
-        [HttpPatch("/user/{id}")]
+        [HttpPatch("user/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateById(string id, UpdateUserDTO userDTO)

@@ -10,7 +10,7 @@ using qwitix_api.Core.Services.TicketService;
 namespace qwitix_api.Infrastructure.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/")]
     public class EventController : ControllerBase
     {
         private readonly EventService _eventService;
@@ -20,7 +20,7 @@ namespace qwitix_api.Infrastructure.Controllers
             _eventService = eventService;
         }
 
-        [HttpPost("/event/{id}")]
+        [HttpPost("event/{id}")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Create(CreateEventDTO eventDTO)
@@ -37,7 +37,7 @@ namespace qwitix_api.Infrastructure.Controllers
             }
         }
 
-        [HttpGet("/events")]
+        [HttpGet("events")]
         [ProducesResponseType(
             StatusCodes.Status200OK,
             Type = typeof(IEnumerable<ResponseEventDTO>)
@@ -61,7 +61,7 @@ namespace qwitix_api.Infrastructure.Controllers
             }
         }
 
-        [HttpGet("/event/{id}")]
+        [HttpGet("event/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseEventDTO))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetById(string id)
@@ -78,7 +78,7 @@ namespace qwitix_api.Infrastructure.Controllers
             }
         }
 
-        [HttpPatch("/event/{id}")]
+        [HttpPatch("event/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateById(string id, UpdateEventDTO eventDTO)
@@ -95,7 +95,7 @@ namespace qwitix_api.Infrastructure.Controllers
             }
         }
 
-        [HttpDelete("/event/{id}")]
+        [HttpDelete("event/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> DeleteById(string id)

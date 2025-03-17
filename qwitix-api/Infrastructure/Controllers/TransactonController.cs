@@ -6,7 +6,7 @@ using qwitix_api.Core.Services.TransactionService.DTOs;
 namespace qwitix_api.Infrastructure.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/")]
     public class TransactonController : ControllerBase
     {
         private readonly TransactionService _transactionService;
@@ -16,7 +16,7 @@ namespace qwitix_api.Infrastructure.Controllers
             _transactionService = transactionService;
         }
 
-        [HttpGet("/transactions")]
+        [HttpGet("transactions")]
         [ProducesResponseType(
             StatusCodes.Status200OK,
             Type = typeof(IEnumerable<ResponseTransaction>)
@@ -42,7 +42,7 @@ namespace qwitix_api.Infrastructure.Controllers
             }
         }
 
-        [HttpGet("/transaction/{id}")]
+        [HttpGet("transaction/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseTransaction))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetByTransactionId(string id)

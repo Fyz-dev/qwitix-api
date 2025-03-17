@@ -8,7 +8,7 @@ using qwitix_api.Core.Services.TransactionService.DTOs;
 namespace qwitix_api.Infrastructure.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/")]
     public class TicketController : ControllerBase
     {
         private readonly TicketService _ticketService;
@@ -18,7 +18,7 @@ namespace qwitix_api.Infrastructure.Controllers
             _ticketService = ticketService;
         }
 
-        [HttpPost("/ticket")]
+        [HttpPost("ticket")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Create(CreateTicketDTO ticketDTO)
@@ -35,7 +35,7 @@ namespace qwitix_api.Infrastructure.Controllers
             }
         }
 
-        [HttpPost("/ticket/buy/{id}")]
+        [HttpPost("ticket/buy/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> BuyById(string id)
@@ -52,7 +52,7 @@ namespace qwitix_api.Infrastructure.Controllers
             }
         }
 
-        [HttpPost("/ticket/refund/{id}")]
+        [HttpPost("ticket/refund/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> RefundById(string id)
@@ -69,7 +69,7 @@ namespace qwitix_api.Infrastructure.Controllers
             }
         }
 
-        [HttpGet("/tickets")]
+        [HttpGet("tickets")]
         [ProducesResponseType(
             StatusCodes.Status200OK,
             Type = typeof(IEnumerable<ResponseTicketDTO>)
@@ -93,7 +93,7 @@ namespace qwitix_api.Infrastructure.Controllers
             }
         }
 
-        [HttpGet("/ticket/{id}")]
+        [HttpGet("ticket/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseTicketDTO))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetById(string id)
@@ -110,7 +110,7 @@ namespace qwitix_api.Infrastructure.Controllers
             }
         }
 
-        [HttpPatch("/ticket/{id}")]
+        [HttpPatch("ticket/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateById(string id, UpdateTicketDTO ticket)
@@ -127,7 +127,7 @@ namespace qwitix_api.Infrastructure.Controllers
             }
         }
 
-        [HttpDelete("/ticket/{id}")]
+        [HttpDelete("ticket/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> DeleteById(string id)
