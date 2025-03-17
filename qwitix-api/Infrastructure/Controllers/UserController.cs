@@ -16,21 +16,54 @@ namespace qwitix_api.Infrastructure.Controllers
         }
 
         [HttpPost("/user/{id}")]
-        public async Task Create(CreateUserDTO userDTO)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Create(CreateUserDTO userDTO)
         {
-            await _userService.Create(userDTO);
+            try
+            {
+                await _userService.Create(userDTO);
+
+                return Created();
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         [HttpGet("/user/{id}")]
-        public async Task<ResponseDTO> GetById(string id)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseDTO))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetById(string id)
         {
-            return await _userService.GetById(id);
+            try
+            {
+                var user = await _userService.GetById(id);
+
+                return Ok(user);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         [HttpPatch("/user/{id}")]
-        public async Task UpdateById(string id, UpdateUserDTO userDTO)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateById(string id, UpdateUserDTO userDTO)
         {
-            await _userService.UpdateById(id, userDTO);
+            try
+            {
+                await _userService.UpdateById(id, userDTO);
+
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
     }
 }

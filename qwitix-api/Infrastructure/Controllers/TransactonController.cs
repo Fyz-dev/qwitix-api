@@ -7,7 +7,7 @@ namespace qwitix_api.Infrastructure.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class TransactonController
+    public class TransactonController : ControllerBase
     {
         private readonly TransactionService _transactionService;
 
@@ -17,20 +17,46 @@ namespace qwitix_api.Infrastructure.Controllers
         }
 
         [HttpGet("/transactions")]
-        public async Task<IEnumerable<ResponseTransaction>> GetByUserId(
+        [ProducesResponseType(
+            StatusCodes.Status200OK,
+            Type = typeof(IEnumerable<ResponseTransaction>)
+        )]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetByUserId(
             string userId,
             int offset,
             int limit,
             TransactionStatus? status = null
         )
         {
-            return await _transactionService.GetByUserId(userId, offset, limit, status);
+            try
+            {
+                IEnumerable<ResponseTransaction> transactions =
+                    await _transactionService.GetByUserId(userId, offset, limit, status);
+
+                return Ok(transactions);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         [HttpGet("/transaction/{id}")]
-        public async Task<ResponseTransaction> GetByTransactionId(string id)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseTransaction))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetByTransactionId(string id)
         {
-            return await _transactionService.GetByTransactionId(id);
+            try
+            {
+                ResponseTransaction transaction = await _transactionService.GetByTransactionId(id);
+
+                return Ok(transaction);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
     }
 }
