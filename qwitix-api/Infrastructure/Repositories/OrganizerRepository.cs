@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using MongoDB.Driver;
 using qwitix_api.Core.Models;
 using qwitix_api.Core.Repositories;
 using qwitix_api.Infrastructure.Configs;
@@ -15,9 +16,9 @@ namespace qwitix_api.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Organizer>> GetAll(int offset, int limit)
+        public async Task<IEnumerable<Organizer>> GetAll(int offset, int limit)
         {
-            throw new NotImplementedException();
+            return await _collection.Find(_ => true).ToListAsync();
         }
 
         public Task<Organizer> GetById(string id)

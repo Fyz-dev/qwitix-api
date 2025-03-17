@@ -19,7 +19,19 @@ namespace qwitix_api.Core.Services.OrganizerService
 
         public async Task<IEnumerable<ResponseOrganizerDTO>> GetAll(int offset, int limit)
         {
-            throw new NotImplementedException();
+            var organizers = await _organizerRepository.GetAll(offset, limit);
+
+            return organizers.Select(o => new ResponseOrganizerDTO
+            {
+                Id = o.Id,
+                UserId = o.UserId,
+                Name = o.Name,
+                Bio = o.Bio,
+                ImageUrl = o.ImageUrl,
+                IsVerified = o.IsVerified,
+                UpdatedAt = o.UpdatedAt,
+                CreatedAt = o.CreatedAt,
+            });
         }
 
         public async Task<ResponseOrganizerDTO> GetById(string id)

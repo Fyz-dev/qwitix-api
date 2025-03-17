@@ -8,7 +8,7 @@ services:
     environment:
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-      - BookStoreDatabase__ConnectionString=${BookStoreDatabase__ConnectionString}
+      - DatabaseSettings__ConnectionString=${DatabaseSettings__ConnectionString}
     ports:
       - "8080:8080"
     depends_on:
