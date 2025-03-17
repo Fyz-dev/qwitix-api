@@ -1,17 +1,17 @@
-﻿using qwitix_api.Core.Entities;
-using qwitix_api.Core.Enums;
+﻿using qwitix_api.Core.Enums;
+using qwitix_api.Core.Models;
 
 namespace qwitix_api.Core.Repositories
 {
     public interface ITransactionRepository
     {
-        Task<IEnumerable<ITransaction>> GetByUserId(
+        Task<IEnumerable<Transaction>> GetByUserId(
             string userId,
             int offset,
             int limit,
             TransactionStatus? status = null
         );
 
-        Task<ITransaction> GetByTransactionId(string id);
+        Task<Transaction> GetByTransactionId(string id);
     }
 }

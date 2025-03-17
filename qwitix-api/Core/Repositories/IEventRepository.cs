@@ -1,16 +1,16 @@
-﻿using qwitix_api.Core.Entities;
+﻿using qwitix_api.Core.Models;
 
 namespace qwitix_api.Core.Repositories.EventRepository
 {
     public interface IEventRepository
     {
-        Task Create(IEvent<IVenue> eventDTO);
+        Task Create(Event eventModel);
 
-        Task<IEnumerable<IEvent<IVenue>>> GetAll(string organizerId, int offset, int limit);
+        Task<IEnumerable<Event>> GetAll(string organizerId, int offset, int limit);
 
-        Task<IEvent<IVenue>> GetById(string id);
+        Task<Event> GetById(string id);
 
-        Task UpdateById(string id, IEvent<IVenue> eventDTO);
+        Task UpdateById(string id, Event eventModel);
 
         Task DeleteById(string id);
     }

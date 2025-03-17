@@ -1,15 +1,15 @@
-﻿using qwitix_api.Core.Entities;
+﻿using qwitix_api.Core.Models;
 
 namespace qwitix_api.Core.Repositories
 {
     public interface IOrganizerRepository
     {
-        Task Create(IOrganizer organizer);
+        Task Create(Organizer organizer);
 
-        Task<IEnumerable<IOrganizer>> GetAll(int offset, int limit);
+        Task<IEnumerable<Organizer>> GetAll(int offset, int limit);
 
-        Task<IOrganizer> GetById(string id);
+        Task<Organizer> GetById(string id);
 
-        Task UpdateById(string id, IOrganizer user);
+        Task UpdateById(string id, Organizer organizer);
     }
 }

@@ -1,13 +1,13 @@
-﻿using qwitix_api.Core.Entities;
+﻿using qwitix_api.Core.Models;
 
 namespace qwitix_api.Core.Repositories
 {
     public interface IUserRepository
     {
-        Task Create(IUser user);
+        Task Create(User user);
 
-        Task<IUser> GetById(string id);
+        Task<User> GetById(string id);
 
-        Task UpdateById(string id, IUser user);
+        Task UpdateById(string id, User user);
     }
 }

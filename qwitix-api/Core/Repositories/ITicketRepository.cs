@@ -1,20 +1,20 @@
-﻿using qwitix_api.Core.Entities;
+﻿using qwitix_api.Core.Models;
 
 namespace qwitix_api.Core.Repositories
 {
     public interface ITicketRepository
     {
-        Task Create(ITicket eventDTO);
+        Task Create(Ticket ticket);
 
         Task BuyById(string id);
 
         Task RefundById(string id);
 
-        Task<IEnumerable<ITicket>> GetAll(string eventId, int offset, int limit);
+        Task<IEnumerable<Ticket>> GetAll(string eventId, int offset, int limit);
 
-        Task<ITicket> GetById(string id);
+        Task<Ticket> GetById(string id);
 
-        Task UpdateById(string id, ITicket eventDTO);
+        Task UpdateById(string id, Ticket ticket);
 
         Task DeleteById(string id);
     }
