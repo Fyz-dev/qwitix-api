@@ -19,7 +19,7 @@ namespace qwitix_api.Infrastructure.Controllers
         [HttpGet("transactions")]
         [ProducesResponseType(
             StatusCodes.Status200OK,
-            Type = typeof(IEnumerable<ResponseTransaction>)
+            Type = typeof(IEnumerable<ResponseTransactionDTO>)
         )]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetByUserId(
@@ -29,22 +29,18 @@ namespace qwitix_api.Infrastructure.Controllers
             TransactionStatus? status = null
         )
         {
-            IEnumerable<ResponseTransaction> transactions = await _transactionService.GetByUserId(
-                userId,
-                offset,
-                limit,
-                status
-            );
+            IEnumerable<ResponseTransactionDTO> transactions =
+                await _transactionService.GetByUserId(userId, offset, limit, status);
 
             return Ok(transactions);
         }
 
         [HttpGet("transaction/{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseTransaction))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseTransactionDTO))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetByTransactionId(string id)
         {
-            ResponseTransaction transaction = await _transactionService.GetByTransactionId(id);
+            ResponseTransactionDTO transaction = await _transactionService.GetByTransactionId(id);
 
             return Ok(transaction);
         }
