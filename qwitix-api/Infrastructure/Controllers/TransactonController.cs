@@ -29,17 +29,14 @@ namespace qwitix_api.Infrastructure.Controllers
             TransactionStatus? status = null
         )
         {
-            try
-            {
-                IEnumerable<ResponseTransaction> transactions =
-                    await _transactionService.GetByUserId(userId, offset, limit, status);
+            IEnumerable<ResponseTransaction> transactions = await _transactionService.GetByUserId(
+                userId,
+                offset,
+                limit,
+                status
+            );
 
-                return Ok(transactions);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            return Ok(transactions);
         }
 
         [HttpGet("transaction/{id}")]
@@ -47,16 +44,9 @@ namespace qwitix_api.Infrastructure.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetByTransactionId(string id)
         {
-            try
-            {
-                ResponseTransaction transaction = await _transactionService.GetByTransactionId(id);
+            ResponseTransaction transaction = await _transactionService.GetByTransactionId(id);
 
-                return Ok(transaction);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            return Ok(transaction);
         }
     }
 }

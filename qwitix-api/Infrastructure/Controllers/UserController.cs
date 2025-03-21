@@ -20,16 +20,9 @@ namespace qwitix_api.Infrastructure.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Create(CreateUserDTO userDTO)
         {
-            try
-            {
-                await _userService.Create(userDTO);
+            await _userService.Create(userDTO);
 
-                return Created();
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            return Created();
         }
 
         [HttpGet("user/{id}")]
@@ -37,16 +30,9 @@ namespace qwitix_api.Infrastructure.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetById(string id)
         {
-            try
-            {
-                var user = await _userService.GetById(id);
+            var user = await _userService.GetById(id);
 
-                return Ok(user);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            return Ok(user);
         }
 
         [HttpPatch("user/{id}")]
@@ -54,16 +40,9 @@ namespace qwitix_api.Infrastructure.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateById(string id, UpdateUserDTO userDTO)
         {
-            try
-            {
-                await _userService.UpdateById(id, userDTO);
+            await _userService.UpdateById(id, userDTO);
 
-                return Ok();
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            return Ok();
         }
     }
 }

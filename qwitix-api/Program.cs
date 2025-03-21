@@ -19,6 +19,7 @@ using qwitix_api.Core.Services.TicketService;
 using qwitix_api.Core.Services.TransactionService;
 using qwitix_api.Core.Services.UserService;
 using qwitix_api.Infrastructure.Configs;
+using qwitix_api.Infrastructure.Handlers;
 using qwitix_api.Infrastructure.Processors;
 using qwitix_api.Infrastructure.Repositories;
 
@@ -46,8 +47,6 @@ builder.Services.AddCors(opt =>
     );
 });
 
-builder.Services.AddIdentity<User, IdentityRole<ObjectId>>();
-
 // Services
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<UserService>();
@@ -65,7 +64,6 @@ builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 builder.Services.AddScoped<TransactionService>();
 
 builder.Services.AddScoped<IAuthTokenProcessor, AuthTokenProcessor>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<AccountService>();
 
 // Authentication
@@ -139,11 +137,16 @@ builder.Services.Configure<JsonOptions>(options =>
 
 // Authorization
 builder.Services.AddAuthorization();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
 app.UseCors("CorsPolicy");
+
+app.UseExceptionHandler(_ => { });
+app.UseAuthorization();
 
 if (app.Environment.IsDevelopment())
 {
@@ -165,7 +168,6 @@ app.UseForwardedHeaders(
     }
 );
 
-app.UseAuthorization();
 app.MapControllers();
 
 app.Run();

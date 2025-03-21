@@ -24,16 +24,9 @@ namespace qwitix_api.Infrastructure.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Create(CreateOrganizerDTO organizerDTO)
         {
-            try
-            {
-                await _organizerService.Create(organizerDTO);
+            await _organizerService.Create(organizerDTO);
 
-                return Created();
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            return Created();
         }
 
         [HttpGet("organizers")]
@@ -44,19 +37,12 @@ namespace qwitix_api.Infrastructure.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAll(int offset, int limit)
         {
-            try
-            {
-                IEnumerable<ResponseOrganizerDTO> organizers = await _organizerService.GetAll(
-                    offset,
-                    limit
-                );
+            IEnumerable<ResponseOrganizerDTO> organizers = await _organizerService.GetAll(
+                offset,
+                limit
+            );
 
-                return Ok(organizers);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            return Ok(organizers);
         }
 
         [HttpGet("organizer/{id}")]
@@ -64,16 +50,9 @@ namespace qwitix_api.Infrastructure.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetById(string id)
         {
-            try
-            {
-                ResponseOrganizerDTO organizer = await _organizerService.GetById(id);
+            ResponseOrganizerDTO organizer = await _organizerService.GetById(id);
 
-                return Ok(organizer);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            return Ok(organizer);
         }
 
         [HttpPatch("organizer/{id}")]
@@ -81,16 +60,9 @@ namespace qwitix_api.Infrastructure.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateById(string id, UpdateOrganizerDTO organizerDTO)
         {
-            try
-            {
-                await _organizerService.UpdateById(id, organizerDTO);
+            await _organizerService.UpdateById(id, organizerDTO);
 
-                return Ok();
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            return Ok();
         }
     }
 }

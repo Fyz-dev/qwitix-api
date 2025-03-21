@@ -23,16 +23,9 @@ namespace qwitix_api.Infrastructure.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Create(CreateTicketDTO ticketDTO)
         {
-            try
-            {
-                await _ticketService.Create(ticketDTO);
+            await _ticketService.Create(ticketDTO);
 
-                return Created();
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            return Created();
         }
 
         [HttpPost("ticket/buy/{id}")]
@@ -40,16 +33,9 @@ namespace qwitix_api.Infrastructure.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> BuyById(string id)
         {
-            try
-            {
-                await _ticketService.BuyById(id);
+            await _ticketService.BuyById(id);
 
-                return Ok();
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            return Ok();
         }
 
         [HttpPost("ticket/refund/{id}")]
@@ -57,16 +43,9 @@ namespace qwitix_api.Infrastructure.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> RefundById(string id)
         {
-            try
-            {
-                await _ticketService.RefundById(id);
+            await _ticketService.RefundById(id);
 
-                return Ok();
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            return Ok();
         }
 
         [HttpGet("tickets")]
@@ -77,20 +56,13 @@ namespace qwitix_api.Infrastructure.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAll(string eventId, int offset, int limit)
         {
-            try
-            {
-                IEnumerable<ResponseTicketDTO> tickets = await _ticketService.GetAll(
-                    eventId,
-                    offset,
-                    limit
-                );
+            IEnumerable<ResponseTicketDTO> tickets = await _ticketService.GetAll(
+                eventId,
+                offset,
+                limit
+            );
 
-                return Ok(tickets);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            return Ok(tickets);
         }
 
         [HttpGet("ticket/{id}")]
@@ -98,16 +70,9 @@ namespace qwitix_api.Infrastructure.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetById(string id)
         {
-            try
-            {
-                ResponseTicketDTO ticket = await _ticketService.GetById(id);
+            ResponseTicketDTO ticket = await _ticketService.GetById(id);
 
-                return Ok(ticket);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            return Ok(ticket);
         }
 
         [HttpPatch("ticket/{id}")]
@@ -115,16 +80,9 @@ namespace qwitix_api.Infrastructure.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateById(string id, UpdateTicketDTO ticket)
         {
-            try
-            {
-                await _ticketService.GetById(id);
+            await _ticketService.GetById(id);
 
-                return Ok();
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            return Ok();
         }
 
         [HttpDelete("ticket/{id}")]
@@ -132,16 +90,9 @@ namespace qwitix_api.Infrastructure.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> DeleteById(string id)
         {
-            try
-            {
-                await _ticketService.DeleteById(id);
+            await _ticketService.DeleteById(id);
 
-                return NoContent();
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            return NoContent();
         }
     }
 }

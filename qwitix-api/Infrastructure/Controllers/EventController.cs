@@ -20,16 +20,9 @@ namespace qwitix_api.Infrastructure.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Create(CreateEventDTO eventDTO)
         {
-            try
-            {
-                await _eventService.Create(eventDTO);
+            await _eventService.Create(eventDTO);
 
-                return Created();
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            return Created();
         }
 
         [HttpGet("events")]
@@ -40,20 +33,13 @@ namespace qwitix_api.Infrastructure.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAll(string organizerId, int offset, int limit)
         {
-            try
-            {
-                IEnumerable<ResponseEventDTO> events = await _eventService.GetAll(
-                    organizerId,
-                    offset,
-                    limit
-                );
+            IEnumerable<ResponseEventDTO> events = await _eventService.GetAll(
+                organizerId,
+                offset,
+                limit
+            );
 
-                return Ok(events);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            return Ok(events);
         }
 
         [HttpGet("event/{id}")]
@@ -61,16 +47,9 @@ namespace qwitix_api.Infrastructure.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetById(string id)
         {
-            try
-            {
-                ResponseEventDTO eventDto = await _eventService.GetById(id);
+            ResponseEventDTO eventDto = await _eventService.GetById(id);
 
-                return Ok(eventDto);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            return Ok(eventDto);
         }
 
         [HttpPatch("event/{id}")]
@@ -78,16 +57,9 @@ namespace qwitix_api.Infrastructure.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateById(string id, UpdateEventDTO eventDTO)
         {
-            try
-            {
-                await _eventService.UpdateById(id, eventDTO);
+            await _eventService.UpdateById(id, eventDTO);
 
-                return Ok();
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            return Ok();
         }
 
         [HttpDelete("event/{id}")]
@@ -95,16 +67,9 @@ namespace qwitix_api.Infrastructure.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> DeleteById(string id)
         {
-            try
-            {
-                await _eventService.DeleteById(id);
+            await _eventService.DeleteById(id);
 
-                return NoContent();
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            return NoContent();
         }
     }
 }

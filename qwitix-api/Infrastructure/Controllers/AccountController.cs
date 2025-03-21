@@ -12,17 +12,11 @@ namespace qwitix_api.Infrastructure.Controllers
     public class AccountController : ControllerBase
     {
         private readonly AccountService _accountService;
-        private readonly SignInManager<User> _signInManager;
         private readonly LinkGenerator _linkGenerator;
 
-        public AccountController(
-            AccountService accountService,
-            SignInManager<User> signInManager,
-            LinkGenerator linkGenerator
-        )
+        public AccountController(AccountService accountService, LinkGenerator linkGenerator)
         {
             _accountService = accountService;
-            _signInManager = signInManager;
             _linkGenerator = linkGenerator;
         }
 
@@ -53,10 +47,7 @@ namespace qwitix_api.Infrastructure.Controllers
                 + "?returnUrl="
                 + returnUrl;
 
-            var properties = _signInManager.ConfigureExternalAuthenticationProperties(
-                "Google",
-                callbackUrl
-            );
+            var properties = new AuthenticationProperties { RedirectUri = callbackUrl };
 
             return Challenge(properties, "Google");
         }
