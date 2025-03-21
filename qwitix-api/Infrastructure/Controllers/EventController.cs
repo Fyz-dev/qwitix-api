@@ -1,11 +1,6 @@
-﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc;
-using qwitix_api.Core.Models;
+﻿using Microsoft.AspNetCore.Mvc;
 using qwitix_api.Core.Services.EventService;
 using qwitix_api.Core.Services.EventService.DTOs;
-using qwitix_api.Core.Services.OrganizerService;
-using qwitix_api.Core.Services.OrganizerService.DTOs;
-using qwitix_api.Core.Services.TicketService;
 
 namespace qwitix_api.Infrastructure.Controllers
 {

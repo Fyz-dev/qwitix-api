@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Options;
-using MongoDB.Driver;
 using qwitix_api.Core.Models;
 using qwitix_api.Core.Repositories;
 using qwitix_api.Infrastructure.Configs;
@@ -17,6 +16,16 @@ namespace qwitix_api.Infrastructure.Repositories
         }
 
         public Task<User> GetById(string id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<User?> GetUserByEmail(string email)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<User?> GetUserByRefreshToken(string refreshToken)
         {
             throw new NotImplementedException();
         }
