@@ -8,16 +8,18 @@ namespace qwitix_api.Core.Models
         [BsonElement("name")]
         public string Name { get; set; } = null!;
 
+        [BsonRequired]
         [BsonElement("address")]
         public string Address { get; set; } = null!;
 
+        [BsonRequired]
         [BsonElement("city")]
         public string City { get; set; } = null!;
 
         [BsonElement("state")]
-        public string State { get; set; } = null!;
+        public string? State { get; set; }
 
         [BsonElement("zip")]
-        public string Zip { get; set; } = null!;
+        public string? Zip { get; set; }
     }
 }

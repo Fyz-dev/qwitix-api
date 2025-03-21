@@ -29,7 +29,7 @@ namespace qwitix_api.Core.Services.AccountService
                 await _userRepository.GetUserByRefreshToken(refreshToken)
                 ?? throw new RefreshTokenException("Unable to retrieve user for refresh token");
 
-            if (user.RefreshTokenExpiresAtUtc < DateTime.UtcNow)
+            if (user.RefreshTokenExpires < DateTime.UtcNow)
                 throw new RefreshTokenException("Refresh token is expired.");
 
             await SetAuthTokensAsync(user);
@@ -70,7 +70,7 @@ namespace qwitix_api.Core.Services.AccountService
                 _authTokenProcessor.GenerateRefreshToken();
 
             user.RefreshToken = refreshToken;
-            user.RefreshTokenExpiresAtUtc = refreshExpirationDateInUtc;
+            user.RefreshTokenExpires = refreshExpirationDateInUtc;
 
             await _userRepository.UpdateById(user.Id, user);
 

@@ -3,7 +3,7 @@ using qwitix_api.Core.Services.DTOs;
 
 namespace qwitix_api.Core.Services.TransactionService.DTOs
 {
-    public record ResponseTransaction : ResponseBaseDTO
+    public record ResponseTransactionDTO : ResponseBaseDTO
     {
         public required string UserId { get; set; }
 

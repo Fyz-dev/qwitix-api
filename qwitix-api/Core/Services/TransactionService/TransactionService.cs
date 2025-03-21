@@ -13,7 +13,7 @@ namespace qwitix_api.Core.Services.TransactionService
             _transactonRepository = transactonRepository;
         }
 
-        public async Task<IEnumerable<ResponseTransaction>> GetByUserId(
+        public async Task<IEnumerable<ResponseTransactionDTO>> GetByUserId(
             string userId,
             int offset,
             int limit,
@@ -23,7 +23,7 @@ namespace qwitix_api.Core.Services.TransactionService
             throw new NotImplementedException();
         }
 
-        public async Task<ResponseTransaction> GetByTransactionId(string id)
+        public async Task<ResponseTransactionDTO> GetByTransactionId(string id)
         {
             throw new NotImplementedException();
         }
