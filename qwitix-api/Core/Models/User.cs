@@ -6,6 +6,9 @@ namespace qwitix_api.Core.Models
 {
     public class User : BaseModel
     {
+        public string? RefreshToken { get; set; }
+        public DateTime? RefreshTokenExpiresAtUtc { get; set; }
+
         [BsonRequired]
         [BsonElement("google_id")]
         public string GoogleId { get; set; } = null!;

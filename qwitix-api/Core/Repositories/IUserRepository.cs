@@ -8,6 +8,10 @@ namespace qwitix_api.Core.Repositories
 
         Task<User> GetById(string id);
 
+        Task<User?> GetUserByRefreshToken(string refreshToken);
+
+        Task<User?> GetUserByEmail(string email);
+
         Task UpdateById(string id, User user);
     }
 }
