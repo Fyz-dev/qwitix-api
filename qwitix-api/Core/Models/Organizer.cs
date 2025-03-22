@@ -19,7 +19,7 @@ namespace qwitix_api.Core.Models
         public string Bio { get; set; } = null!;
 
         [BsonElement("image_url")]
-        public string ImageUrl { get; set; } = null!;
+        public string? ImageUrl { get; set; }
 
         [BsonElement("is_verified")]
         public bool IsVerified { get; set; } = false;

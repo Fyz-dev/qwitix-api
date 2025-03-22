@@ -16,7 +16,7 @@ namespace qwitix_api.Core.Models
         public string Title { get; set; } = null!;
 
         [BsonElement("description")]
-        public string Description { get; set; } = null!;
+        public string? Description { get; set; }
 
         [BsonRequired]
         [BsonElement("category")]

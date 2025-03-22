@@ -18,7 +18,7 @@ namespace qwitix_api.Core.Models
 
         [BsonRequired]
         [BsonElement("amount")]
-        public decimal Amount { get; set; }
+        public int Amount { get; set; }
 
         [BsonRequired]
         [BsonElement("currency")]
