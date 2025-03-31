@@ -3,12 +3,8 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using MongoDB.Bson;
-using qwitix_api.Core.Models;
 using qwitix_api.Core.Processors;
 using qwitix_api.Core.Repositories;
 using qwitix_api.Core.Repositories.EventRepository;
@@ -94,6 +90,13 @@ builder
         options.ClientId = clientId;
         options.ClientSecret = clientSecret;
         options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+
+        //options.Events.OnRemoteFailure = context =>
+        //{
+        //    context.Response.Redirect("/login?error=GoogleLoginFailed");
+        //    context.HandleResponse();
+        //    return Task.CompletedTask;
+        //};
     })
     .AddJwtBearer(options =>
     {

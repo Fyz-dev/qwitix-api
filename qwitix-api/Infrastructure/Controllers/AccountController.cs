@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using qwitix_api.Core.Models;
 using qwitix_api.Core.Services.AccountService;
 
 namespace qwitix_api.Infrastructure.Controllers
@@ -25,18 +23,11 @@ namespace qwitix_api.Infrastructure.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> RefreshToken()
         {
-            try
-            {
-                var refreshToken = Request.Cookies["REFRESH_TOKEN"];
+            var refreshToken = Request.Cookies["REFRESH_TOKEN"];
 
-                await _accountService.RefreshTokenAsync(refreshToken);
+            await _accountService.RefreshTokenAsync(refreshToken);
 
-                return Ok();
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            return Ok();
         }
 
         [HttpGet("login/google")]
