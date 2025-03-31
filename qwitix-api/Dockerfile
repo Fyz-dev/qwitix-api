@@ -6,6 +6,22 @@ USER $APP_UID
 WORKDIR /app
 EXPOSE 8080
 
+ARG ASPNETCORE_ENVIRONMENT
+ARG DatabaseSettings__ConnectionString
+ARG JwtSettings__Issuer
+ARG JwtSettings__Audience
+ARG JwtSettings__Secret
+ARG Authentication__Google__ClientId
+ARG Authentication__Google__ClientSecret
+
+ENV ASPNETCORE_ENVIRONMENT=$ASPNETCORE_ENVIRONMENT
+ENV DatabaseSettings__ConnectionString=$DatabaseSettings__ConnectionString
+ENV JwtSettings__Issuer=$JwtSettings__Issuer
+ENV JwtSettings__Audience=$JwtSettings__Audience
+ENV JwtSettings__Secret=$JwtSettings__Secret
+ENV Authentication__Google__ClientId=$Authentication__Google__ClientId
+ENV Authentication__Google__ClientSecret=$Authentication__Google__ClientSecret
+
 
 # This stage is used to build the service project
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build

@@ -76,16 +76,12 @@ builder
         var clientId = builder.Configuration["Authentication:Google:ClientId"];
 
         if (clientId == null)
-        {
             throw new ArgumentNullException(nameof(clientId));
-        }
 
         var clientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
 
         if (clientSecret == null)
-        {
             throw new ArgumentNullException(nameof(clientSecret));
-        }
 
         options.ClientId = clientId;
         options.ClientSecret = clientSecret;
