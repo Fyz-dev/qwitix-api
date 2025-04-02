@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using MongoDB.Driver;
 using qwitix_api.Core.Models;
 using qwitix_api.Core.Repositories;
 using qwitix_api.Infrastructure.Configs;
@@ -10,29 +11,35 @@ namespace qwitix_api.Infrastructure.Repositories
         public UserRepository(IOptions<DatabaseSettings> databaseSettings)
             : base(databaseSettings, databaseSettings.Value.UsersCollectionName) { }
 
-        public Task Create(User user)
+        public async Task Create(User user)
         {
-            throw new NotImplementedException();
+            await _collection.InsertOneAsync(user);
         }
 
-        public Task<User> GetById(string id)
+        public async Task<User?> GetById(string id)
         {
-            throw new NotImplementedException();
+            return await _collection.Find(u => u.Id == id).FirstOrDefaultAsync();
         }
 
-        public Task<User?> GetUserByEmail(string email)
+        public async Task<User?> GetUserByEmail(string email)
         {
-            throw new NotImplementedException();
+            return await _collection.Find(u => u.Email == email).FirstOrDefaultAsync();
         }
 
-        public Task<User?> GetUserByRefreshToken(string refreshToken)
+        public async Task<User?> GetUserByRefreshToken(string refreshToken)
         {
-            throw new NotImplementedException();
+            return await _collection
+                .Find(u => u.RefreshToken == refreshToken)
+                .FirstOrDefaultAsync();
         }
 
-        public Task UpdateById(string id, User user)
+        public async Task UpdateById(string id, User user)
         {
-            throw new NotImplementedException();
+            var filter = Builders<User>.Filter.Eq(u => u.Id, id);
+            var result = await _collection.ReplaceOneAsync(filter, user);
+
+            if (result.ModifiedCount == 0)
+                throw new Exception("User not found or no changes made.");
         }
     }
 }
