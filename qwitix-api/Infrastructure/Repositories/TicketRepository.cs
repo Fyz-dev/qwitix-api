@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using MongoDB.Driver;
 using qwitix_api.Core.Models;
 using qwitix_api.Core.Repositories;
 using qwitix_api.Infrastructure.Configs;
@@ -10,39 +11,43 @@ namespace qwitix_api.Infrastructure.Repositories
         public TicketRepository(IOptions<DatabaseSettings> databaseSettings)
             : base(databaseSettings, databaseSettings.Value.TicketsCollectionName) { }
 
-        public Task BuyById(string id)
+        public async Task Create(Ticket ticket)
         {
-            throw new NotImplementedException();
+            await _collection.InsertOneAsync(ticket);
         }
 
-        public Task Create(Ticket ticket)
+        public async Task DeleteById(string id)
         {
-            throw new NotImplementedException();
+            var filter = Builders<Ticket>.Filter.Eq(t => t.Id, id);
+
+            var result = await _collection.DeleteOneAsync(filter);
+
+            if (result.DeletedCount == 0)
+                throw new Exception("Ticket not found.");
         }
 
-        public Task DeleteById(string id)
+        public async Task<IEnumerable<Ticket>> GetAll(string eventId, int offset, int limit)
         {
-            throw new NotImplementedException();
+            var filter = Builders<Ticket>.Filter.Eq(t => t.EventId, eventId);
+
+            return await _collection.Find(filter).Skip(offset).Limit(limit).ToListAsync();
         }
 
-        public Task<IEnumerable<Ticket>> GetAll(string eventId, int offset, int limit)
+        public async Task<Ticket?> GetById(string id)
         {
-            throw new NotImplementedException();
+            var filter = Builders<Ticket>.Filter.Eq(t => t.Id, id);
+
+            return await _collection.Find(filter).FirstOrDefaultAsync();
         }
 
-        public Task<Ticket> GetById(string id)
+        public async Task UpdateById(string id, Ticket ticket)
         {
-            throw new NotImplementedException();
-        }
+            var filter = Builders<Ticket>.Filter.Eq(t => t.Id, id);
 
-        public Task RefundById(string id)
-        {
-            throw new NotImplementedException();
-        }
+            var result = await _collection.ReplaceOneAsync(filter, ticket);
 
-        public Task UpdateById(string id, Ticket ticket)
-        {
-            throw new NotImplementedException();
+            if (result.ModifiedCount == 0)
+                throw new Exception("Ticket not found or no changes made.");
         }
     }
 }
