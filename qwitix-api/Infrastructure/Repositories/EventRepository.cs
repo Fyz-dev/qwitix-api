@@ -40,9 +40,14 @@ namespace qwitix_api.Infrastructure.Repositories
             return await _collection.Find(filter).FirstOrDefaultAsync();
         }
 
-        public Task UpdateById(string id, Event eventModel)
+        public async Task UpdateById(string id, Event eventModel)
         {
-            throw new NotImplementedException();
+            var filter = Builders<Event>.Filter.Eq(e => e.Id, id);
+
+            var result = await _collection.ReplaceOneAsync(filter, eventModel);
+
+            if (result.ModifiedCount == 0)
+                throw new Exception("Event not found or no changes made.");
         }
     }
 }
