@@ -26,9 +26,11 @@ namespace qwitix_api.Infrastructure.Repositories
                 throw new Exception("Event not found.");
         }
 
-        public Task<IEnumerable<Event>> GetAll(string organizerId, int offset, int limit)
+        public async Task<IEnumerable<Event>> GetAll(string organizerId, int offset, int limit)
         {
-            throw new NotImplementedException();
+            var filter = Builders<Event>.Filter.Eq(e => e.OrganizerId, organizerId);
+
+            return await _collection.Find(filter).Skip(offset).Limit(limit).ToListAsync();
         }
 
         public Task<Event> GetById(string id)
