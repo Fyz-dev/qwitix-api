@@ -33,9 +33,11 @@ namespace qwitix_api.Infrastructure.Repositories
             return await _collection.Find(filter).Skip(offset).Limit(limit).ToListAsync();
         }
 
-        public Task<Event> GetById(string id)
+        public async Task<Event?> GetById(string id)
         {
-            throw new NotImplementedException();
+            var filter = Builders<Event>.Filter.Eq(e => e.Id, id);
+
+            return await _collection.Find(filter).FirstOrDefaultAsync();
         }
 
         public Task UpdateById(string id, Event eventModel)
