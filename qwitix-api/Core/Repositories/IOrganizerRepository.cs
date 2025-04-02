@@ -8,7 +8,7 @@ namespace qwitix_api.Core.Repositories
 
         Task<IEnumerable<Organizer>> GetAll(int offset, int limit);
 
-        Task<Organizer> GetById(string id);
+        Task<Organizer?> GetById(string id);
 
         Task UpdateById(string id, Organizer organizer);
     }

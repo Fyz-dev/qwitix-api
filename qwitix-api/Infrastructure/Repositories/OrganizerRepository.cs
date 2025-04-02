@@ -11,24 +11,33 @@ namespace qwitix_api.Infrastructure.Repositories
         public OrganizerRepository(IOptions<DatabaseSettings> databaseSettings)
             : base(databaseSettings, databaseSettings.Value.OrganizersCollectionName) { }
 
-        public Task Create(Organizer organizer)
+        public async Task Create(Organizer organizer)
         {
-            throw new NotImplementedException();
+            await _collection.InsertOneAsync(organizer);
         }
 
         public async Task<IEnumerable<Organizer>> GetAll(int offset, int limit)
         {
-            return await _collection.Find(_ => true).ToListAsync();
+            var filter = Builders<Organizer>.Filter.Empty;
+
+            return await _collection.Find(filter).Skip(offset).Limit(limit).ToListAsync();
         }
 
-        public Task<Organizer> GetById(string id)
+        public async Task<Organizer?> GetById(string id)
         {
-            throw new NotImplementedException();
+            var filter = Builders<Organizer>.Filter.Eq(o => o.Id, id);
+
+            return await _collection.Find(filter).FirstOrDefaultAsync();
         }
 
-        public Task UpdateById(string id, Organizer organizer)
+        public async Task UpdateById(string id, Organizer organizer)
         {
-            throw new NotImplementedException();
+            var filter = Builders<Organizer>.Filter.Eq(o => o.Id, id);
+
+            var result = await _collection.ReplaceOneAsync(filter, organizer);
+
+            if (result.ModifiedCount == 0)
+                throw new Exception("Organizer not found or no changes made.");
         }
     }
 }
