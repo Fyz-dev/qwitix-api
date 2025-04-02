@@ -8,7 +8,7 @@ namespace qwitix_api.Core.Repositories.EventRepository
 
         Task<IEnumerable<Event>> GetAll(string organizerId, int offset, int limit);
 
-        Task<Event> GetById(string id);
+        Task<Event?> GetById(string id);
 
         Task UpdateById(string id, Event eventModel);
 
