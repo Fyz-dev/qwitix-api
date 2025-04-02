@@ -11,9 +11,9 @@ namespace qwitix_api.Infrastructure.Repositories
         public OrganizerRepository(IOptions<DatabaseSettings> databaseSettings)
             : base(databaseSettings, databaseSettings.Value.OrganizersCollectionName) { }
 
-        public Task Create(Organizer organizer)
+        public async Task Create(Organizer organizer)
         {
-            throw new NotImplementedException();
+            await _collection.InsertOneAsync(organizer);
         }
 
         public async Task<IEnumerable<Organizer>> GetAll(int offset, int limit)
