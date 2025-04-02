@@ -16,9 +16,14 @@ namespace qwitix_api.Infrastructure.Repositories
             await _collection.InsertOneAsync(eventModel);
         }
 
-        public Task DeleteById(string id)
+        public async Task DeleteById(string id)
         {
-            throw new NotImplementedException();
+            var filter = Builders<Event>.Filter.Eq(e => e.Id, id);
+
+            var result = await _collection.DeleteOneAsync(filter);
+
+            if (result.DeletedCount == 0)
+                throw new Exception("Event not found.");
         }
 
         public Task<IEnumerable<Event>> GetAll(string organizerId, int offset, int limit)
