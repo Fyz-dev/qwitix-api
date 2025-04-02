@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using MongoDB.Driver;
 using qwitix_api.Core.Models;
 using qwitix_api.Core.Repositories.EventRepository;
 using qwitix_api.Infrastructure.Configs;
@@ -10,9 +11,9 @@ namespace qwitix_api.Infrastructure.Repositories
         public EventRepository(IOptions<DatabaseSettings> databaseSettings)
             : base(databaseSettings, databaseSettings.Value.EventsCollectionName) { }
 
-        public Task Create(Event eventModel)
+        public async Task Create(Event eventModel)
         {
-            throw new NotImplementedException();
+            await _collection.InsertOneAsync(eventModel);
         }
 
         public Task DeleteById(string id)
