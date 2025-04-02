@@ -6,13 +6,9 @@ namespace qwitix_api.Core.Repositories
     {
         Task Create(Ticket ticket);
 
-        Task BuyById(string id);
-
-        Task RefundById(string id);
-
         Task<IEnumerable<Ticket>> GetAll(string eventId, int offset, int limit);
 
-        Task<Ticket> GetById(string id);
+        Task<Ticket?> GetById(string id);
 
         Task UpdateById(string id, Ticket ticket);
 
