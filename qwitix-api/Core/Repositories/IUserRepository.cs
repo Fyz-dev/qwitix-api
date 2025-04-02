@@ -6,7 +6,7 @@ namespace qwitix_api.Core.Repositories
     {
         Task Create(User user);
 
-        Task<User> GetById(string id);
+        Task<User?> GetById(string id);
 
         Task<User?> GetUserByRefreshToken(string refreshToken);
 
