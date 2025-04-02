@@ -18,7 +18,9 @@ namespace qwitix_api.Infrastructure.Repositories
 
         public async Task<IEnumerable<Organizer>> GetAll(int offset, int limit)
         {
-            return await _collection.Find(_ => true).ToListAsync();
+            var filter = Builders<Organizer>.Filter.Empty;
+
+            return await _collection.Find(filter).Skip(offset).Limit(limit).ToListAsync();
         }
 
         public Task<Organizer> GetById(string id)
