@@ -9,7 +9,7 @@ namespace qwitix_api.Core.Models
     {
         private string _userId = null!;
         private string _name = null!;
-        private string _bio = null!;
+        private string? _bio;
         private string? _imageUrl;
 
         [BsonRequired]
@@ -46,15 +46,12 @@ namespace qwitix_api.Core.Models
 
         [BsonRequired]
         [BsonElement("bio")]
-        public string Bio
+        public string? Bio
         {
             get => _bio;
             set
             {
-                if (string.IsNullOrWhiteSpace(value))
-                    throw new ArgumentException("Bio cannot be empty.");
-
-                if (value.Length > 2500)
+                if (value?.Length > 2500)
                     throw new ArgumentException("Bio cannot be longer than 2500 characters.");
 
                 _bio = value;
