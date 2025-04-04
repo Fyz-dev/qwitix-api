@@ -15,16 +15,6 @@ namespace qwitix_api.Infrastructure.Controllers
             _userService = userService;
         }
 
-        [HttpPost("user/{id}")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Create(CreateUserDTO userDTO)
-        {
-            await _userService.Create(userDTO);
-
-            return Created();
-        }
-
         [HttpGet("user/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseDTO))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
