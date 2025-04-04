@@ -17,7 +17,7 @@ namespace qwitix_api.Core.Services.UserService
             throw new NotImplementedException();
         }
 
-        public async Task<ResponseDTO> GetById(string id)
+        public async Task<ResponseUserDTO> GetById(string id)
         {
             throw new NotImplementedException();
         }
