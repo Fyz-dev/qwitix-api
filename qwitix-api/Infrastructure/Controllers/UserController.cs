@@ -16,17 +16,20 @@ namespace qwitix_api.Infrastructure.Controllers
         }
 
         [HttpGet("user/{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseDTO))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseUserDTO))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetById(string id)
         {
-            var user = await _userService.GetById(id);
+            ResponseUserDTO user = await _userService.GetById(id);
 
             return Ok(user);
         }
 
         [HttpPatch("user/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateById(string id, UpdateUserDTO userDTO)
         {
