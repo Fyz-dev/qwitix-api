@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using qwitix_api.Core.Exceptions;
 using qwitix_api.Core.Models;
 using qwitix_api.Core.Repositories;
 using qwitix_api.Infrastructure.Configs;
@@ -39,7 +40,7 @@ namespace qwitix_api.Infrastructure.Repositories
             var result = await _collection.ReplaceOneAsync(filter, user);
 
             if (result.ModifiedCount == 0)
-                throw new Exception("User not found or no changes made.");
+                throw new NotFoundException("User not found or no changes made.");
         }
     }
 }
