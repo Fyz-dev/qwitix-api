@@ -3,7 +3,7 @@ using qwitix_api.Core.Services.DTOs;
 
 namespace qwitix_api.Core.Services.UserService.DTOs
 {
-    public record ResponseDTO : ResponseBaseDTO
+    public record ResponseUserDTO : ResponseBaseDTO
     {
         public required string GoogleId { get; init; }
 
