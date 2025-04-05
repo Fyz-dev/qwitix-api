@@ -12,16 +12,16 @@ namespace qwitix_api.Core.Services.StripeService
             StripeConfiguration.ApiKey = stripeSettings.Value.SecretKey;
         }
 
-        public Customer CreateCustomer(string email, string name)
+        public async Task<Customer> CreateCustomerAsync(string email, string name)
         {
             var options = new CustomerCreateOptions { Email = email, Name = name };
 
             var service = new CustomerService();
 
-            return service.Create(options);
+            return await service.CreateAsync(options);
         }
 
-        public Product CreateProduct(
+        public async Task<Product> CreateProductAsync(
             string name,
             string description,
             long unitAmount,
@@ -35,29 +35,26 @@ namespace qwitix_api.Core.Services.StripeService
             };
 
             var productService = new ProductService();
-            var product = productService.Create(productOptions);
 
-            var priceOptions = new PriceCreateOptions
-            {
-                UnitAmount = unitAmount,
-                Currency = currency,
-                Product = product.Id,
-            };
+            var product = await productService.CreateAsync(productOptions);
 
-            var priceService = new PriceService();
-            priceService.Create(priceOptions);
+            await CreatePriceAsync(unitAmount, currency, product.Id);
 
             return product;
         }
 
-        public void DeleteProduct(string productId)
+        public async Task DeleteProductAsync(string productId)
         {
             var service = new ProductService();
 
-            service.Delete(productId);
+            await service.DeleteAsync(productId);
         }
 
-        public Session CreateCheckoutSession(string priceId, string successUrl, string cancelUrl)
+        public async Task<Session> CreateCheckoutSessionAsync(
+            string priceId,
+            string successUrl,
+            string cancelUrl
+        )
         {
             var options = new SessionCreateOptions
             {
@@ -72,19 +69,30 @@ namespace qwitix_api.Core.Services.StripeService
             };
 
             var service = new SessionService();
-            Session session = service.Create(options);
 
-            return session;
+            return await service.CreateAsync(options);
         }
 
-        public Refund CreateRefund(string chargeId)
+        public async Task<Refund> CreateRefundAsync(string chargeId)
         {
             var refundOptions = new RefundCreateOptions { Charge = chargeId };
 
             var refundService = new RefundService();
-            Refund refund = refundService.Create(refundOptions);
 
-            return refund;
+            return await refundService.CreateAsync(refundOptions);
+        }
+
+        private async Task CreatePriceAsync(long unitAmount, string currency, string productId)
+        {
+            var priceOptions = new PriceCreateOptions
+            {
+                UnitAmount = unitAmount,
+                Currency = currency,
+                Product = productId,
+            };
+
+            var priceService = new PriceService();
+            await priceService.CreateAsync(priceOptions);
         }
     }
 }
