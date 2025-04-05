@@ -30,6 +30,9 @@ builder.Services.Configure<DatabaseSettings>(
     builder.Configuration.GetSection(nameof(DatabaseSettings))
 );
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(nameof(JwtSettings)));
+builder.Services.Configure<StripeSettings>(
+    builder.Configuration.GetSection(nameof(StripeSettings))
+);
 
 // Cors
 builder.Services.AddCors(opt =>
