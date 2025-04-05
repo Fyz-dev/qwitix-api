@@ -8,7 +8,7 @@ namespace qwitix_api.Core.Models
     {
         private string _eventId = null!;
         private string _name = null!;
-        private string _details = null!;
+        private string? _details;
         private decimal _price;
         private int _quantity;
         private int _sold;
@@ -46,14 +46,11 @@ namespace qwitix_api.Core.Models
         }
 
         [BsonElement("details")]
-        public string Details
+        public string? Details
         {
             get => _details;
             set
             {
-                if (string.IsNullOrWhiteSpace(value))
-                    throw new ArgumentException("Details are required.");
-
                 if (value.Length > 800)
                     throw new ArgumentException("Details cannot be longer than 800 characters.");
 
