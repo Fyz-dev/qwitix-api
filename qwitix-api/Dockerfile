@@ -11,6 +11,8 @@ ARG DatabaseSettings__ConnectionString
 ARG JwtSettings__Issuer
 ARG JwtSettings__Audience
 ARG JwtSettings__Secret
+ARG StripeSettings__PublishableKey
+ARG StripeSettings__SecretKey
 ARG Authentication__Google__ClientId
 ARG Authentication__Google__ClientSecret
 
@@ -19,6 +21,8 @@ ENV DatabaseSettings__ConnectionString=$DatabaseSettings__ConnectionString
 ENV JwtSettings__Issuer=$JwtSettings__Issuer
 ENV JwtSettings__Audience=$JwtSettings__Audience
 ENV JwtSettings__Secret=$JwtSettings__Secret
+ENV StripeSettings__PublishableKey=$StripeSettings__PublishableKey
+ENV StripeSettings__SecretKey=$StripeSettings__SecretKey
 ENV Authentication__Google__ClientId=$Authentication__Google__ClientId
 ENV Authentication__Google__ClientSecret=$Authentication__Google__ClientSecret
 
