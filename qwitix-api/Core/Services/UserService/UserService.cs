@@ -10,25 +10,15 @@ namespace qwitix_api.Core.Services.UserService
     public class UserService
     {
         private readonly IUserRepository _userRepository;
-        private readonly IMapper<CreateUserDTO, User> _createUserMapper;
         private readonly IMapper<ResponseUserDTO, User> _responseUserMapper;
 
         public UserService(
             IUserRepository userRepository,
-            IMapper<CreateUserDTO, User> createUserMapper,
             IMapper<ResponseUserDTO, User> responseUserMapper
         )
         {
             _userRepository = userRepository;
-            _createUserMapper = createUserMapper;
             _responseUserMapper = responseUserMapper;
-        }
-
-        public async Task Create(CreateUserDTO userDTO)
-        {
-            var user = _createUserMapper.ToEntity(userDTO);
-
-            await _userRepository.Create(user);
         }
 
         public async Task<ResponseUserDTO> GetById(string id)
