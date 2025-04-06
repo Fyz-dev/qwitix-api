@@ -22,6 +22,7 @@ using qwitix_api.Infrastructure.Configs;
 using qwitix_api.Infrastructure.Handlers;
 using qwitix_api.Infrastructure.Processors;
 using qwitix_api.Infrastructure.Repositories;
+using qwitix_api.Infrastructure.Service.StripeService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,7 +52,8 @@ builder.Services.AddCors(opt =>
 });
 
 // Services
-builder.Services.AddScoped<IMapper<CreateUserDTO, User>, CreateUserMapper>();
+builder.Services.AddSingleton<StripeService>();
+
 builder.Services.AddScoped<IMapper<ResponseUserDTO, User>, ResponseUserMapper>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<UserService>();
