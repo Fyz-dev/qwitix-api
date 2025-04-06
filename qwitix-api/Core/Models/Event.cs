@@ -52,7 +52,7 @@ namespace qwitix_api.Core.Models
             get => _description;
             set
             {
-                if (value != null && value.Length > 10000)
+                if (value?.Length > 10000)
                     throw new ArgumentException("Description cannot exceed 10000 characters.");
 
                 _description = value;
