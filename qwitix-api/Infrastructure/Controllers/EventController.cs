@@ -15,8 +15,8 @@ namespace qwitix_api.Infrastructure.Controllers
             _eventService = eventService;
         }
 
-        [HttpPost("event/{id}")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [HttpPost("event")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Create(CreateEventDTO eventDTO)
         {
