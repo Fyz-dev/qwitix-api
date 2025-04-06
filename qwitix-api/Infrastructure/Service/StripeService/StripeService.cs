@@ -3,7 +3,7 @@ using qwitix_api.Infrastructure.Configs;
 using Stripe;
 using Stripe.Checkout;
 
-namespace qwitix_api.Core.Services.StripeService
+namespace qwitix_api.Infrastructure.Service.StripeService
 {
     public class StripeService
     {
@@ -12,7 +12,7 @@ namespace qwitix_api.Core.Services.StripeService
             StripeConfiguration.ApiKey = stripeSettings.Value.SecretKey;
         }
 
-        public async Task<Customer> CreateCustomerAsync(string email, string name)
+        public async Task<Customer> CreateCustomerAsync(string name, string email)
         {
             var options = new CustomerCreateOptions { Email = email, Name = name };
 
