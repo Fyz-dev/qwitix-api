@@ -4,18 +4,24 @@ namespace qwitix_api.Core.Helpers
 {
     public static class PatchHelper
     {
-        public static void ApplyPatch<TSource, TTarget>(TSource source, TTarget target)
+        public static void ApplyPatch<TSource, TTarget>(
+            TSource source,
+            TTarget target,
+            params string[] excludedProperties
+        )
         {
             var sourceProps = typeof(TSource).GetProperties(
                 BindingFlags.Public | BindingFlags.Instance
             );
-
             var targetProps = typeof(TTarget).GetProperties(
                 BindingFlags.Public | BindingFlags.Instance
             );
 
             foreach (var sourceProp in sourceProps)
             {
+                if (excludedProperties.Contains(sourceProp.Name))
+                    continue;
+
                 var value = sourceProp.GetValue(source);
                 if (value == null)
                     continue;
