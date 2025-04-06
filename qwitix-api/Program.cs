@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using qwitix_api.Core.Mappers;
+using qwitix_api.Core.Mappers.OrganizerMappers;
 using qwitix_api.Core.Mappers.UserMappers;
 using qwitix_api.Core.Models;
 using qwitix_api.Core.Processors;
@@ -14,6 +15,7 @@ using qwitix_api.Core.Repositories.EventRepository;
 using qwitix_api.Core.Services.AccountService;
 using qwitix_api.Core.Services.EventService;
 using qwitix_api.Core.Services.OrganizerService;
+using qwitix_api.Core.Services.OrganizerService.DTOs;
 using qwitix_api.Core.Services.TicketService;
 using qwitix_api.Core.Services.TransactionService;
 using qwitix_api.Core.Services.UserService;
@@ -58,6 +60,8 @@ builder.Services.AddScoped<IMapper<ResponseUserDTO, User>, ResponseUserMapper>()
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<UserService>();
 
+builder.Services.AddScoped<IMapper<CreateOrganizerDTO, Organizer>, CreateOrganizerMapper>();
+builder.Services.AddScoped<IMapper<ResponseOrganizerDTO, Organizer>, ResponseOrginizerMapper>();
 builder.Services.AddScoped<IOrganizerRepository, OrganizerRepository>();
 builder.Services.AddScoped<OrganizerService>();
 
