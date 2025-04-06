@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using qwitix_api.Core.Mappers;
+using qwitix_api.Core.Mappers.EventMappers;
 using qwitix_api.Core.Mappers.OrganizerMappers;
 using qwitix_api.Core.Mappers.UserMappers;
 using qwitix_api.Core.Models;
@@ -14,6 +15,7 @@ using qwitix_api.Core.Repositories;
 using qwitix_api.Core.Repositories.EventRepository;
 using qwitix_api.Core.Services.AccountService;
 using qwitix_api.Core.Services.EventService;
+using qwitix_api.Core.Services.EventService.DTOs;
 using qwitix_api.Core.Services.OrganizerService;
 using qwitix_api.Core.Services.OrganizerService.DTOs;
 using qwitix_api.Core.Services.TicketService;
@@ -65,11 +67,13 @@ builder.Services.AddScoped<IMapper<ResponseOrganizerDTO, Organizer>, ResponseOrg
 builder.Services.AddScoped<IOrganizerRepository, OrganizerRepository>();
 builder.Services.AddScoped<OrganizerService>();
 
-builder.Services.AddScoped<ITicketRepository, TicketRepository>();
-builder.Services.AddScoped<TicketService>();
-
+builder.Services.AddScoped<IMapper<CreateEventDTO, Event>, CreateEventMapper>();
+builder.Services.AddScoped<IMapper<ResponseEventDTO, Event>, ResponseEventMapper>();
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<EventService>();
+
+builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+builder.Services.AddScoped<TicketService>();
 
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 builder.Services.AddScoped<TransactionService>();
