@@ -64,16 +64,16 @@ namespace qwitix_api.Core.Models
             get => _imageUrl;
             set
             {
-                if (string.IsNullOrWhiteSpace(value))
-                    throw new ArgumentException("ImageUrl cannot be empty.");
+                if (value is not null)
+                {
+                    var urlRegex = new Regex(
+                        @"^(https?|ftp)://[^\s/$.?#].[^\s]*$",
+                        RegexOptions.IgnoreCase
+                    );
 
-                var urlRegex = new Regex(
-                    @"^(https?|ftp)://[^\s/$.?#].[^\s]*$",
-                    RegexOptions.IgnoreCase
-                );
-
-                if (!urlRegex.IsMatch(value))
-                    throw new ArgumentException("ImageUrl must be a valid URL.");
+                    if (!urlRegex.IsMatch(value))
+                        throw new ArgumentException("ImageUrl must be a valid URL.");
+                }
 
                 _imageUrl = value;
             }
