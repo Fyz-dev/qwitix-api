@@ -5,8 +5,6 @@ namespace qwitix_api.Core.Services.UserService.DTOs
 {
     public record ResponseUserDTO : ResponseBaseDTO
     {
-        public required string GoogleId { get; init; }
-
         public required string StripeCustomerId { get; init; }
 
         public required string FullName { get; init; }

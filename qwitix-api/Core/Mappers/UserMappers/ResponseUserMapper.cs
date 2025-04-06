@@ -10,7 +10,6 @@ namespace qwitix_api.Core.Mappers.UserMappers
             return new ResponseUserDTO
             {
                 Id = entity.Id,
-                GoogleId = entity.GoogleId,
                 StripeCustomerId = entity.StripeCustomerId,
                 FullName = entity.FullName,
                 Email = entity.Email,

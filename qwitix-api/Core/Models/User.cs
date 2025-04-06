@@ -9,7 +9,6 @@ namespace qwitix_api.Core.Models
     public class User : BaseModel
     {
         private DateTime? _refreshTokenExpires;
-        private string _googleId = null!;
         private string _stripeCustomerId = null!;
         private string _fullName = null!;
         private string _email = null!;
@@ -29,20 +28,6 @@ namespace qwitix_api.Core.Models
                     );
 
                 _refreshTokenExpires = value;
-            }
-        }
-
-        [BsonRequired]
-        [BsonElement("google_id")]
-        public string GoogleId
-        {
-            get => _googleId;
-            set
-            {
-                if (string.IsNullOrWhiteSpace(value))
-                    throw new ArgumentException("GoogleId cannot be empty.");
-
-                _googleId = value;
             }
         }
 

@@ -14,8 +14,6 @@ namespace qwitix_api.Core.Mappers.UserMappers
         {
             return new User
             {
-                GoogleId = dto.GoogleId,
-                StripeCustomerId = dto.StripeCustomerId,
                 FullName = dto.FullName,
                 Email = dto.Email,
                 Role = dto.Role,
