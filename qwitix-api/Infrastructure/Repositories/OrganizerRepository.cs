@@ -32,6 +32,8 @@ namespace qwitix_api.Infrastructure.Repositories
 
         public async Task UpdateById(string id, Organizer organizer)
         {
+            organizer.UpdatedAt = DateTime.UtcNow;
+
             var filter = Builders<Organizer>.Filter.Eq(o => o.Id, id);
 
             var result = await _collection.ReplaceOneAsync(filter, organizer);
