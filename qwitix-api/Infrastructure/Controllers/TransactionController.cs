@@ -7,11 +7,11 @@ namespace qwitix_api.Infrastructure.Controllers
 {
     [ApiController]
     [Route("api/")]
-    public class TransactonController : ControllerBase
+    public class TransactionController : ControllerBase
     {
         private readonly TransactionService _transactionService;
 
-        public TransactonController(TransactionService transactionService)
+        public TransactionController(TransactionService transactionService)
         {
             _transactionService = transactionService;
         }
