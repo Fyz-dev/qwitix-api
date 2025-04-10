@@ -3,11 +3,11 @@ using qwitix_api.Infrastructure.Configs;
 using Stripe;
 using Stripe.Checkout;
 
-namespace qwitix_api.Infrastructure.Service.StripeService
+namespace qwitix_api.Infrastructure.Integration.StripeIntegration
 {
-    public class StripeService
+    public class StripeIntegration
     {
-        public StripeService(IOptions<StripeSettings> stripeSettings)
+        public StripeIntegration(IOptions<StripeSettings> stripeSettings)
         {
             StripeConfiguration.ApiKey = stripeSettings.Value.SecretKey;
         }
@@ -22,14 +22,16 @@ namespace qwitix_api.Infrastructure.Service.StripeService
         }
 
         public async Task<Product> CreateProductAsync(
+            string productId,
             string name,
-            string description,
-            long unitAmount,
+            string? description,
+            decimal price,
             string currency
         )
         {
             var productOptions = new ProductCreateOptions
             {
+                Id = productId,
                 Name = name,
                 Description = description,
             };
@@ -38,9 +40,34 @@ namespace qwitix_api.Infrastructure.Service.StripeService
 
             var product = await productService.CreateAsync(productOptions);
 
-            await CreatePriceAsync(unitAmount, currency, product.Id);
-
             return product;
+        }
+
+        public async Task<Price> CreatePriceAsync(decimal price, string currency, string productId)
+        {
+            var priceOptions = new PriceCreateOptions
+            {
+                UnitAmountDecimal = (decimal)price * 100,
+                Currency = currency,
+                Product = productId,
+            };
+
+            var priceService = new PriceService();
+
+            return await priceService.CreateAsync(priceOptions);
+        }
+
+        public async Task<Product> UpdateProductAsync(
+            string productId,
+            string? name,
+            string? description
+        )
+        {
+            var updateOptions = new ProductUpdateOptions { Name = name, Description = description };
+
+            var productService = new ProductService();
+
+            return await productService.UpdateAsync(productId, updateOptions);
         }
 
         public async Task DeleteProductAsync(string productId)
@@ -53,7 +80,9 @@ namespace qwitix_api.Infrastructure.Service.StripeService
         public async Task<Session> CreateCheckoutSessionAsync(
             string priceId,
             string successUrl,
-            string cancelUrl
+            string cancelUrl,
+            int quantity,
+            string customerId
         )
         {
             var options = new SessionCreateOptions
@@ -61,11 +90,12 @@ namespace qwitix_api.Infrastructure.Service.StripeService
                 PaymentMethodTypes = new List<string> { "card" },
                 LineItems = new List<SessionLineItemOptions>
                 {
-                    new SessionLineItemOptions { Price = priceId, Quantity = 1 },
+                    new SessionLineItemOptions { Price = priceId, Quantity = quantity },
                 },
                 Mode = "payment",
                 SuccessUrl = successUrl,
                 CancelUrl = cancelUrl,
+                Customer = customerId,
             };
 
             var service = new SessionService();
@@ -80,19 +110,6 @@ namespace qwitix_api.Infrastructure.Service.StripeService
             var refundService = new RefundService();
 
             return await refundService.CreateAsync(refundOptions);
-        }
-
-        private async Task CreatePriceAsync(long unitAmount, string currency, string productId)
-        {
-            var priceOptions = new PriceCreateOptions
-            {
-                UnitAmount = unitAmount,
-                Currency = currency,
-                Product = productId,
-            };
-
-            var priceService = new PriceService();
-            await priceService.CreateAsync(priceOptions);
         }
     }
 }

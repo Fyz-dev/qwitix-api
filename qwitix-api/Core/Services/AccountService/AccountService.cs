@@ -3,7 +3,7 @@ using qwitix_api.Core.Exceptions;
 using qwitix_api.Core.Models;
 using qwitix_api.Core.Processors;
 using qwitix_api.Core.Repositories;
-using qwitix_api.Infrastructure.Service.StripeService;
+using qwitix_api.Infrastructure.Integration.StripeIntegration;
 
 namespace qwitix_api.Core.Services.AccountService
 {
@@ -11,17 +11,17 @@ namespace qwitix_api.Core.Services.AccountService
     {
         private readonly IAuthTokenProcessor _authTokenProcessor;
         private readonly IUserRepository _userRepository;
-        private readonly StripeService _stripeService;
+        private readonly StripeIntegration _stripeIntegration;
 
         public AccountService(
             IAuthTokenProcessor authTokenProcessor,
             IUserRepository userRepository,
-            StripeService stripeService
+            StripeIntegration stripeIntegration
         )
         {
             _authTokenProcessor = authTokenProcessor;
             _userRepository = userRepository;
-            _stripeService = stripeService;
+            _stripeIntegration = stripeIntegration;
         }
 
         public async Task RefreshTokenAsync(string? refreshToken)
@@ -59,7 +59,7 @@ namespace qwitix_api.Core.Services.AccountService
 
             if (user is null)
             {
-                var customer = await _stripeService.CreateCustomerAsync(name, email);
+                var customer = await _stripeIntegration.CreateCustomerAsync(name, email);
 
                 user = new User
                 {
