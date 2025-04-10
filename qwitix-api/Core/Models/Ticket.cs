@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace qwitix_api.Core.Models
@@ -7,6 +6,7 @@ namespace qwitix_api.Core.Models
     public class Ticket : BaseModel
     {
         private string _eventId = null!;
+        private string _stripePriceId = null!;
         private string _name = null!;
         private string? _details;
         private decimal _price;
@@ -25,6 +25,20 @@ namespace qwitix_api.Core.Models
                     throw new ArgumentException("EventId is required.");
 
                 _eventId = value;
+            }
+        }
+
+        [BsonRequired]
+        [BsonElement("stripe_price_id")]
+        public string StripePriceId
+        {
+            get => _stripePriceId;
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                    throw new ArgumentException("StripeProductId is required.");
+
+                _stripePriceId = value;
             }
         }
 
@@ -51,7 +65,7 @@ namespace qwitix_api.Core.Models
             get => _details;
             set
             {
-                if (value.Length > 800)
+                if (value?.Length > 800)
                     throw new ArgumentException("Details cannot be longer than 800 characters.");
 
                 _details = value;
