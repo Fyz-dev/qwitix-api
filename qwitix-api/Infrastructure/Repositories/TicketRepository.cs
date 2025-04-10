@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using System.Diagnostics;
+using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using qwitix_api.Core.Models;
 using qwitix_api.Core.Repositories;
@@ -11,9 +12,11 @@ namespace qwitix_api.Infrastructure.Repositories
         public TicketRepository(IOptions<DatabaseSettings> databaseSettings)
             : base(databaseSettings, databaseSettings.Value.TicketsCollectionName) { }
 
-        public async Task Create(Ticket ticket)
+        public async Task<Ticket> Create(Ticket ticket)
         {
             await _collection.InsertOneAsync(ticket);
+
+            return ticket;
         }
 
         public async Task DeleteById(string id)

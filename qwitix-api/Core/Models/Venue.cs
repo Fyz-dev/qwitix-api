@@ -85,16 +85,16 @@ namespace qwitix_api.Core.Models
             get => _zip;
             set
             {
-                if (string.IsNullOrWhiteSpace(value))
-                    throw new ArgumentException("City is required.");
+                if (value is not null)
+                {
+                    if (value.Length > 10)
+                        throw new ArgumentException("Zip cannot exceed 10 characters.");
 
-                if (value.Length > 10)
-                    throw new ArgumentException("Zip cannot exceed 10 characters.");
+                    var regex = new Regex(@"^\d{1,10}(-\d{1,10})?$");
 
-                var regex = new Regex(@"^\d{1,10}(-\d{1,10})?$");
-
-                if (!regex.IsMatch(value))
-                    throw new ArgumentException("Zip can only contain numbers and a hyphen.");
+                    if (!regex.IsMatch(value))
+                        throw new ArgumentException("Zip can only contain numbers and a hyphen.");
+                }
 
                 _zip = value;
             }

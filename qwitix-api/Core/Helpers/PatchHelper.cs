@@ -27,14 +27,30 @@ namespace qwitix_api.Core.Helpers
                     continue;
 
                 var targetProp = targetProps.FirstOrDefault(p =>
-                    p.Name == sourceProp.Name && p.PropertyType == sourceProp.PropertyType
+                    p.Name == sourceProp.Name
+                    && (
+                        p.PropertyType == sourceProp.PropertyType
+                        || IsNullableToNonNullableMatch(sourceProp.PropertyType, p.PropertyType)
+                    )
                 );
 
                 if (targetProp != null && targetProp.CanWrite)
                 {
                     try
                     {
-                        targetProp.SetValue(target, value);
+                        object convertedValue = value;
+
+                        if (
+                            IsNullableToNonNullableMatch(
+                                sourceProp.PropertyType,
+                                targetProp.PropertyType
+                            )
+                        )
+                        {
+                            convertedValue = Convert.ChangeType(value, targetProp.PropertyType);
+                        }
+
+                        targetProp.SetValue(target, convertedValue);
                     }
                     catch (TargetInvocationException ex)
                         when (ex.InnerException is ArgumentException argEx)
@@ -43,6 +59,11 @@ namespace qwitix_api.Core.Helpers
                     }
                 }
             }
+        }
+
+        private static bool IsNullableToNonNullableMatch(Type sourceType, Type targetType)
+        {
+            return Nullable.GetUnderlyingType(sourceType) == targetType;
         }
     }
 }

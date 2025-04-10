@@ -4,7 +4,7 @@ namespace qwitix_api.Core.Repositories
 {
     public interface ITicketRepository
     {
-        Task Create(Ticket ticket);
+        Task<Ticket> Create(Ticket ticket);
 
         Task<IEnumerable<Ticket>> GetAll(string eventId, int offset, int limit);
 
