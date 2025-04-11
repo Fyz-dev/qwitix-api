@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Mvc;
 using qwitix_api.Core.Services.TicketService;
 using qwitix_api.Core.Services.TicketService.DTOs;
-using qwitix_api.Core.Services.TransactionService.DTOs;
 
 namespace qwitix_api.Infrastructure.Controllers
 {
@@ -19,7 +16,9 @@ namespace qwitix_api.Infrastructure.Controllers
         }
 
         [HttpPost("ticket")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Create(CreateTicketDTO ticketDTO)
         {
@@ -30,6 +29,7 @@ namespace qwitix_api.Infrastructure.Controllers
 
         [HttpPost("ticket/buy")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> BuyById(BuyTicketDTO buyTicketDTO)
         {
@@ -53,6 +53,7 @@ namespace qwitix_api.Infrastructure.Controllers
 
         [HttpGet("ticket/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseTicketDTO))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetById(string id)
         {
@@ -63,6 +64,8 @@ namespace qwitix_api.Infrastructure.Controllers
 
         [HttpPatch("ticket/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateById(string id, UpdateTicketDTO ticket)
         {
@@ -73,6 +76,8 @@ namespace qwitix_api.Infrastructure.Controllers
 
         [HttpDelete("ticket/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> DeleteById(string id)
         {

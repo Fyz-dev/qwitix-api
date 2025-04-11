@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using qwitix_api.Core.Exceptions;
 
 namespace qwitix_api.Core.Models
 {
@@ -20,7 +21,7 @@ namespace qwitix_api.Core.Models
             set
             {
                 if (string.IsNullOrWhiteSpace(value))
-                    throw new ArgumentException("EventId is required.");
+                    throw new ValidationException("EventId is required.");
 
                 _eventId = value;
             }
@@ -38,10 +39,10 @@ namespace qwitix_api.Core.Models
             set
             {
                 if (string.IsNullOrWhiteSpace(value))
-                    throw new ArgumentException("Name is required.");
+                    throw new ValidationException("Name is required.");
 
                 if (value.Length > 100)
-                    throw new ArgumentException("Name cannot be longer than 100 characters.");
+                    throw new ValidationException("Name cannot be longer than 100 characters.");
 
                 _name = value;
             }
@@ -54,7 +55,7 @@ namespace qwitix_api.Core.Models
             set
             {
                 if (value?.Length > 800)
-                    throw new ArgumentException("Details cannot be longer than 800 characters.");
+                    throw new ValidationException("Details cannot be longer than 800 characters.");
 
                 _details = value;
             }
@@ -68,7 +69,7 @@ namespace qwitix_api.Core.Models
             set
             {
                 if (value < 0)
-                    throw new ArgumentException("Price cannot be negative.");
+                    throw new ValidationException("Price cannot be negative.");
 
                 _price = value;
             }
@@ -82,7 +83,7 @@ namespace qwitix_api.Core.Models
             set
             {
                 if (value < 0)
-                    throw new ArgumentException("Quantity cannot be negative.");
+                    throw new ValidationException("Quantity cannot be negative.");
 
                 _quantity = value;
             }

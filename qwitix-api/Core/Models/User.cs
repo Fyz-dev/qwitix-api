@@ -1,8 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using qwitix_api.Core.Enums;
+using qwitix_api.Core.Exceptions;
 
 namespace qwitix_api.Core.Models
 {
@@ -23,7 +23,7 @@ namespace qwitix_api.Core.Models
             set
             {
                 if (value.HasValue && value.Value < DateTime.Now)
-                    throw new ArgumentException(
+                    throw new ValidationException(
                         "RefreshTokenExpires cannot be earlier than the current date."
                     );
 
@@ -39,7 +39,7 @@ namespace qwitix_api.Core.Models
             set
             {
                 if (string.IsNullOrWhiteSpace(value))
-                    throw new ArgumentException("StripeCustomerId cannot be empty.");
+                    throw new ValidationException("StripeCustomerId cannot be empty.");
 
                 _stripeCustomerId = value;
             }
@@ -53,7 +53,7 @@ namespace qwitix_api.Core.Models
             set
             {
                 if (string.IsNullOrWhiteSpace(value))
-                    throw new ArgumentException("FullName cannot be empty.");
+                    throw new ValidationException("FullName cannot be empty.");
 
                 _fullName = value;
             }
@@ -67,12 +67,12 @@ namespace qwitix_api.Core.Models
             set
             {
                 if (string.IsNullOrWhiteSpace(value))
-                    throw new ArgumentException("Email cannot be empty.");
+                    throw new ValidationException("Email cannot be empty.");
 
                 var emailRegex = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
 
                 if (!emailRegex.IsMatch(value))
-                    throw new ArgumentException(
+                    throw new ValidationException(
                         "Email must follow the standard format (example@domain.com)."
                     );
 

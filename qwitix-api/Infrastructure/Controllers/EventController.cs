@@ -18,6 +18,8 @@ namespace qwitix_api.Infrastructure.Controllers
 
         [HttpPost("event")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Create(CreateEventDTO eventDTO)
         {
@@ -28,6 +30,8 @@ namespace qwitix_api.Infrastructure.Controllers
 
         [HttpPost("event/{id}/publish")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Publish(string id, PublishEventDTO publishEventDTO)
         {
@@ -59,6 +63,7 @@ namespace qwitix_api.Infrastructure.Controllers
 
         [HttpGet("event/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseEventDTO))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetById(string id)
         {
@@ -69,6 +74,8 @@ namespace qwitix_api.Infrastructure.Controllers
 
         [HttpPatch("event/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateById(string id, UpdateEventDTO eventDTO)
         {
@@ -79,6 +86,8 @@ namespace qwitix_api.Infrastructure.Controllers
 
         [HttpDelete("event/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> DeleteById(string id)
         {

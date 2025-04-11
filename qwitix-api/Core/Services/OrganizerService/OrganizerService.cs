@@ -7,28 +7,30 @@ using qwitix_api.Core.Services.OrganizerService.DTOs;
 
 namespace qwitix_api.Core.Services.OrganizerService
 {
-    public class OrganizerService
+    public class OrganizerService(
+        IOrganizerRepository organizerRepository,
+        IUserRepository userRepository,
+        IMapper<CreateOrganizerDTO, Organizer> createOrganizerMapper,
+        IMapper<ResponseOrganizerDTO, Organizer> responseOrganizerMapper
+    )
     {
-        private readonly IOrganizerRepository _organizerRepository;
-        private readonly IMapper<CreateOrganizerDTO, Organizer> _createOrganizerMapper;
-        private readonly IMapper<ResponseOrganizerDTO, Organizer> _responseOrganizerMapper;
+        private readonly IOrganizerRepository _organizerRepository = organizerRepository;
+        private readonly IUserRepository _userRepository = userRepository;
 
-        public OrganizerService(
-            IOrganizerRepository organizerRepository,
-            IMapper<CreateOrganizerDTO, Organizer> createOrganizerMapper,
-            IMapper<ResponseOrganizerDTO, Organizer> responseOrganizerMapper
-        )
-        {
-            _organizerRepository = organizerRepository;
-            _createOrganizerMapper = createOrganizerMapper;
-            _responseOrganizerMapper = responseOrganizerMapper;
-        }
+        private readonly IMapper<CreateOrganizerDTO, Organizer> _createOrganizerMapper =
+            createOrganizerMapper;
+        private readonly IMapper<ResponseOrganizerDTO, Organizer> _responseOrganizerMapper =
+            responseOrganizerMapper;
 
         public async Task Create(CreateOrganizerDTO organizerDTO)
         {
-            var user = _createOrganizerMapper.ToEntity(organizerDTO);
+            _ =
+                await _userRepository.GetById(organizerDTO.UserId)
+                ?? throw new NotFoundException("User not found.");
 
-            await _organizerRepository.Create(user);
+            var organizer = _createOrganizerMapper.ToEntity(organizerDTO);
+
+            await _organizerRepository.Create(organizer);
         }
 
         public async Task<IEnumerable<ResponseOrganizerDTO>> GetAll(int offset, int limit)

@@ -4,6 +4,7 @@ using qwitix_api.Core.Helpers;
 using qwitix_api.Core.Mappers;
 using qwitix_api.Core.Models;
 using qwitix_api.Core.Repositories;
+using qwitix_api.Core.Repositories.EventRepository;
 using qwitix_api.Core.Services.TicketService.DTOs;
 using qwitix_api.Infrastructure.Integration.StripeIntegration;
 
@@ -12,6 +13,7 @@ namespace qwitix_api.Core.Services.TicketService
     public class TicketService(
         ITicketRepository ticketRepository,
         ITransactionRepository transactionRepository,
+        IEventRepository eventRepository,
         StripeIntegration stripeIntegration,
         IMapper<CreateTicketDTO, Ticket> createTicketMapper,
         IMapper<ResponseTicketDTO, Ticket> responseTicketMapper,
@@ -20,6 +22,8 @@ namespace qwitix_api.Core.Services.TicketService
     {
         private readonly ITicketRepository _ticketRepository = ticketRepository;
         private readonly ITransactionRepository _transactionRepository = transactionRepository;
+        private readonly IEventRepository _eventRepository = eventRepository;
+
         private readonly StripeIntegration _stripeIntegration = stripeIntegration;
         private readonly IMapper<CreateTicketDTO, Ticket> _createTicketMapper = createTicketMapper;
         private readonly IMapper<ResponseTicketDTO, Ticket> _responseTicketMapper =
@@ -60,8 +64,8 @@ namespace qwitix_api.Core.Services.TicketService
                     quantityMap.TryGetValue(ticket.Id, out var requestedQuantity)
                     && requestedQuantity > availableQuantity
                 )
-                    throw new InvalidOperationException(
-                        $"Not enough tickets available for {ticket.Name}. Only {availableQuantity} tickets left."
+                    throw new ValidationException(
+                        $"Not enough tickets available for {ticket.Name}."
                     );
             }
 
@@ -114,7 +118,7 @@ namespace qwitix_api.Core.Services.TicketService
 
             if (ticket.StripePriceId is not null)
                 throw new ValidationException(
-                    "You cannot update a ticket for an event that is already scheduled."
+                    "You cannot update a ticket for an event that is already been published, cancelled or rescheduled."
                 );
 
             PatchHelper.ApplyPatch(ticketDTO, ticket);
@@ -129,6 +133,15 @@ namespace qwitix_api.Core.Services.TicketService
             var ticket =
                 await _ticketRepository.GetById(id)
                 ?? throw new NotFoundException($"Ticket not found.");
+
+            var eventModel =
+                await _eventRepository.GetById(ticket.EventId)
+                ?? throw new NotFoundException($"Event not found.");
+
+            if (eventModel.Status != EventStatus.Draft)
+                throw new ValidationException(
+                    "You cannot delete a ticket for an event that is already been published, cancelled or rescheduled."
+                );
 
             await _ticketRepository.DeleteById(id);
             await _stripeIntegration.DeleteProductAsync(ticket.Id);

@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using qwitix_api.Core.Enums;
+using qwitix_api.Core.Exceptions;
 
 namespace qwitix_api.Core.Models
 {
@@ -19,7 +20,7 @@ namespace qwitix_api.Core.Models
             set
             {
                 if (string.IsNullOrWhiteSpace(value))
-                    throw new ArgumentException("UserId is required.");
+                    throw new ValidationException("UserId is required.");
 
                 _userId = value;
             }
@@ -37,7 +38,7 @@ namespace qwitix_api.Core.Models
             set
             {
                 if (string.IsNullOrWhiteSpace(value))
-                    throw new ArgumentException("Currency is required.");
+                    throw new ValidationException("Currency is required.");
 
                 _currency = value;
             }
@@ -56,7 +57,7 @@ namespace qwitix_api.Core.Models
             set
             {
                 if (string.IsNullOrWhiteSpace(value))
-                    throw new ArgumentException("StripeCheckoutSession is required.");
+                    throw new ValidationException("StripeCheckoutSession is required.");
 
                 _stripeCheckoutSession = value;
             }

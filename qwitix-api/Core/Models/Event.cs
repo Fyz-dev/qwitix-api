@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using System.ComponentModel.DataAnnotations;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using qwitix_api.Core.Enums;
 
@@ -23,7 +24,7 @@ namespace qwitix_api.Core.Models
             set
             {
                 if (string.IsNullOrWhiteSpace(value))
-                    throw new ArgumentException("OrganizerId cannot be empty.");
+                    throw new ValidationException("OrganizerId cannot be empty.");
 
                 _organizerId = value;
             }
@@ -37,10 +38,10 @@ namespace qwitix_api.Core.Models
             set
             {
                 if (string.IsNullOrWhiteSpace(value))
-                    throw new ArgumentException("Title cannot be empty.");
+                    throw new ValidationException("Title cannot be empty.");
 
                 if (value.Length > 250)
-                    throw new ArgumentException("Title cannot exceed 250 characters.");
+                    throw new ValidationException("Title cannot exceed 250 characters.");
 
                 _title = value;
             }
@@ -53,7 +54,7 @@ namespace qwitix_api.Core.Models
             set
             {
                 if (value?.Length > 10000)
-                    throw new ArgumentException("Description cannot exceed 10000 characters.");
+                    throw new ValidationException("Description cannot exceed 10000 characters.");
 
                 _description = value;
             }
@@ -67,10 +68,10 @@ namespace qwitix_api.Core.Models
             set
             {
                 if (string.IsNullOrWhiteSpace(value))
-                    throw new ArgumentException("Category cannot be empty.");
+                    throw new ValidationException("Category cannot be empty.");
 
                 if (value.Length > 100)
-                    throw new ArgumentException("Category cannot exceed 100 characters.");
+                    throw new ValidationException("Category cannot exceed 100 characters.");
 
                 _category = value;
             }
@@ -88,7 +89,7 @@ namespace qwitix_api.Core.Models
             set
             {
                 if (value == null)
-                    throw new ArgumentException("Venue cannot be null.");
+                    throw new ValidationException("Venue cannot be null.");
 
                 _venue = value;
             }
@@ -102,7 +103,7 @@ namespace qwitix_api.Core.Models
             set
             {
                 if (value is not null && value < DateTime.UtcNow)
-                    throw new ArgumentException(
+                    throw new ValidationException(
                         "StartDate cannot be earlier than the current date."
                     );
 
@@ -118,7 +119,7 @@ namespace qwitix_api.Core.Models
             set
             {
                 if (value is not null && value < StartDate)
-                    throw new ArgumentException("EndDate cannot be earlier than StartDate.");
+                    throw new ValidationException("EndDate cannot be earlier than StartDate.");
 
                 _endDate = value;
             }

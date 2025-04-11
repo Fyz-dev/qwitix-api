@@ -37,6 +37,7 @@ namespace qwitix_api.Infrastructure.Controllers
 
         [HttpGet("transaction/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseTransactionDTO))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetByTransactionId(string id)
         {

@@ -1,4 +1,5 @@
-﻿using qwitix_api.Core.Exceptions;
+﻿using qwitix_api.Core.Enums;
+using qwitix_api.Core.Exceptions;
 using qwitix_api.Core.Helpers;
 using qwitix_api.Core.Mappers;
 using qwitix_api.Core.Models;
@@ -12,6 +13,7 @@ namespace qwitix_api.Core.Services.EventService
     public class EventService(
         IEventRepository eventRepository,
         ITicketRepository ticketRepository,
+        IOrganizerRepository organizerRepository,
         StripeIntegration stripeIntegration,
         IMapper<CreateEventDTO, Event> createEventMapper,
         IMapper<ResponseEventDTO, Event> responseEventMapper
@@ -19,6 +21,7 @@ namespace qwitix_api.Core.Services.EventService
     {
         private readonly IEventRepository _eventRepository = eventRepository;
         private readonly ITicketRepository _ticketRepository = ticketRepository;
+        private readonly IOrganizerRepository _organizerRepository = organizerRepository;
         private readonly StripeIntegration _stripeIntegration = stripeIntegration;
         private readonly IMapper<CreateEventDTO, Event> _createEventMapper = createEventMapper;
         private readonly IMapper<ResponseEventDTO, Event> _responseEventMapper =
@@ -26,6 +29,10 @@ namespace qwitix_api.Core.Services.EventService
 
         public async Task Create(CreateEventDTO eventDTO)
         {
+            var organizer =
+                await _organizerRepository.GetById(eventDTO.OrganizerId)
+                ?? throw new NotFoundException($"Organizer not found.");
+
             var eventModel = _createEventMapper.ToEntity(eventDTO);
 
             await _eventRepository.Create(eventModel);
@@ -97,6 +104,15 @@ namespace qwitix_api.Core.Services.EventService
 
         public async Task DeleteById(string id)
         {
+            var eventModel =
+                await _eventRepository.GetById(id)
+                ?? throw new NotFoundException($"Event not found.");
+
+            if (eventModel.Status != EventStatus.Draft)
+                throw new ValidationException(
+                    "It is not possible to delete an event that has already been published, cancelled or rescheduled."
+                );
+
             await _eventRepository.DeleteById(id);
         }
     }
