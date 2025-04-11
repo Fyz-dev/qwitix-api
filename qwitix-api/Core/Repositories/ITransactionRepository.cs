@@ -5,7 +5,11 @@ namespace qwitix_api.Core.Repositories
 {
     public interface ITransactionRepository
     {
+        Task Create(Transaction transaction);
+
         Task<Transaction?> GetByTransactionId(string id);
+
+        Task<Transaction?> GetByCheckoutSessionId(string id);
 
         Task<IEnumerable<Transaction>> GetByUserId(
             string userId,
@@ -13,5 +17,9 @@ namespace qwitix_api.Core.Repositories
             int limit,
             TransactionStatus? status = null
         );
+
+        Task<Dictionary<string, int>> GetTotalSoldQuantityForTickets(IEnumerable<string> ticketIds);
+
+        Task UpdateById(string id, Transaction transaction);
     }
 }
