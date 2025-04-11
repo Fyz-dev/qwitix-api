@@ -1,10 +1,6 @@
-﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Mvc;
 using qwitix_api.Core.Services.OrganizerService;
 using qwitix_api.Core.Services.OrganizerService.DTOs;
-using qwitix_api.Core.Services.TicketService;
-using qwitix_api.Core.Services.TicketService.DTOs;
 
 namespace qwitix_api.Infrastructure.Controllers
 {
@@ -21,6 +17,8 @@ namespace qwitix_api.Infrastructure.Controllers
 
         [HttpPost("organizer")]
         [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Create(CreateOrganizerDTO organizerDTO)
         {
@@ -47,6 +45,7 @@ namespace qwitix_api.Infrastructure.Controllers
 
         [HttpGet("organizer/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseOrganizerDTO))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetById(string id)
         {
@@ -57,6 +56,8 @@ namespace qwitix_api.Infrastructure.Controllers
 
         [HttpPatch("organizer/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateById(string id, UpdateOrganizerDTO organizerDTO)
         {
