@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using MongoDB.Bson.Serialization.Attributes;
+using qwitix_api.Core.Exceptions;
 
 namespace qwitix_api.Core.Models
 {
@@ -20,13 +20,13 @@ namespace qwitix_api.Core.Models
             set
             {
                 if (string.IsNullOrWhiteSpace(value))
-                    throw new ArgumentException("Name is required.");
+                    throw new ValidationException("Name is required.");
 
                 if (value.Length < 3)
-                    throw new ArgumentException("Name must be at least 3 characters long.");
+                    throw new ValidationException("Name must be at least 3 characters long.");
 
                 if (value.Length > 255)
-                    throw new ArgumentException("Name cannot exceed 255 characters.");
+                    throw new ValidationException("Name cannot exceed 255 characters.");
 
                 _name = value;
             }
@@ -40,10 +40,10 @@ namespace qwitix_api.Core.Models
             set
             {
                 if (string.IsNullOrWhiteSpace(value))
-                    throw new ArgumentException("Address is required.");
+                    throw new ValidationException("Address is required.");
 
                 if (value.Length > 255)
-                    throw new ArgumentException("Address cannot exceed 255 characters.");
+                    throw new ValidationException("Address cannot exceed 255 characters.");
 
                 _address = value;
             }
@@ -57,10 +57,10 @@ namespace qwitix_api.Core.Models
             set
             {
                 if (string.IsNullOrWhiteSpace(value))
-                    throw new ArgumentException("City is required.");
+                    throw new ValidationException("City is required.");
 
                 if (value.Length > 100)
-                    throw new ArgumentException("City cannot exceed 100 characters.");
+                    throw new ValidationException("City cannot exceed 100 characters.");
 
                 _city = value;
             }
@@ -73,7 +73,7 @@ namespace qwitix_api.Core.Models
             set
             {
                 if (value != null && value.Length > 100)
-                    throw new ArgumentException("State cannot exceed 100 characters.");
+                    throw new ValidationException("State cannot exceed 100 characters.");
 
                 _state = value;
             }
@@ -88,12 +88,12 @@ namespace qwitix_api.Core.Models
                 if (value is not null)
                 {
                     if (value.Length > 10)
-                        throw new ArgumentException("Zip cannot exceed 10 characters.");
+                        throw new ValidationException("Zip cannot exceed 10 characters.");
 
                     var regex = new Regex(@"^\d{1,10}(-\d{1,10})?$");
 
                     if (!regex.IsMatch(value))
-                        throw new ArgumentException("Zip can only contain numbers and a hyphen.");
+                        throw new ValidationException("Zip can only contain numbers and a hyphen.");
                 }
 
                 _zip = value;
