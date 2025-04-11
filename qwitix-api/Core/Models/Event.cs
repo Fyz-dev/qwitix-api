@@ -11,8 +11,8 @@ namespace qwitix_api.Core.Models
         private string? _description;
         private string _category = null!;
         private Venue _venue = null!;
-        private DateTime _startDate = DateTime.UtcNow;
-        private DateTime _endDate = DateTime.UtcNow;
+        private DateTime? _startDate = null;
+        private DateTime? _endDate = null;
 
         [BsonRequired]
         [BsonRepresentation(BsonType.ObjectId)]
@@ -96,12 +96,12 @@ namespace qwitix_api.Core.Models
 
         [BsonRequired]
         [BsonElement("start_date")]
-        public DateTime StartDate
+        public DateTime? StartDate
         {
             get => _startDate;
             set
             {
-                if (value < DateTime.UtcNow)
+                if (value is not null && value < DateTime.UtcNow)
                     throw new ArgumentException(
                         "StartDate cannot be earlier than the current date."
                     );
@@ -112,13 +112,14 @@ namespace qwitix_api.Core.Models
 
         [BsonRequired]
         [BsonElement("end_date")]
-        public DateTime EndDate
+        public DateTime? EndDate
         {
             get => _endDate;
             set
             {
-                if (value < StartDate)
+                if (value is not null && value < StartDate)
                     throw new ArgumentException("EndDate cannot be earlier than StartDate.");
+
                 _endDate = value;
             }
         }
