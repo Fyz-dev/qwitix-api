@@ -14,7 +14,6 @@ namespace qwitix_api.Core.Mappers.TicketMappers
                 Details = dto.Details,
                 Price = dto.Price,
                 Quantity = dto.Quantity,
-                Sold = 0,
             };
         }
 

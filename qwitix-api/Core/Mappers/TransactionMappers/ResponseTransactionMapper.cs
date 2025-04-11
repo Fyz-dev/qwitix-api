@@ -1,10 +1,16 @@
 ﻿using qwitix_api.Core.Models;
+using qwitix_api.Core.Services.TicketService.DTOs;
 using qwitix_api.Core.Services.TransactionService.DTOs;
 
 namespace qwitix_api.Core.Mappers.TransactionMappers
 {
-    public class ResponseTransactionMapper : BaseMapper<ResponseTransactionDTO, Transaction>
+    public class ResponseTransactionMapper(
+        IMapper<TicketPurchaseDTO, TicketPurchase> ticketPurchaseMapper
+    ) : BaseMapper<ResponseTransactionDTO, Transaction>
     {
+        private readonly IMapper<TicketPurchaseDTO, TicketPurchase> _ticketPurchaseMapper =
+            ticketPurchaseMapper;
+
         public override Transaction ToEntity(ResponseTransactionDTO dto)
         {
             throw new NotImplementedException();
@@ -16,8 +22,7 @@ namespace qwitix_api.Core.Mappers.TransactionMappers
             {
                 Id = entity.Id,
                 UserId = entity.UserId,
-                TicketId = entity.TicketId,
-                Amount = entity.Amount,
+                Tickets = _ticketPurchaseMapper.ToDtoList(entity.Tickets),
                 Currency = entity.Currency,
                 Status = entity.Status,
                 CreatedAt = entity.CreatedAt,

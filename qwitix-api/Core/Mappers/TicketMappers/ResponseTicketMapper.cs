@@ -20,7 +20,6 @@ namespace qwitix_api.Core.Mappers.TicketMappers
                 Details = entity.Details,
                 Price = entity.Price,
                 Quantity = entity.Quantity,
-                Sold = entity.Sold,
                 CreatedAt = entity.CreatedAt,
                 UpdatedAt = entity.UpdatedAt,
             };

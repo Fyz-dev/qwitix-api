@@ -2,33 +2,63 @@
 using qwitix_api.Core.Helpers;
 using qwitix_api.Core.Mappers;
 using qwitix_api.Core.Models;
+using qwitix_api.Core.Repositories;
 using qwitix_api.Core.Repositories.EventRepository;
 using qwitix_api.Core.Services.EventService.DTOs;
+using qwitix_api.Infrastructure.Integration.StripeIntegration;
 
 namespace qwitix_api.Core.Services.EventService
 {
-    public class EventService
+    public class EventService(
+        IEventRepository eventRepository,
+        ITicketRepository ticketRepository,
+        StripeIntegration stripeIntegration,
+        IMapper<CreateEventDTO, Event> createEventMapper,
+        IMapper<ResponseEventDTO, Event> responseEventMapper
+    )
     {
-        private readonly IEventRepository _eventRepository;
-        private readonly IMapper<CreateEventDTO, Event> _createEventMapper;
-        private readonly IMapper<ResponseEventDTO, Event> _responseEventMapper;
-
-        public EventService(
-            IEventRepository eventRepository,
-            IMapper<CreateEventDTO, Event> createEventMapper,
-            IMapper<ResponseEventDTO, Event> responseEventMapper
-        )
-        {
-            _eventRepository = eventRepository;
-            _createEventMapper = createEventMapper;
-            _responseEventMapper = responseEventMapper;
-        }
+        private readonly IEventRepository _eventRepository = eventRepository;
+        private readonly ITicketRepository _ticketRepository = ticketRepository;
+        private readonly StripeIntegration _stripeIntegration = stripeIntegration;
+        private readonly IMapper<CreateEventDTO, Event> _createEventMapper = createEventMapper;
+        private readonly IMapper<ResponseEventDTO, Event> _responseEventMapper =
+            responseEventMapper;
 
         public async Task Create(CreateEventDTO eventDTO)
         {
             var eventModel = _createEventMapper.ToEntity(eventDTO);
 
             await _eventRepository.Create(eventModel);
+        }
+
+        public async Task Publish(string id, PublishEventDTO publishEventDTO)
+        {
+            var eventModel =
+                await _eventRepository.GetById(id)
+                ?? throw new NotFoundException($"Event not found.");
+
+            if (eventModel.Status == Enums.EventStatus.Scheduled)
+                throw new ValidationException("The event is already published.");
+
+            eventModel.Status = Enums.EventStatus.Scheduled;
+            eventModel.StartDate = publishEventDTO.StartDate;
+            eventModel.EndDate = publishEventDTO.EndDate;
+
+            var tickets = await _ticketRepository.GetAll(id);
+
+            foreach (var ticket in tickets)
+            {
+                var price = await _stripeIntegration.CreatePriceAsync(
+                    ticket.Price,
+                    "usd",
+                    ticket.Id
+                );
+
+                ticket.StripePriceId = price.Id;
+            }
+
+            await _eventRepository.UpdateById(id, eventModel);
+            await _ticketRepository.UpdateById(tickets);
         }
 
         public async Task<IEnumerable<ResponseEventDTO>> GetAll(

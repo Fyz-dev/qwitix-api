@@ -6,12 +6,10 @@ namespace qwitix_api.Core.Models
     public class Ticket : BaseModel
     {
         private string _eventId = null!;
-        private string _stripePriceId = null!;
         private string _name = null!;
         private string? _details;
         private decimal _price;
         private int _quantity;
-        private int _sold;
 
         [BsonRequired]
         [BsonRepresentation(BsonType.ObjectId)]
@@ -30,17 +28,7 @@ namespace qwitix_api.Core.Models
 
         [BsonRequired]
         [BsonElement("stripe_price_id")]
-        public string StripePriceId
-        {
-            get => _stripePriceId;
-            set
-            {
-                if (string.IsNullOrWhiteSpace(value))
-                    throw new ArgumentException("StripeProductId is required.");
-
-                _stripePriceId = value;
-            }
-        }
+        public string? StripePriceId;
 
         [BsonRequired]
         [BsonElement("name")]
@@ -96,26 +84,7 @@ namespace qwitix_api.Core.Models
                 if (value < 0)
                     throw new ArgumentException("Quantity cannot be negative.");
 
-                if (_sold > value)
-                    throw new ArgumentException("Sold cannot be greater than Quantity.");
-
                 _quantity = value;
-            }
-        }
-
-        [BsonElement("sold")]
-        public int Sold
-        {
-            get => _sold;
-            set
-            {
-                if (value < 0)
-                    throw new ArgumentException("Sold cannot be negative.");
-
-                if (value > Quantity)
-                    throw new ArgumentException("Sold cannot be greater than Quantity.");
-
-                _sold = value;
             }
         }
     }

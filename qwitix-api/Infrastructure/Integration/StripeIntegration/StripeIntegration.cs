@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using qwitix_api.Core.Models;
 using qwitix_api.Infrastructure.Configs;
 using Stripe;
 using Stripe.Checkout;
@@ -78,24 +79,29 @@ namespace qwitix_api.Infrastructure.Integration.StripeIntegration
         }
 
         public async Task<Session> CreateCheckoutSessionAsync(
-            string priceId,
+            List<(string PriceId, int Quantity)> tickets,
             string successUrl,
             string cancelUrl,
-            int quantity,
             string customerId
         )
         {
+            var lineItems = tickets
+                .Select(ticket => new SessionLineItemOptions
+                {
+                    Price = ticket.PriceId,
+                    Quantity = ticket.Quantity,
+                })
+                .ToList();
+
             var options = new SessionCreateOptions
             {
                 PaymentMethodTypes = new List<string> { "card" },
-                LineItems = new List<SessionLineItemOptions>
-                {
-                    new SessionLineItemOptions { Price = priceId, Quantity = quantity },
-                },
+                LineItems = lineItems,
                 Mode = "payment",
                 SuccessUrl = successUrl,
                 CancelUrl = cancelUrl,
                 Customer = customerId,
+                ExpiresAt = DateTime.UtcNow.AddHours(1),
             };
 
             var service = new SessionService();
@@ -103,9 +109,9 @@ namespace qwitix_api.Infrastructure.Integration.StripeIntegration
             return await service.CreateAsync(options);
         }
 
-        public async Task<Refund> CreateRefundAsync(string chargeId)
+        public async Task<Refund> CreateRefundAsync(string paymentIntent)
         {
-            var refundOptions = new RefundCreateOptions { Charge = chargeId };
+            var refundOptions = new RefundCreateOptions { PaymentIntent = paymentIntent };
 
             var refundService = new RefundService();
 

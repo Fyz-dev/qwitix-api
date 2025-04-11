@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using qwitix_api.Core.Enums;
 
@@ -8,10 +7,8 @@ namespace qwitix_api.Core.Models
     public class Transaction : BaseModel
     {
         private string _userId = null!;
-        private string _ticketId = null!;
-        private int _amount;
         private string _currency = "USD";
-        private string _stripePaymentId = string.Empty;
+        private string _stripeCheckoutSession = null!;
 
         [BsonRequired]
         [BsonRepresentation(BsonType.ObjectId)]
@@ -29,33 +26,8 @@ namespace qwitix_api.Core.Models
         }
 
         [BsonRequired]
-        [BsonRepresentation(BsonType.ObjectId)]
-        [BsonElement("ticket_id")]
-        public string TicketId
-        {
-            get => _ticketId;
-            set
-            {
-                if (string.IsNullOrWhiteSpace(value))
-                    throw new ArgumentException("TicketId is required.");
-
-                _ticketId = value;
-            }
-        }
-
-        [BsonRequired]
-        [BsonElement("amount")]
-        public int Amount
-        {
-            get => _amount;
-            set
-            {
-                if (value < 0)
-                    throw new ArgumentException("Amount cannot be negative.");
-
-                _amount = value;
-            }
-        }
+        [BsonElement("tickets")]
+        public List<TicketPurchase> Tickets { get; set; } = new List<TicketPurchase>();
 
         [BsonRequired]
         [BsonElement("currency")]
@@ -77,17 +49,20 @@ namespace qwitix_api.Core.Models
         public TransactionStatus Status { get; set; } = TransactionStatus.Pending;
 
         [BsonRequired]
-        [BsonElement("stripe_payment_id")]
-        public string StripePaymentId
+        [BsonElement("stripe_checkout_session")]
+        public string StripeCheckoutSession
         {
-            get => _stripePaymentId;
+            get => _stripeCheckoutSession;
             set
             {
                 if (string.IsNullOrWhiteSpace(value))
-                    throw new ArgumentException("StripePaymentId is required.");
+                    throw new ArgumentException("StripeCheckoutSession is required.");
 
-                _stripePaymentId = value;
+                _stripeCheckoutSession = value;
             }
         }
+
+        [BsonElement("stripe_payment_intent_id")]
+        public string? StripePaymentIntentId = null;
     }
 }

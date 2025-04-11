@@ -6,6 +6,6 @@
 
         public required string CancelUrl { get; init; }
 
-        public required int Quantity { get; init; }
+        public required List<TicketPurchaseDTO> Tickets { get; init; }
     }
 }
