@@ -28,12 +28,12 @@ namespace qwitix_api.Infrastructure.Controllers
             return Created();
         }
 
-        [HttpPost("ticket/buy/{id}")]
+        [HttpPost("ticket/buy")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> BuyById(string id, BuyTicketDTO buyTicketDTO)
+        public async Task<IActionResult> BuyById(BuyTicketDTO buyTicketDTO)
         {
-            var response = await _ticketService.BuyById(id, buyTicketDTO);
+            var response = await _ticketService.BuyById(buyTicketDTO);
 
             return Ok(response);
         }
@@ -44,13 +44,9 @@ namespace qwitix_api.Infrastructure.Controllers
             Type = typeof(IEnumerable<ResponseTicketDTO>)
         )]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAll(string eventId, int offset, int limit)
+        public async Task<IActionResult> GetAll(string eventId)
         {
-            IEnumerable<ResponseTicketDTO> tickets = await _ticketService.GetAll(
-                eventId,
-                offset,
-                limit
-            );
+            IEnumerable<ResponseTicketDTO> tickets = await _ticketService.GetAll(eventId);
 
             return Ok(tickets);
         }

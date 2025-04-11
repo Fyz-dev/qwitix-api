@@ -13,7 +13,5 @@ namespace qwitix_api.Core.Services.TicketService.DTOs
         public required decimal Price { get; set; }
 
         public required int Quantity { get; set; }
-
-        public required int Sold { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc;
 using qwitix_api.Core.Services.EventService;
 using qwitix_api.Core.Services.EventService.DTOs;
 
@@ -25,13 +26,27 @@ namespace qwitix_api.Infrastructure.Controllers
             return Created();
         }
 
+        [HttpPost("event/{id}/publish")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Publish(string id, PublishEventDTO publishEventDTO)
+        {
+            await _eventService.Publish(id, publishEventDTO);
+
+            return Ok();
+        }
+
         [HttpGet("events")]
         [ProducesResponseType(
             StatusCodes.Status200OK,
             Type = typeof(IEnumerable<ResponseEventDTO>)
         )]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAll(string organizerId, int offset, int limit)
+        public async Task<IActionResult> GetAll(
+            [Required] string organizerId,
+            int offset,
+            int limit
+        )
         {
             IEnumerable<ResponseEventDTO> events = await _eventService.GetAll(
                 organizerId,

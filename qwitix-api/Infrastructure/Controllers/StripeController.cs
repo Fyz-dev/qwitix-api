@@ -1,22 +1,25 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using qwitix_api.Core.Dispatcher;
+using qwitix_api.Core.Services.StripeService;
 using qwitix_api.Infrastructure.Configs;
 using Stripe;
+using Stripe.Checkout;
 
 namespace qwitix_api.Infrastructure.Controllers
 {
     [ApiController]
     [Route("api/stripe")]
     public class StripeController(
+        StripeService stripeService,
         IOptions<StripeSettings> stripeSettings,
-        ILogger<StripeController> logger,
-        StripeEventDispatcher eventDispatcher
+        ILogger<StripeController> logger
     ) : ControllerBase
     {
+        private readonly StripeService _stripeService = stripeService;
         private readonly string _endpointSecret = stripeSettings.Value.WebhookSecret;
+
         private readonly ILogger<StripeController> _logger = logger;
-        private readonly StripeEventDispatcher _eventDispatcher = eventDispatcher;
 
         [HttpPost("webhooks")]
         public async Task<IActionResult> Index()
@@ -34,7 +37,7 @@ namespace qwitix_api.Infrastructure.Controllers
 
                 _logger.LogInformation("Stripe event received: {EventType}", stripeEvent.Type);
 
-                _eventDispatcher.RaiseStripeEvent(stripeEvent);
+                HandleStripeEvent(stripeEvent);
 
                 return Ok();
             }
@@ -44,39 +47,36 @@ namespace qwitix_api.Infrastructure.Controllers
             }
         }
 
-        //private void HandleStripeEvent(Event stripeEvent)
-        //{
-        //    switch (stripeEvent.Type)
-        //    {
-        //        case EventTypes.ChargeSucceeded:
-        //            var chargeSucceeded = stripeEvent.Data.Object as Charge;
+        private void HandleStripeEvent(Event stripeEvent)
+        {
+            switch (stripeEvent.Type)
+            {
+                case EventTypes.CheckoutSessionCompleted:
+                {
+                    var session =
+                        stripeEvent.Data.Object as Session
+                        ?? throw new InvalidOperationException("Invalid session object.");
 
-        //            _logger.LogInformation("Charge succeeded: {ChargeId}", chargeSucceeded?.Id);
+                    _stripeService.CheckoutSessionCompleted(session);
+                    break;
+                }
 
-        //            break;
+                case EventTypes.CheckoutSessionExpired:
+                {
+                    var session =
+                        stripeEvent.Data.Object as Session
+                        ?? throw new InvalidOperationException("Invalid session object.");
 
-        //        case EventTypes.ChargeRefunded:
-        //            var chargeRefunded = stripeEvent.Data.Object as Charge;
+                    _stripeService.CheckoutSessionExpired(session);
+                    break;
+                }
 
-        //            _logger.LogInformation("Charge succeeded: {ChargeId}", chargeRefunded?.Id);
-
-        //            break;
-
-        //        case EventTypes.ChargeExpired:
-        //            var chargeFailed = stripeEvent.Data.Object as Charge;
-
-        //            _logger.LogWarning(
-        //                "Charge failed: {ChargeId}, Reason: {Reason}",
-        //                chargeFailed?.Id,
-        //                chargeFailed?.FailureMessage
-        //            );
-        //            break;
-
-        //        default:
-
-        //            _logger.LogInformation("Unhandled event type: {EventType}", stripeEvent.Type);
-        //            break;
-        //    }
-        //}
+                default:
+                {
+                    _logger.LogInformation("Unhandled event type: {EventType}", stripeEvent.Type);
+                    break;
+                }
+            }
+        }
     }
 }

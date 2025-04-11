@@ -21,6 +21,11 @@ namespace qwitix_api.Infrastructure.Repositories
             return await _collection.Find(u => u.Id == id).FirstOrDefaultAsync();
         }
 
+        public async Task<User?> GetByStripeCustomerId(string id)
+        {
+            return await _collection.Find(u => u.StripeCustomerId == id).FirstOrDefaultAsync();
+        }
+
         public async Task<User?> GetUserByEmail(string email)
         {
             return await _collection.Find(u => u.Email == email).FirstOrDefaultAsync();

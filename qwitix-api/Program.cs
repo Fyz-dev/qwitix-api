@@ -10,6 +10,7 @@ using qwitix_api.Core.Mappers;
 using qwitix_api.Core.Mappers.EventMappers;
 using qwitix_api.Core.Mappers.OrganizerMappers;
 using qwitix_api.Core.Mappers.TicketMappers;
+using qwitix_api.Core.Mappers.TransactionMappers;
 using qwitix_api.Core.Mappers.UserMappers;
 using qwitix_api.Core.Models;
 using qwitix_api.Core.Processors;
@@ -24,6 +25,7 @@ using qwitix_api.Core.Services.StripeService;
 using qwitix_api.Core.Services.TicketService;
 using qwitix_api.Core.Services.TicketService.DTOs;
 using qwitix_api.Core.Services.TransactionService;
+using qwitix_api.Core.Services.TransactionService.DTOs;
 using qwitix_api.Core.Services.UserService;
 using qwitix_api.Core.Services.UserService.DTOs;
 using qwitix_api.Infrastructure.Configs;
@@ -60,7 +62,6 @@ builder.Services.AddCors(opt =>
 });
 
 // Services
-builder.Services.AddSingleton<StripeEventDispatcher>();
 builder.Services.AddSingleton<StripeIntegration>();
 
 builder.Services.AddScoped<IMapper<ResponseUserDTO, User>, ResponseUserMapper>();
@@ -79,15 +80,21 @@ builder.Services.AddScoped<EventService>();
 
 builder.Services.AddScoped<IMapper<CreateTicketDTO, Ticket>, CreateTicketMapper>();
 builder.Services.AddScoped<IMapper<ResponseTicketDTO, Ticket>, ResponseTicketMapper>();
-
 builder.Services.AddScoped<ITicketRepository, TicketRepository>();
 builder.Services.AddScoped<TicketService>();
 
+builder.Services.AddScoped<IMapper<TicketPurchaseDTO, TicketPurchase>, TicketPurchaseMapper>();
+builder.Services.AddScoped<
+    IMapper<ResponseTransactionDTO, Transaction>,
+    ResponseTransactionMapper
+>();
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 builder.Services.AddScoped<TransactionService>();
 
 builder.Services.AddScoped<IAuthTokenProcessor, AuthTokenProcessor>();
 builder.Services.AddScoped<AccountService>();
+
+builder.Services.AddScoped<StripeService>();
 
 // Authentication
 builder
