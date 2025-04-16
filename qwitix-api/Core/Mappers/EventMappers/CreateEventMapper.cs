@@ -21,8 +21,6 @@ namespace qwitix_api.Core.Mappers.EventMappers
                     State = dto.Venue.State,
                     Zip = dto.Venue.Zip,
                 },
-                StartDate = dto.StartDate,
-                EndDate = dto.EndDate,
             };
         }
 
