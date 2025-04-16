@@ -49,6 +49,9 @@ namespace qwitix_api.Core.Services.EventService
                     "The event is already been published, cancelled or rescheduled."
                 );
 
+            if (publishEventDTO.StartDate < DateTime.UtcNow)
+                throw new ValidationException("StartDate cannot be earlier than the current date.");
+
             eventModel.Status = EventStatus.Scheduled;
             eventModel.StartDate = publishEventDTO.StartDate;
             eventModel.EndDate = publishEventDTO.EndDate;

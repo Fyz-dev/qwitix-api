@@ -46,7 +46,7 @@ namespace qwitix_api.Core.Services.TicketService
             );
         }
 
-        public async Task<ResponseBuyTicketDTO> BuyById(string? userId, BuyTicketDTO buyTicketDTO)
+        public async Task<ResponseBuyTicketDTO> BuyById(string userId, BuyTicketDTO buyTicketDTO)
         {
             var ticketIds = buyTicketDTO
                 .Tickets.Select(ticketPurchase => ticketPurchase.TicketId)
@@ -93,6 +93,7 @@ namespace qwitix_api.Core.Services.TicketService
                 Currency = session.Currency,
                 Status = TransactionStatus.Pending,
                 StripeCheckoutSession = session.Id,
+                StripePaymentLink = session.Url,
             };
 
             await _transactionRepository.Create(tr);

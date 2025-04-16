@@ -40,6 +40,9 @@ namespace qwitix_api.Infrastructure.Controllers
         {
             var userId = User.FindFirst("user_id")?.Value;
 
+            if (string.IsNullOrEmpty(userId))
+                return BadRequest("User ID not found in token.");
+
             var response = await _ticketService.BuyById(userId, buyTicketDTO);
 
             return Ok(response);

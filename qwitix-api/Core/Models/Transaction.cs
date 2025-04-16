@@ -65,5 +65,8 @@ namespace qwitix_api.Core.Models
 
         [BsonElement("stripe_payment_intent_id")]
         public string? StripePaymentIntentId = null;
+
+        [BsonElement("stripe_payment_link")]
+        public string? StripePaymentLink { get; set; } = null;
     }
 }
