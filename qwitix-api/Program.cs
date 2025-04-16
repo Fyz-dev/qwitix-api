@@ -45,6 +45,7 @@ builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(nameof(
 builder.Services.Configure<StripeSettings>(
     builder.Configuration.GetSection(nameof(StripeSettings))
 );
+builder.Services.Configure<CorsOptions>(builder.Configuration.GetSection(nameof(CorsOptions)));
 
 // Cors
 builder.Services.AddCors(opt =>
@@ -53,11 +54,18 @@ builder.Services.AddCors(opt =>
         "CorsPolicy",
         options =>
         {
+            var corsOptions = builder
+                .Configuration.GetSection(nameof(CorsOptions))
+                .Get<CorsOptions>();
+
+            if (corsOptions is null)
+                throw new ArgumentNullException(nameof(corsOptions));
+
             options
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials()
-                .WithOrigins("http://localhost:5173");
+                .WithOrigins(corsOptions.AllowedOrigins);
         }
     );
 });

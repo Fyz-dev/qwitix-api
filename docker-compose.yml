@@ -16,6 +16,7 @@ services:
         - StripeSettings__SecretKey
         - Authentication__Google__ClientId
         - Authentication__Google__ClientSecret
+        - CorsOptions__AllowedOriginsRaw
     ports:
       - "8080:8080"
     depends_on:
