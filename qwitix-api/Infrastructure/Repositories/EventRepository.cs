@@ -42,6 +42,8 @@ namespace qwitix_api.Infrastructure.Repositories
 
         public async Task UpdateById(string id, Event eventModel)
         {
+            eventModel.UpdatedAt = DateTime.UtcNow;
+
             var filter = Builders<Event>.Filter.Eq(e => e.Id, id);
 
             var result = await _collection.ReplaceOneAsync(filter, eventModel);
