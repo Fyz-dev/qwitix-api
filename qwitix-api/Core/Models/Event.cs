@@ -111,5 +111,8 @@ namespace qwitix_api.Core.Models
                 _endDate = value;
             }
         }
+
+        [BsonElement("is_deleted")]
+        public bool IsDeleted { get; set; } = false;
     }
 }
