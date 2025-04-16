@@ -112,6 +112,7 @@ namespace qwitix_api.Core.Models
             }
         }
 
+        [BsonRequired]
         [BsonElement("is_deleted")]
         public bool IsDeleted { get; set; } = false;
     }
