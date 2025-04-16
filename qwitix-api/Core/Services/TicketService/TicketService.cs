@@ -14,6 +14,7 @@ namespace qwitix_api.Core.Services.TicketService
         ITicketRepository ticketRepository,
         ITransactionRepository transactionRepository,
         IEventRepository eventRepository,
+        IUserRepository userRepository,
         StripeIntegration stripeIntegration,
         IMapper<CreateTicketDTO, Ticket> createTicketMapper,
         IMapper<ResponseTicketDTO, Ticket> responseTicketMapper,
@@ -23,6 +24,7 @@ namespace qwitix_api.Core.Services.TicketService
         private readonly ITicketRepository _ticketRepository = ticketRepository;
         private readonly ITransactionRepository _transactionRepository = transactionRepository;
         private readonly IEventRepository _eventRepository = eventRepository;
+        private readonly IUserRepository _userRepository = userRepository;
 
         private readonly StripeIntegration _stripeIntegration = stripeIntegration;
         private readonly IMapper<CreateTicketDTO, Ticket> _createTicketMapper = createTicketMapper;
@@ -44,7 +46,7 @@ namespace qwitix_api.Core.Services.TicketService
             );
         }
 
-        public async Task<ResponseBuyTicketDTO> BuyById(BuyTicketDTO buyTicketDTO)
+        public async Task<ResponseBuyTicketDTO> BuyById(string? userId, BuyTicketDTO buyTicketDTO)
         {
             var ticketIds = buyTicketDTO
                 .Tickets.Select(ticketPurchase => ticketPurchase.TicketId)
@@ -69,6 +71,10 @@ namespace qwitix_api.Core.Services.TicketService
                     );
             }
 
+            var user =
+                await _userRepository.GetById(userId)
+                ?? throw new NotFoundException("User not found.");
+
             var session = await _stripeIntegration.CreateCheckoutSessionAsync(
                 [
                     .. tickets
@@ -77,12 +83,12 @@ namespace qwitix_api.Core.Services.TicketService
                 ],
                 buyTicketDTO.SuccessUrl,
                 buyTicketDTO.CancelUrl,
-                "cus_S50OzLXnY0Yjj9"
+                user.StripeCustomerId
             );
 
             var tr = new Transaction
             {
-                UserId = "67f256709c45d87d62719802",
+                UserId = user.Id,
                 Tickets = _ticketPurchaseMapper.ToEntityList(buyTicketDTO.Tickets),
                 Currency = session.Currency,
                 Status = TransactionStatus.Pending,
