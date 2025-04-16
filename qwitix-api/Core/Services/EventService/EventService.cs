@@ -44,10 +44,15 @@ namespace qwitix_api.Core.Services.EventService
                 await _eventRepository.GetById(id)
                 ?? throw new NotFoundException($"Event not found.");
 
-            if (eventModel.Status == Enums.EventStatus.Scheduled)
-                throw new ValidationException("The event is already published.");
+            if (eventModel.Status != EventStatus.Draft)
+                throw new ValidationException(
+                    "The event is already been published, cancelled or rescheduled."
+                );
 
-            eventModel.Status = Enums.EventStatus.Scheduled;
+            if (publishEventDTO.StartDate < DateTime.UtcNow)
+                throw new ValidationException("StartDate cannot be earlier than the current date.");
+
+            eventModel.Status = EventStatus.Scheduled;
             eventModel.StartDate = publishEventDTO.StartDate;
             eventModel.EndDate = publishEventDTO.EndDate;
 

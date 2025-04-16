@@ -22,15 +22,13 @@ namespace qwitix_api.Core.Services.OrganizerService
         private readonly IMapper<ResponseOrganizerDTO, Organizer> _responseOrganizerMapper =
             responseOrganizerMapper;
 
-        public async Task Create(CreateOrganizerDTO organizerDTO)
+        public async Task Create(string userId, CreateOrganizerDTO organizerDTO)
         {
-            _ =
-                await _userRepository.GetById(organizerDTO.UserId)
-                ?? throw new NotFoundException("User not found.");
+            var user = _createOrganizerMapper.ToEntity(organizerDTO);
 
-            var organizer = _createOrganizerMapper.ToEntity(organizerDTO);
+            user.UserId = userId;
 
-            await _organizerRepository.Create(organizer);
+            await _organizerRepository.Create(user);
         }
 
         public async Task<IEnumerable<ResponseOrganizerDTO>> GetAll(int offset, int limit)

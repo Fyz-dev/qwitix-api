@@ -9,7 +9,6 @@ namespace qwitix_api.Core.Mappers.OrganizerMappers
         {
             return new Organizer
             {
-                UserId = dto.UserId,
                 Name = dto.Name,
                 Bio = dto.Bio,
                 ImageUrl = dto.ImageUrl,

@@ -55,8 +55,12 @@ namespace qwitix_api.Infrastructure.Repositories
         {
             var bulkOps = new List<WriteModel<Ticket>>();
 
+            var timeUpdate = DateTime.UtcNow;
+
             foreach (var ticket in tickets)
             {
+                ticket.UpdatedAt = timeUpdate;
+
                 var filter = Builders<Ticket>.Filter.Eq(t => t.Id, ticket.Id);
 
                 var replaceOne = new ReplaceOneModel<Ticket>(filter, ticket);

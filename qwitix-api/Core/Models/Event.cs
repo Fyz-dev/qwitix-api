@@ -12,7 +12,6 @@ namespace qwitix_api.Core.Models
         private string? _description;
         private string _category = null!;
         private Venue _venue = null!;
-        private DateTime? _startDate = null;
         private DateTime? _endDate = null;
 
         [BsonRequired]
@@ -97,19 +96,7 @@ namespace qwitix_api.Core.Models
 
         [BsonRequired]
         [BsonElement("start_date")]
-        public DateTime? StartDate
-        {
-            get => _startDate;
-            set
-            {
-                if (value is not null && value < DateTime.UtcNow)
-                    throw new ValidationException(
-                        "StartDate cannot be earlier than the current date."
-                    );
-
-                _startDate = value;
-            }
-        }
+        public DateTime? StartDate;
 
         [BsonRequired]
         [BsonElement("end_date")]
@@ -124,5 +111,9 @@ namespace qwitix_api.Core.Models
                 _endDate = value;
             }
         }
+
+        [BsonRequired]
+        [BsonElement("is_deleted")]
+        public bool IsDeleted { get; set; } = false;
     }
 }

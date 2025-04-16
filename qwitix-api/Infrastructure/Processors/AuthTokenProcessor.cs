@@ -36,6 +36,7 @@ namespace qwitix_api.Infrastructure.Processors
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim(ClaimTypes.NameIdentifier, user.FullName),
+                new Claim("user_id", user.Id.ToString()),
             };
 
             var expires = DateTime.UtcNow.AddMinutes(

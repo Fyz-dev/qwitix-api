@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using qwitix_api.Core.Services.OrganizerService;
 using qwitix_api.Core.Services.OrganizerService.DTOs;
 
@@ -16,13 +18,20 @@ namespace qwitix_api.Infrastructure.Controllers
         }
 
         [HttpPost("organizer")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Create(CreateOrganizerDTO organizerDTO)
         {
-            await _organizerService.Create(organizerDTO);
+            var userId = User.FindFirst("user_id")?.Value;
+
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized("User ID is missing or invalid.");
+
+            await _organizerService.Create(userId, organizerDTO);
 
             return Created();
         }
@@ -55,7 +64,9 @@ namespace qwitix_api.Infrastructure.Controllers
         }
 
         [HttpPatch("organizer/{id}")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
