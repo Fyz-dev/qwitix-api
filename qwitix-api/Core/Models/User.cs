@@ -8,7 +8,6 @@ namespace qwitix_api.Core.Models
 {
     public class User : BaseModel
     {
-        private DateTime? _refreshTokenExpires;
         private string _stripeCustomerId = null!;
         private string _fullName = null!;
         private string _email = null!;
@@ -17,19 +16,7 @@ namespace qwitix_api.Core.Models
         public string? RefreshToken { get; set; }
 
         [BsonElement("refresh_token_expires")]
-        public DateTime? RefreshTokenExpires
-        {
-            get => _refreshTokenExpires;
-            set
-            {
-                if (value.HasValue && value.Value < DateTime.Now)
-                    throw new ValidationException(
-                        "RefreshTokenExpires cannot be earlier than the current date."
-                    );
-
-                _refreshTokenExpires = value;
-            }
-        }
+        public DateTime? RefreshTokenExpires;
 
         [BsonRequired]
         [BsonElement("stripe_customer_id")]
