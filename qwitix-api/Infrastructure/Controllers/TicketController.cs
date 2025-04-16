@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using qwitix_api.Core.Services.TicketService;
 using qwitix_api.Core.Services.TicketService.DTOs;
 
@@ -16,9 +17,11 @@ namespace qwitix_api.Infrastructure.Controllers
         }
 
         [HttpPost("ticket")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Create(CreateTicketDTO ticketDTO)
         {
@@ -28,12 +31,16 @@ namespace qwitix_api.Infrastructure.Controllers
         }
 
         [HttpPost("ticket/buy")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> BuyById(BuyTicketDTO buyTicketDTO)
         {
-            var response = await _ticketService.BuyById(buyTicketDTO);
+            var userId = User.FindFirst("user_id")?.Value;
+
+            var response = await _ticketService.BuyById(userId, buyTicketDTO);
 
             return Ok(response);
         }
@@ -63,10 +70,12 @@ namespace qwitix_api.Infrastructure.Controllers
         }
 
         [HttpPatch("ticket/{id}")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UpdateById(string id, UpdateTicketDTO ticket)
         {
             await _ticketService.UpdateById(id, ticket);
@@ -75,10 +84,12 @@ namespace qwitix_api.Infrastructure.Controllers
         }
 
         [HttpDelete("ticket/{id}")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteById(string id)
         {
             await _ticketService.DeleteById(id);
