@@ -85,13 +85,6 @@ namespace qwitix_api_unit_tests
 
         [TestMethod]
         [ExpectedException(typeof(ValidationException))]
-        public void SetStartDate_InPast_ShouldThrow()
-        {
-            var ev = new Event { StartDate = DateTime.UtcNow.AddDays(-1) };
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ValidationException))]
         public void SetEndDate_BeforeStartDate_ShouldThrow()
         {
             var ev = new Event

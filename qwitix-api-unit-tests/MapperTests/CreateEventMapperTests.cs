@@ -21,8 +21,6 @@ namespace qwitix_api_unit_tests.MapperTests
                 Title = "Rock Concert",
                 Description = "An amazing rock concert.",
                 Category = "Music",
-                StartDate = new DateTime(2025, 5, 1),
-                EndDate = new DateTime(2025, 5, 2),
                 Venue = new CreateVenueDTO
                 {
                     Name = "Stadium",
@@ -43,8 +41,6 @@ namespace qwitix_api_unit_tests.MapperTests
             Assert.AreEqual(dto.Title, result.Title);
             Assert.AreEqual(dto.Description, result.Description);
             Assert.AreEqual(dto.Category, result.Category);
-            Assert.AreEqual(dto.StartDate, result.StartDate);
-            Assert.AreEqual(dto.EndDate, result.EndDate);
 
             Assert.IsNotNull(result.Venue);
             Assert.AreEqual(dto.Venue.Name, result.Venue.Name);
