@@ -37,9 +37,14 @@ namespace qwitix_api.Core.Services.TicketService
 
         public async Task Create(CreateTicketDTO ticketDTO)
         {
-            _ =
+            var eventModel =
                 await _eventRepository.GetById(ticketDTO.EventId)
                 ?? throw new NotFoundException("Event not found.");
+
+            if (eventModel.Status != EventStatus.Draft)
+                throw new ValidationException(
+                    "You cannot create a ticket for an event that is already been published, cancelled or rescheduled."
+                );
 
             var ticket = await _ticketRepository.Create(_createTicketMapper.ToEntity(ticketDTO));
 
@@ -195,7 +200,7 @@ namespace qwitix_api.Core.Services.TicketService
             }
             catch (StripeException)
             {
-                throw new ValidationException("Failed to create Stripe session.");
+                throw new ValidationException("Event not publish.");
             }
         }
     }

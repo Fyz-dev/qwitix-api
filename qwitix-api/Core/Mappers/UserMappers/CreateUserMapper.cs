@@ -12,12 +12,7 @@ namespace qwitix_api.Core.Mappers.UserMappers
 
         public override User ToEntity(CreateUserDTO dto)
         {
-            return new User
-            {
-                FullName = dto.FullName,
-                Email = dto.Email,
-                Role = dto.Role,
-            };
+            return new User { FullName = dto.FullName, Email = dto.Email };
         }
     }
 }

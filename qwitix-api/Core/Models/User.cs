@@ -66,9 +66,5 @@ namespace qwitix_api.Core.Models
                 _email = value;
             }
         }
-
-        [BsonRepresentation(BsonType.String)]
-        [BsonElement("role")]
-        public UserRole Role { get; set; } = UserRole.Customer;
     }
 }
