@@ -82,8 +82,8 @@ namespace qwitix_api.Core.Models
             get => _quantity;
             set
             {
-                if (value < 0)
-                    throw new ValidationException("Quantity cannot be negative.");
+                if (value <= 0)
+                    throw new ValidationException("Quantity cannot be negative or  zero.");
 
                 _quantity = value;
             }

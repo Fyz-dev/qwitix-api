@@ -99,6 +99,11 @@ namespace qwitix_api.Core.Services.EventService
                 await _eventRepository.GetById(id)
                 ?? throw new NotFoundException("Event not found.");
 
+            if (eventModel.Status != EventStatus.Draft)
+                throw new ValidationException(
+                    "It is not possible to update an event that has already been published, cancelled or rescheduled."
+                );
+
             PatchHelper.ApplyPatch(eventDTO, eventModel, nameof(eventDTO.Venue));
 
             if (eventDTO.Venue is not null)

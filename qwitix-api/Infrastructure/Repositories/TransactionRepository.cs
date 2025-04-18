@@ -55,6 +55,7 @@ namespace qwitix_api.Infrastructure.Repositories
         )
         {
             var ticketIdList = ticketIds.ToList();
+
             if (!ticketIdList.Any())
                 return new Dictionary<string, int>();
 
@@ -69,13 +70,11 @@ namespace qwitix_api.Infrastructure.Repositories
                 )
             );
 
-            var transactions = await _collection
-                .Find(filter)
-                .Project(t => t.Tickets.Where(tp => ticketIdList.Contains(tp.TicketId)))
-                .ToListAsync();
+            var transactions = await _collection.Find(filter).ToListAsync();
 
             return transactions
-                .SelectMany(t => t)
+                .SelectMany(t => t.Tickets)
+                .Where(tp => ticketIdList.Contains(tp.TicketId))
                 .GroupBy(ticket => ticket.TicketId)
                 .ToDictionary(group => group.Key, group => group.Sum(ticket => ticket.Quantity));
         }

@@ -7,6 +7,8 @@ using qwitix_api.Core.Repositories;
 using qwitix_api.Core.Repositories.EventRepository;
 using qwitix_api.Core.Services.TicketService.DTOs;
 using qwitix_api.Infrastructure.Integration.StripeIntegration;
+using Stripe;
+using Stripe.Checkout;
 
 namespace qwitix_api.Core.Services.TicketService
 {
@@ -35,6 +37,10 @@ namespace qwitix_api.Core.Services.TicketService
 
         public async Task Create(CreateTicketDTO ticketDTO)
         {
+            _ =
+                await _eventRepository.GetById(ticketDTO.EventId)
+                ?? throw new NotFoundException("Event not found.");
+
             var ticket = await _ticketRepository.Create(_createTicketMapper.ToEntity(ticketDTO));
 
             var product = await _stripeIntegration.CreateProductAsync(
@@ -48,45 +54,30 @@ namespace qwitix_api.Core.Services.TicketService
 
         public async Task<ResponseBuyTicketDTO> BuyById(string userId, BuyTicketDTO buyTicketDTO)
         {
-            var ticketIds = buyTicketDTO
-                .Tickets.Select(ticketPurchase => ticketPurchase.TicketId)
-                .ToArray();
+            ValidateTicketQuantities(buyTicketDTO.Tickets);
+
+            var ticketIds = buyTicketDTO.Tickets.Select(tp => tp.TicketId).ToArray();
             var tickets = await _ticketRepository.GetById(ticketIds);
             var totalSoldQuantity = await _transactionRepository.GetTotalSoldQuantityForTickets(
                 ticketIds
             );
+
             var quantityMap = buyTicketDTO.Tickets.ToDictionary(t => t.TicketId, t => t.Quantity);
 
-            foreach (var ticket in tickets)
-            {
-                var alreadySold = totalSoldQuantity.GetValueOrDefault(ticket.Id);
-                var availableQuantity = ticket.Quantity - alreadySold;
-
-                if (
-                    quantityMap.TryGetValue(ticket.Id, out var requestedQuantity)
-                    && requestedQuantity > availableQuantity
-                )
-                    throw new ValidationException(
-                        $"Not enough tickets available for {ticket.Name}."
-                    );
-            }
+            ValidateAvailability(tickets, totalSoldQuantity, quantityMap);
 
             var user =
                 await _userRepository.GetById(userId)
                 ?? throw new NotFoundException("User not found.");
 
-            var session = await _stripeIntegration.CreateCheckoutSessionAsync(
-                [
-                    .. tickets
-                        .Where(ticket => quantityMap.ContainsKey(ticket.Id))
-                        .Select(ticket => (ticket.StripePriceId, quantityMap[ticket.Id])),
-                ],
-                buyTicketDTO.SuccessUrl,
-                buyTicketDTO.CancelUrl,
+            var session = await CreateStripeSession(
+                tickets,
+                quantityMap,
+                buyTicketDTO,
                 user.StripeCustomerId
             );
 
-            var tr = new Transaction
+            var transaction = new Transaction
             {
                 UserId = user.Id,
                 Tickets = _ticketPurchaseMapper.ToEntityList(buyTicketDTO.Tickets),
@@ -96,7 +87,7 @@ namespace qwitix_api.Core.Services.TicketService
                 StripePaymentLink = session.Url,
             };
 
-            await _transactionRepository.Create(tr);
+            await _transactionRepository.Create(transaction);
 
             return new ResponseBuyTicketDTO { url = session.Url };
         }
@@ -152,6 +143,60 @@ namespace qwitix_api.Core.Services.TicketService
 
             await _ticketRepository.DeleteById(id);
             await _stripeIntegration.DeleteProductAsync(ticket.Id);
+        }
+
+        private void ValidateTicketQuantities(IEnumerable<TicketPurchaseDTO> ticketPurchases)
+        {
+            foreach (var purchase in ticketPurchases)
+                if (purchase.Quantity <= 0)
+                    throw new ValidationException("Quantity must be greater than 0.");
+        }
+
+        private void ValidateAvailability(
+            IEnumerable<Ticket> tickets,
+            Dictionary<string, int> totalSoldQuantity,
+            Dictionary<string, int> requestedQuantities
+        )
+        {
+            foreach (var ticket in tickets)
+            {
+                var alreadySold = totalSoldQuantity.GetValueOrDefault(ticket.Id);
+                var availableQuantity = ticket.Quantity - alreadySold;
+
+                if (
+                    requestedQuantities.TryGetValue(ticket.Id, out var requestedQuantity)
+                    && requestedQuantity > availableQuantity
+                )
+                    throw new ValidationException(
+                        $"Not enough tickets available for '{ticket.Name}'. "
+                    );
+            }
+        }
+
+        private async Task<Session> CreateStripeSession(
+            IEnumerable<Ticket> tickets,
+            Dictionary<string, int> quantityMap,
+            BuyTicketDTO buyTicketDTO,
+            string stripeCustomerId
+        )
+        {
+            try
+            {
+                return await _stripeIntegration.CreateCheckoutSessionAsync(
+                    [
+                        .. tickets
+                            .Where(ticket => quantityMap.ContainsKey(ticket.Id))
+                            .Select(ticket => (ticket.StripePriceId, quantityMap[ticket.Id])),
+                    ],
+                    buyTicketDTO.SuccessUrl,
+                    buyTicketDTO.CancelUrl,
+                    stripeCustomerId
+                );
+            }
+            catch (StripeException)
+            {
+                throw new ValidationException("Failed to create Stripe session.");
+            }
         }
     }
 }
