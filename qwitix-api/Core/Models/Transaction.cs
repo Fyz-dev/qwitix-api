@@ -1,34 +1,72 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using qwitix_api.Core.Enums;
+using qwitix_api.Core.Exceptions;
 
 namespace qwitix_api.Core.Models
 {
     public class Transaction : BaseModel
     {
+        private string _userId = null!;
+        private string _currency = "USD";
+        private string _stripeCheckoutSession = null!;
+
         [BsonRequired]
         [BsonRepresentation(BsonType.ObjectId)]
         [BsonElement("user_id")]
-        public string UserId { get; set; } = null!;
+        public string UserId
+        {
+            get => _userId;
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                    throw new ValidationException("UserId is required.");
+
+                _userId = value;
+            }
+        }
 
         [BsonRequired]
-        [BsonRepresentation(BsonType.ObjectId)]
-        [BsonElement("ticket_id")]
-        public string TicketId { get; set; } = null!;
-
-        [BsonRequired]
-        [BsonElement("amount")]
-        public int Amount { get; set; }
+        [BsonElement("tickets")]
+        public List<TicketPurchase> Tickets { get; set; } = new List<TicketPurchase>();
 
         [BsonRequired]
         [BsonElement("currency")]
-        public string Currency { get; set; } = "USD";
+        public string Currency
+        {
+            get => _currency;
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                    throw new ValidationException("Currency is required.");
 
+                _currency = value;
+            }
+        }
+
+        [BsonRequired]
         [BsonRepresentation(BsonType.String)]
         [BsonElement("status")]
         public TransactionStatus Status { get; set; } = TransactionStatus.Pending;
 
-        [BsonElement("stripe_payment_id")]
-        public string StripePaymentId { get; set; } = string.Empty;
+        [BsonRequired]
+        [BsonElement("stripe_checkout_session")]
+        public string StripeCheckoutSession
+        {
+            get => _stripeCheckoutSession;
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                    throw new ValidationException("StripeCheckoutSession is required.");
+
+                _stripeCheckoutSession = value;
+            }
+        }
+
+        [BsonElement("stripe_payment_intent_id")]
+        public string? StripePaymentIntentId = null;
+
+        [BsonElement("stripe_payment_link")]
+        public string? StripePaymentLink { get; set; } = null;
     }
 }

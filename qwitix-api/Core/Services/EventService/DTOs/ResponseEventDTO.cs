@@ -18,8 +18,8 @@ namespace qwitix_api.Core.Services.EventService.DTOs
 
         public required ResponseVenueDTO Venue { get; set; }
 
-        public required DateTime StartDate { get; set; }
+        public DateTime? StartDate { get; set; }
 
-        public required DateTime EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
     }
 }

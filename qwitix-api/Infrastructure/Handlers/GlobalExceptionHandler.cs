@@ -34,6 +34,8 @@ namespace qwitix_api.Infrastructure.Handlers
             return exception switch
             {
                 RefreshTokenException => (HttpStatusCode.Unauthorized, exception.Message),
+                NotFoundException => (HttpStatusCode.NotFound, exception.Message),
+                ValidationException => (HttpStatusCode.BadRequest, exception.Message),
                 _ => (
                     HttpStatusCode.InternalServerError,
                     $"An unexpected error occurred: {exception.Message}"

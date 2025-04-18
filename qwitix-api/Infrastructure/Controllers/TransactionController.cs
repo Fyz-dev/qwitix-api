@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using qwitix_api.Core.Enums;
 using qwitix_api.Core.Services.TransactionService;
 using qwitix_api.Core.Services.TransactionService.DTOs;
@@ -7,11 +8,12 @@ namespace qwitix_api.Infrastructure.Controllers
 {
     [ApiController]
     [Route("api/")]
-    public class TransactonController : ControllerBase
+    [Authorize]
+    public class TransactionController : ControllerBase
     {
         private readonly TransactionService _transactionService;
 
-        public TransactonController(TransactionService transactionService)
+        public TransactionController(TransactionService transactionService)
         {
             _transactionService = transactionService;
         }
@@ -21,6 +23,7 @@ namespace qwitix_api.Infrastructure.Controllers
             StatusCodes.Status200OK,
             Type = typeof(IEnumerable<ResponseTransactionDTO>)
         )]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetByUserId(
             string userId,
@@ -37,6 +40,8 @@ namespace qwitix_api.Infrastructure.Controllers
 
         [HttpGet("transaction/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseTransactionDTO))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetByTransactionId(string id)
         {

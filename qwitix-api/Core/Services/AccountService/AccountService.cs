@@ -3,6 +3,7 @@ using qwitix_api.Core.Exceptions;
 using qwitix_api.Core.Models;
 using qwitix_api.Core.Processors;
 using qwitix_api.Core.Repositories;
+using qwitix_api.Infrastructure.Integration.StripeIntegration;
 
 namespace qwitix_api.Core.Services.AccountService
 {
@@ -10,14 +11,17 @@ namespace qwitix_api.Core.Services.AccountService
     {
         private readonly IAuthTokenProcessor _authTokenProcessor;
         private readonly IUserRepository _userRepository;
+        private readonly StripeIntegration _stripeIntegration;
 
         public AccountService(
             IAuthTokenProcessor authTokenProcessor,
-            IUserRepository userRepository
+            IUserRepository userRepository,
+            StripeIntegration stripeIntegration
         )
         {
             _authTokenProcessor = authTokenProcessor;
             _userRepository = userRepository;
+            _stripeIntegration = stripeIntegration;
         }
 
         public async Task RefreshTokenAsync(string? refreshToken)
@@ -37,24 +41,31 @@ namespace qwitix_api.Core.Services.AccountService
 
         public async Task LoginWithGoogleAsync(ClaimsPrincipal? claimsPrincipal)
         {
-            if (claimsPrincipal == null)
+            if (claimsPrincipal is null)
                 throw new ExternalLoginProviderException("Google", "ClaimsPrincipal is null");
 
-            var email =
+            string email =
                 claimsPrincipal.FindFirstValue(ClaimTypes.Email)
                 ?? throw new ExternalLoginProviderException("Google", "Email is null");
 
-            var user = await _userRepository.GetUserByEmail(email);
+            string name = string.Join(
+                    " ",
+                    claimsPrincipal.FindFirstValue(ClaimTypes.GivenName),
+                    claimsPrincipal.FindFirstValue(ClaimTypes.Surname)
+                )
+                .Trim();
 
-            if (user == null)
+            User? user = await _userRepository.GetUserByEmail(email);
+
+            if (user is null)
             {
+                var customer = await _stripeIntegration.CreateCustomerAsync(name, email);
+
                 user = new User
                 {
-                    FullName =
-                        $"{claimsPrincipal.FindFirstValue(ClaimTypes.GivenName)} {claimsPrincipal.FindFirstValue(ClaimTypes.Surname)}".Trim(),
+                    FullName = name,
                     Email = email,
-                    StripeCustomerId = "",
-                    GoogleId = claimsPrincipal.FindFirstValue(ClaimTypes.NameIdentifier),
+                    StripeCustomerId = customer.Id,
                 };
 
                 await _userRepository.Create(user);

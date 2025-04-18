@@ -4,10 +4,7 @@ namespace qwitix_api.Core.Services.UserService.DTOs
 {
     public record CreateUserDTO
     {
-        public required string GoogleId { get; init; }
-        public required string StripeCustomerId { get; init; }
         public required string FullName { get; init; }
         public required string Email { get; init; }
-        public required UserRole Role { get; init; }
     }
 }

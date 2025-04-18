@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using qwitix_api.Core.Services.EventService;
 using qwitix_api.Core.Services.EventService.DTOs;
 
@@ -15,8 +17,12 @@ namespace qwitix_api.Infrastructure.Controllers
             _eventService = eventService;
         }
 
-        [HttpPost("event/{id}")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [HttpPost("event")]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Create(CreateEventDTO eventDTO)
         {
@@ -25,13 +31,31 @@ namespace qwitix_api.Infrastructure.Controllers
             return Created();
         }
 
+        [HttpPost("event/{id}/publish")]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Publish(string id, PublishEventDTO publishEventDTO)
+        {
+            await _eventService.Publish(id, publishEventDTO);
+
+            return Ok();
+        }
+
         [HttpGet("events")]
         [ProducesResponseType(
             StatusCodes.Status200OK,
             Type = typeof(IEnumerable<ResponseEventDTO>)
         )]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAll(string organizerId, int offset, int limit)
+        public async Task<IActionResult> GetAll(
+            [Required] string organizerId,
+            int offset,
+            int limit
+        )
         {
             IEnumerable<ResponseEventDTO> events = await _eventService.GetAll(
                 organizerId,
@@ -44,6 +68,7 @@ namespace qwitix_api.Infrastructure.Controllers
 
         [HttpGet("event/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseEventDTO))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetById(string id)
         {
@@ -53,7 +78,11 @@ namespace qwitix_api.Infrastructure.Controllers
         }
 
         [HttpPatch("event/{id}")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateById(string id, UpdateEventDTO eventDTO)
         {
@@ -63,7 +92,11 @@ namespace qwitix_api.Infrastructure.Controllers
         }
 
         [HttpDelete("event/{id}")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> DeleteById(string id)
         {

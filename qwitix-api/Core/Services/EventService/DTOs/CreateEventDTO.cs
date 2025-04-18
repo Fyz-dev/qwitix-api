@@ -8,12 +8,8 @@
 
         public string? Description { get; set; }
 
-        public string? Category { get; set; }
+        public required string Category { get; set; }
 
         public required CreateVenueDTO Venue { get; set; }
-
-        public required DateTime StartDate { get; set; }
-
-        public required DateTime EndDate { get; set; }
     }
 }

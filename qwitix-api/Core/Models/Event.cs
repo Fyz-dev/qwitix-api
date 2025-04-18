@@ -7,27 +7,74 @@ namespace qwitix_api.Core.Models
 {
     public class Event : BaseModel
     {
+        private string _organizerId = null!;
+        private string _title = null!;
+        private string? _description;
+        private string _category = null!;
+        private Venue _venue = null!;
+        private DateTime? _endDate = null;
+
         [BsonRequired]
         [BsonRepresentation(BsonType.ObjectId)]
         [BsonElement("organizer_id")]
-        [Required(ErrorMessage = "OrganizerId cannot be empty.")]
-        public string OrganizerId { get; set; } = null!;
+        public string OrganizerId
+        {
+            get => _organizerId;
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                    throw new ValidationException("OrganizerId cannot be empty.");
+
+                _organizerId = value;
+            }
+        }
 
         [BsonRequired]
         [BsonElement("title")]
-        [Required(ErrorMessage = "Title cannot be empty.")]
-        [MaxLength(250, ErrorMessage = "Title cannot exceed 250 characters.")]
-        public string Title { get; set; } = null!;
+        public string Title
+        {
+            get => _title;
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                    throw new ValidationException("Title cannot be empty.");
+
+                if (value.Length > 250)
+                    throw new ValidationException("Title cannot exceed 250 characters.");
+
+                _title = value;
+            }
+        }
 
         [BsonElement("description")]
-        [MaxLength(10000, ErrorMessage = "Description cannot exceed 10000 characters.")]
-        public string? Description { get; set; }
+        public string? Description
+        {
+            get => _description;
+            set
+            {
+                if (value?.Length > 10000)
+                    throw new ValidationException("Description cannot exceed 10000 characters.");
+
+                _description = value;
+            }
+        }
 
         [BsonRequired]
         [BsonElement("category")]
-        [Required(ErrorMessage = "Category cannot be empty.")]
-        [MaxLength(100, ErrorMessage = "Category cannot exceed 100 characters.")]
-        public string Category { get; set; } = null!;
+        public string Category
+        {
+            get => _category;
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                    throw new ValidationException("Category cannot be empty.");
+
+                if (value.Length > 100)
+                    throw new ValidationException("Category cannot exceed 100 characters.");
+
+                _category = value;
+            }
+        }
 
         [BsonRepresentation(BsonType.String)]
         [BsonElement("status")]
@@ -35,45 +82,38 @@ namespace qwitix_api.Core.Models
 
         [BsonRequired]
         [BsonElement("venue")]
-        [Required(ErrorMessage = "Venue cannot be empty.")]
-        public Venue Venue { get; set; } = null!;
+        public Venue Venue
+        {
+            get => _venue;
+            set
+            {
+                if (value == null)
+                    throw new ValidationException("Venue cannot be null.");
+
+                _venue = value;
+            }
+        }
 
         [BsonRequired]
         [BsonElement("start_date")]
-        [Required(ErrorMessage = "StartDate cannot be empty.")]
-        [DataType(DataType.DateTime)]
-        [CustomValidation(typeof(Event), nameof(ValidateStartDate))]
-        public DateTime StartDate { get; set; } = DateTime.UtcNow;
+        public DateTime? StartDate;
 
         [BsonRequired]
         [BsonElement("end_date")]
-        [Required(ErrorMessage = "EndDate cannot be empty.")]
-        [DataType(DataType.DateTime)]
-        [CustomValidation(typeof(Event), nameof(ValidateEndDate))]
-        public DateTime EndDate { get; set; } = DateTime.UtcNow;
-
-        private static ValidationResult? ValidateStartDate(
-            DateTime startDate,
-            ValidationContext context
-        )
+        public DateTime? EndDate
         {
-            if (startDate < DateTime.UtcNow)
-                return new ValidationResult("StartDate cannot be earlier than the current date.");
+            get => _endDate;
+            set
+            {
+                if (value is not null && value < StartDate)
+                    throw new ValidationException("EndDate cannot be earlier than StartDate.");
 
-            return ValidationResult.Success;
+                _endDate = value;
+            }
         }
 
-        private static ValidationResult? ValidateEndDate(
-            DateTime endDate,
-            ValidationContext context
-        )
-        {
-            Event? instance = context.ObjectInstance as Event;
-
-            if (instance != null && endDate < instance.StartDate)
-                return new ValidationResult("EndDate cannot be earlier than StartDate.");
-
-            return ValidationResult.Success;
-        }
+        [BsonRequired]
+        [BsonElement("is_deleted")]
+        public bool IsDeleted { get; set; } = false;
     }
 }

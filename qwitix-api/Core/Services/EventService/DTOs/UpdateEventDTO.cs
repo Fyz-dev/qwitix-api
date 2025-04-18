@@ -10,12 +10,6 @@ namespace qwitix_api.Core.Services.EventService.DTOs
 
         public string? Category { get; set; }
 
-        public EventStatus? Status { get; set; }
-
         public UpdateVenueDTO? Venue { get; set; }
-
-        public DateTime? StartDate { get; set; }
-
-        public DateTime? EndDate { get; set; }
     }
 }
