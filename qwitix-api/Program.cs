@@ -129,6 +129,7 @@ builder
         options.ClientId = clientId;
         options.ClientSecret = clientSecret;
         options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        options.CallbackPath = "/api/signin-google";
 
         //options.Events.OnRemoteFailure = context =>
         //{
