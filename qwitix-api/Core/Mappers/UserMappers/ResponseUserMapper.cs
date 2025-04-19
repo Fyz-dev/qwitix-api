@@ -12,6 +12,7 @@ namespace qwitix_api.Core.Mappers.UserMappers
                 Id = entity.Id,
                 StripeCustomerId = entity.StripeCustomerId,
                 FullName = entity.FullName,
+                ImageUrl = entity.ImageUrl,
                 Email = entity.Email,
                 CreatedAt = entity.CreatedAt,
                 UpdatedAt = entity.UpdatedAt,

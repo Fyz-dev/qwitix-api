@@ -7,7 +7,12 @@ namespace qwitix_api.Core.Mappers.UserMappers
     {
         public override User ToEntity(UpdateUserDTO dto)
         {
-            return new User { FullName = dto.FullName, Email = dto.Email };
+            return new User
+            {
+                FullName = dto.FullName,
+                ImageUrl = dto.ImageUrl,
+                Email = dto.Email,
+            };
         }
 
         public override UpdateUserDTO ToDto(User entity)

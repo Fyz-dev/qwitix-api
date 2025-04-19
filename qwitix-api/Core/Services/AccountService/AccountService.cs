@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System.Diagnostics;
+using System.Security.Claims;
 using qwitix_api.Core.Exceptions;
 using qwitix_api.Core.Models;
 using qwitix_api.Core.Processors;
@@ -55,6 +56,8 @@ namespace qwitix_api.Core.Services.AccountService
                 )
                 .Trim();
 
+            string? pictureUrl = claimsPrincipal.FindFirst("picture")?.Value;
+
             User? user = await _userRepository.GetUserByEmail(email);
 
             if (user is null)
@@ -66,6 +69,7 @@ namespace qwitix_api.Core.Services.AccountService
                     FullName = name,
                     Email = email,
                     StripeCustomerId = customer.Id,
+                    ImageUrl = pictureUrl,
                 };
 
                 await _userRepository.Create(user);

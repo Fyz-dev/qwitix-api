@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -130,6 +131,9 @@ builder
         options.ClientSecret = clientSecret;
         options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
         options.CallbackPath = "/api/signin-google";
+
+        options.Scope.Add("profile");
+        options.ClaimActions.MapJsonKey("picture", "picture", "url");
 
         //options.Events.OnRemoteFailure = context =>
         //{

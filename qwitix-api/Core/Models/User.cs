@@ -33,7 +33,7 @@ namespace qwitix_api.Core.Models
         }
 
         [BsonRequired]
-        [BsonElement("fullName")]
+        [BsonElement("full_name")]
         public string FullName
         {
             get => _fullName;
@@ -45,6 +45,9 @@ namespace qwitix_api.Core.Models
                 _fullName = value;
             }
         }
+
+        [BsonElement("img_url")]
+        public string? ImageUrl { get; set; }
 
         [BsonRequired]
         [BsonElement("email")]
