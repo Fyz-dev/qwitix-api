@@ -18,7 +18,7 @@ namespace qwitix_api.Infrastructure.Controllers
             _transactionService = transactionService;
         }
 
-        [HttpGet("transactions")]
+        [HttpGet("transaction/list")]
         [ProducesResponseType(
             StatusCodes.Status200OK,
             Type = typeof(IEnumerable<ResponseTransactionDTO>)

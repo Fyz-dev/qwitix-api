@@ -48,7 +48,7 @@ namespace qwitix_api.Infrastructure.Controllers
             return Ok(response);
         }
 
-        [HttpGet("tickets")]
+        [HttpGet("ticket/list")]
         [ProducesResponseType(
             StatusCodes.Status200OK,
             Type = typeof(IEnumerable<ResponseTicketDTO>)

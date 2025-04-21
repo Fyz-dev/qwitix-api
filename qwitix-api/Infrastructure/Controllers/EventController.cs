@@ -45,7 +45,7 @@ namespace qwitix_api.Infrastructure.Controllers
             return Ok();
         }
 
-        [HttpGet("events")]
+        [HttpGet("event/list")]
         [ProducesResponseType(
             StatusCodes.Status200OK,
             Type = typeof(IEnumerable<ResponseEventDTO>)

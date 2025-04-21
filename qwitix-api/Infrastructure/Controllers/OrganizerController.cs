@@ -36,7 +36,7 @@ namespace qwitix_api.Infrastructure.Controllers
             return Created();
         }
 
-        [HttpGet("organizers")]
+        [HttpGet("organizer/list")]
         [ProducesResponseType(
             StatusCodes.Status200OK,
             Type = typeof(IEnumerable<ResponseOrganizerDTO>)

@@ -8,14 +8,9 @@ namespace qwitix_api.Infrastructure.Controllers
     [ApiController]
     [Route("api/")]
     [Authorize]
-    public class UserController : ControllerBase
+    public class UserController(UserService userService) : ControllerBase
     {
-        private readonly UserService _userService;
-
-        public UserController(UserService userService)
-        {
-            _userService = userService;
-        }
+        private readonly UserService _userService = userService;
 
         [HttpGet("user/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseUserDTO))]
