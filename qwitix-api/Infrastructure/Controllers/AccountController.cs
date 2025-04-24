@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Mvc;
 using qwitix_api.Core.Services.AccountService;
+using qwitix_api.Core.Services.UserService.DTOs;
 
 namespace qwitix_api.Infrastructure.Controllers
 {
@@ -16,6 +17,23 @@ namespace qwitix_api.Infrastructure.Controllers
         {
             _accountService = accountService;
             _linkGenerator = linkGenerator;
+        }
+
+        [HttpGet()]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseUserDTO))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetById()
+        {
+            var userId = User.FindFirst("user_id")?.Value;
+
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+            ResponseUserDTO user = await _accountService.GetById(userId);
+
+            return Ok(user);
         }
 
         [HttpPost("refresh")]

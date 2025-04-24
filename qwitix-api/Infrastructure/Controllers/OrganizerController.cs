@@ -29,7 +29,7 @@ namespace qwitix_api.Infrastructure.Controllers
             var userId = User.FindFirst("user_id")?.Value;
 
             if (string.IsNullOrEmpty(userId))
-                return Unauthorized("User ID is missing or invalid.");
+                return Unauthorized();
 
             await _organizerService.Create(userId, organizerDTO);
 

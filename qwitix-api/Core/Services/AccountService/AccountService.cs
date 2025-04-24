@@ -1,9 +1,12 @@
 ﻿using System.Diagnostics;
 using System.Security.Claims;
 using qwitix_api.Core.Exceptions;
+using qwitix_api.Core.Mappers;
+using qwitix_api.Core.Mappers.UserMappers;
 using qwitix_api.Core.Models;
 using qwitix_api.Core.Processors;
 using qwitix_api.Core.Repositories;
+using qwitix_api.Core.Services.UserService.DTOs;
 using qwitix_api.Infrastructure.Integration.StripeIntegration;
 
 namespace qwitix_api.Core.Services.AccountService
@@ -13,16 +16,28 @@ namespace qwitix_api.Core.Services.AccountService
         private readonly IAuthTokenProcessor _authTokenProcessor;
         private readonly IUserRepository _userRepository;
         private readonly StripeIntegration _stripeIntegration;
+        private readonly IMapper<ResponseUserDTO, User> _responseUserMapper;
 
         public AccountService(
             IAuthTokenProcessor authTokenProcessor,
             IUserRepository userRepository,
-            StripeIntegration stripeIntegration
+            StripeIntegration stripeIntegration,
+            IMapper<ResponseUserDTO, User> responseUserMapper
         )
         {
             _authTokenProcessor = authTokenProcessor;
             _userRepository = userRepository;
             _stripeIntegration = stripeIntegration;
+            _responseUserMapper = responseUserMapper;
+        }
+
+        public async Task<ResponseUserDTO> GetById(string id)
+        {
+            var user =
+                await _userRepository.GetById(id)
+                ?? throw new NotFoundException($"User not found.");
+
+            return _responseUserMapper.ToDto(user);
         }
 
         public async Task RefreshTokenAsync(string? refreshToken)
