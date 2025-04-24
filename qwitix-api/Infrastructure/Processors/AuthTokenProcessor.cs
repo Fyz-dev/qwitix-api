@@ -1,4 +1,5 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+﻿using System.Diagnostics;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -82,6 +83,7 @@ namespace qwitix_api.Infrastructure.Processors
                     HttpOnly = false,
                     Expires = expiration,
                     IsEssential = true,
+                    Domain = _httpContextAccessor.HttpContext?.Request.Host.Host,
                 }
             );
         }
