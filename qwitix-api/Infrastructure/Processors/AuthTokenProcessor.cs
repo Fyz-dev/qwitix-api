@@ -75,6 +75,10 @@ namespace qwitix_api.Infrastructure.Processors
             DateTime expiration
         )
         {
+            var domain =
+                _httpContextAccessor.HttpContext?.Request.Headers["X-Forwarded-Host"].ToString()
+                ?? _httpContextAccessor.HttpContext?.Request.Host.Host;
+
             _httpContextAccessor.HttpContext?.Response.Cookies.Append(
                 cookieName,
                 token,
@@ -83,7 +87,7 @@ namespace qwitix_api.Infrastructure.Processors
                     HttpOnly = false,
                     Expires = expiration,
                     IsEssential = true,
-                    Domain = _httpContextAccessor.HttpContext?.Request.Host.Host,
+                    Domain = domain,
                 }
             );
         }
