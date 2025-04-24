@@ -2,18 +2,12 @@
 {
     public class CorsOptions
     {
-        private string[] _allowedOrigins = [];
+        public string AllowedOriginsRaw = null!;
 
-        public string[] AllowedOrigins => _allowedOrigins;
-
-        public string AllowedOriginsRaw
-        {
-            set =>
-                _allowedOrigins =
-                    value?.Split(
-                        ';',
-                        StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries
-                    ) ?? [];
-        }
+        public string[] AllowedOrigins =>
+            AllowedOriginsRaw.Split(
+                ';',
+                StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries
+            ) ?? [];
     }
 }
