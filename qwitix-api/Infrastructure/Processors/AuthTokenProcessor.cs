@@ -76,7 +76,7 @@ namespace qwitix_api.Infrastructure.Processors
         )
         {
             var domain =
-                _httpContextAccessor.HttpContext?.Request.Headers["X-Forwarded-Host"].ToString()
+                _httpContextAccessor.HttpContext?.Request.Headers["Host"].ToString()
                 ?? _httpContextAccessor.HttpContext?.Request.Host.Host;
 
             _httpContextAccessor.HttpContext?.Response.Cookies.Append(
