@@ -2,7 +2,7 @@
 {
     public class CorsOptions
     {
-        public string AllowedOriginsRaw = null!;
+        public string AllowedOriginsRaw { get; set; } = null!;
 
         public string[] AllowedOrigins =>
             AllowedOriginsRaw.Split(
