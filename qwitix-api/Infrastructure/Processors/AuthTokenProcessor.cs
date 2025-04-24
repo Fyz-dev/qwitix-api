@@ -84,7 +84,7 @@ namespace qwitix_api.Infrastructure.Processors
                     IsEssential = true,
                     //Secure = true,
                     //SameSite = SameSiteMode.Strict,
-                    Secure = false,
+                    Secure = true,
                     SameSite = SameSiteMode.None,
                 }
             );
