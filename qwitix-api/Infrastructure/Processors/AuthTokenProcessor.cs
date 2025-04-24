@@ -85,7 +85,7 @@ namespace qwitix_api.Infrastructure.Processors
                     //Secure = true,
                     //SameSite = SameSiteMode.Strict,
                     Secure = false,
-                    SameSite = SameSiteMode.Lax,
+                    SameSite = SameSiteMode.None,
                 }
             );
         }
