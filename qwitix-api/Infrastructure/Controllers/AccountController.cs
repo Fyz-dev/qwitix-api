@@ -19,7 +19,7 @@ namespace qwitix_api.Infrastructure.Controllers
             _linkGenerator = linkGenerator;
         }
 
-        [HttpGet()]
+        [HttpGet(Name = "GetAccount")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseUserDTO))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -36,7 +36,7 @@ namespace qwitix_api.Infrastructure.Controllers
             return Ok(user);
         }
 
-        [HttpPost("refresh")]
+        [HttpPost("refresh", Name = "UpdateRefreshToken")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> RefreshToken()
@@ -48,7 +48,7 @@ namespace qwitix_api.Infrastructure.Controllers
             return Ok();
         }
 
-        [HttpGet("login/google")]
+        [HttpGet("login/google", Name = "GetLoginUrl")]
         public IActionResult LoginWithGoogle([FromQuery] string returnUrl)
         {
             var callbackUrl =
