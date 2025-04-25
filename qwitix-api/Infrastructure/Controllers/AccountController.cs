@@ -23,7 +23,7 @@ namespace qwitix_api.Infrastructure.Controllers
         }
 
         [HttpGet(Name = "GetAccount")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseUserDTO))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseAccountDTO))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -32,14 +32,14 @@ namespace qwitix_api.Infrastructure.Controllers
             var userId = User.FindFirst("user_id")?.Value;
             var accessToken = Request.Cookies["ACCESS_TOKEN"];
 
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(accessToken))
                 return Unauthorized();
 
             ResponseUserDTO user = await _accountService.GetById(userId);
 
-            user.Token = accessToken;
+            ResponseAccountDTO response = new() { User = user, Token = accessToken };
 
-            return Ok(user);
+            return Ok(response);
         }
 
         [HttpPost("refresh", Name = "UpdateRefreshToken")]
