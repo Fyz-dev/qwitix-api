@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using qwitix_api.Core.Services.AccountService;
+using qwitix_api.Core.Services.DTOs;
 using qwitix_api.Core.Services.UserService.DTOs;
 
 namespace qwitix_api.Infrastructure.Controllers
@@ -53,7 +54,17 @@ namespace qwitix_api.Infrastructure.Controllers
             return Ok();
         }
 
-        [HttpGet("login/google", Name = "GetLoginUrl")]
+        [HttpGet("registration/google", Name = "GetGoogleLoginUrl")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UrlResponseDTO))]
+        public IActionResult GetGoogleRegistrationUrl([FromQuery] string returnUrl)
+        {
+            var loginUrl = Url.Link("GoogleLogin", new { returnUrl });
+
+            return Ok(new UrlResponseDTO { Url = loginUrl! });
+        }
+
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [HttpGet("login/google", Name = "GoogleLogin")]
         public IActionResult LoginWithGoogle([FromQuery] string returnUrl)
         {
             var callbackUrl =
@@ -66,6 +77,7 @@ namespace qwitix_api.Infrastructure.Controllers
             return Challenge(properties, "Google");
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpGet("login/google/callback", Name = "GoogleLoginCallback")]
         public async Task<IActionResult> GoogleLoginCallback([FromQuery] string returnUrl)
         {
