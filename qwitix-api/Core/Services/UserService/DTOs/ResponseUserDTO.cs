@@ -11,8 +11,6 @@ namespace qwitix_api.Core.Services.UserService.DTOs
 
         public required string Email { get; init; }
 
-        public string? Token { get; set; }
-
         public string? ImageUrl { get; init; }
     }
 }
