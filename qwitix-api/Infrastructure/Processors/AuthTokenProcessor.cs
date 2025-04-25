@@ -81,9 +81,11 @@ namespace qwitix_api.Infrastructure.Processors
                 token,
                 new CookieOptions
                 {
-                    HttpOnly = false,
+                    HttpOnly = true,
                     Expires = expiration,
                     IsEssential = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.None,
                     Domain = domain,
                 }
             );
