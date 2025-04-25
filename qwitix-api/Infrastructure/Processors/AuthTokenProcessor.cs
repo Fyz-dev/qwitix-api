@@ -72,8 +72,7 @@ namespace qwitix_api.Infrastructure.Processors
         public void WriteAuthTokenAsHttpOnlyCookie(
             string cookieName,
             string token,
-            DateTime expiration,
-            string domain
+            DateTime expiration
         )
         {
             _httpContextAccessor.HttpContext?.Response.Cookies.Append(
@@ -85,8 +84,8 @@ namespace qwitix_api.Infrastructure.Processors
                     Expires = expiration,
                     IsEssential = true,
                     Secure = true,
+                    Domain = ".localhost",
                     SameSite = SameSiteMode.None,
-                    Domain = domain,
                 }
             );
         }

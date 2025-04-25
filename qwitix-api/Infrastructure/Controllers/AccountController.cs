@@ -44,9 +44,7 @@ namespace qwitix_api.Infrastructure.Controllers
         {
             var refreshToken = Request.Cookies["REFRESH_TOKEN"];
 
-            var uri = new Uri(Request.Headers.Origin.ToString());
-
-            await _accountService.RefreshTokenAsync(refreshToken, uri.Host);
+            await _accountService.RefreshTokenAsync(refreshToken);
 
             return Ok();
         }
@@ -72,9 +70,7 @@ namespace qwitix_api.Infrastructure.Controllers
             if (!result.Succeeded)
                 return Unauthorized();
 
-            var uri = new Uri(returnUrl);
-
-            await _accountService.LoginWithGoogleAsync(result.Principal, uri.Host);
+            await _accountService.LoginWithGoogleAsync(result.Principal);
 
             return Redirect(returnUrl);
         }
