@@ -28,11 +28,14 @@ namespace qwitix_api.Infrastructure.Controllers
         public async Task<IActionResult> GetById()
         {
             var userId = User.FindFirst("user_id")?.Value;
+            var accessToken = Request.Cookies["ACCESS_TOKEN"];
 
             if (string.IsNullOrEmpty(userId))
                 return Unauthorized();
 
             ResponseUserDTO user = await _accountService.GetById(userId);
+
+            user.Token = accessToken;
 
             return Ok(user);
         }
