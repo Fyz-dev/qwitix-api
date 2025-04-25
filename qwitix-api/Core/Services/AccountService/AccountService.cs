@@ -40,7 +40,7 @@ namespace qwitix_api.Core.Services.AccountService
             return _responseUserMapper.ToDto(user);
         }
 
-        public async Task RefreshTokenAsync(string? refreshToken)
+        public async Task RefreshTokenAsync(string? refreshToken, string domain)
         {
             if (string.IsNullOrEmpty(refreshToken))
                 throw new RefreshTokenException("Refresh token is missing.");
@@ -52,10 +52,10 @@ namespace qwitix_api.Core.Services.AccountService
             if (user.RefreshTokenExpires < DateTime.UtcNow)
                 throw new RefreshTokenException("Refresh token is expired.");
 
-            await SetAuthTokensAsync(user);
+            await SetAuthTokensAsync(user, domain);
         }
 
-        public async Task LoginWithGoogleAsync(ClaimsPrincipal? claimsPrincipal)
+        public async Task LoginWithGoogleAsync(ClaimsPrincipal? claimsPrincipal, string domain)
         {
             if (claimsPrincipal is null)
                 throw new ExternalLoginProviderException("Google", "ClaimsPrincipal is null");
@@ -90,10 +90,10 @@ namespace qwitix_api.Core.Services.AccountService
                 await _userRepository.Create(user);
             }
 
-            await SetAuthTokensAsync(user);
+            await SetAuthTokensAsync(user, domain);
         }
 
-        private async Task SetAuthTokensAsync(User user)
+        private async Task SetAuthTokensAsync(User user, string domain)
         {
             var (jwtToken, jwtExpirationDateInUtc) = _authTokenProcessor.GenerateJwtToken(user);
             var (refreshToken, refreshExpirationDateInUtc) =
@@ -107,12 +107,14 @@ namespace qwitix_api.Core.Services.AccountService
             _authTokenProcessor.WriteAuthTokenAsHttpOnlyCookie(
                 "ACCESS_TOKEN",
                 jwtToken,
-                jwtExpirationDateInUtc
+                jwtExpirationDateInUtc,
+                domain
             );
             _authTokenProcessor.WriteAuthTokenAsHttpOnlyCookie(
                 "REFRESH_TOKEN",
                 refreshToken,
-                refreshExpirationDateInUtc
+                refreshExpirationDateInUtc,
+                domain
             );
         }
     }
