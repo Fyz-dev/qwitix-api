@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using qwitix_api.Core.Services.AccountService;
 using qwitix_api.Core.Services.UserService.DTOs;
@@ -21,6 +22,7 @@ namespace qwitix_api.Infrastructure.Controllers
         }
 
         [HttpGet(Name = "GetAccount")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseUserDTO))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
