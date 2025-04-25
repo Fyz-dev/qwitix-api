@@ -83,9 +83,6 @@ namespace qwitix_api.Infrastructure.Processors
                     HttpOnly = true,
                     Expires = expiration,
                     IsEssential = true,
-                    Secure = true,
-                    Domain = ".localhost",
-                    SameSite = SameSiteMode.None,
                 }
             );
         }
