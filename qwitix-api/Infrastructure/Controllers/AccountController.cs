@@ -22,7 +22,6 @@ namespace qwitix_api.Infrastructure.Controllers
         }
 
         [HttpGet(Name = "GetAccount")]
-        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseUserDTO))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
