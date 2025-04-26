@@ -54,6 +54,16 @@ namespace qwitix_api.Infrastructure.Controllers
             return Ok();
         }
 
+        [HttpPost("logout", Name = "Logout")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public IActionResult Logout()
+        {
+            Response.Cookies.Delete("ACCESS_TOKEN");
+            Response.Cookies.Delete("REFRESH_TOKEN");
+
+            return Ok();
+        }
+
         [HttpGet("registration/google", Name = "GetGoogleLoginUrl")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UrlResponseDTO))]
         public IActionResult GetGoogleRegistrationUrl([FromQuery] string returnUrl)
