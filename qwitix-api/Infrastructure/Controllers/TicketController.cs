@@ -16,7 +16,7 @@ namespace qwitix_api.Infrastructure.Controllers
             _ticketService = ticketService;
         }
 
-        [HttpPost("ticket")]
+        [HttpPost("ticket", Name = "CreateTicket")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -30,7 +30,7 @@ namespace qwitix_api.Infrastructure.Controllers
             return Created();
         }
 
-        [HttpPost("ticket/buy")]
+        [HttpPost("ticket/buy", Name = "BuyTicket")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -48,7 +48,7 @@ namespace qwitix_api.Infrastructure.Controllers
             return Ok(response);
         }
 
-        [HttpGet("ticket/list")]
+        [HttpGet("ticket/list", Name = "GetTicketList")]
         [ProducesResponseType(
             StatusCodes.Status200OK,
             Type = typeof(IEnumerable<ResponseTicketDTO>)
@@ -61,7 +61,7 @@ namespace qwitix_api.Infrastructure.Controllers
             return Ok(tickets);
         }
 
-        [HttpGet("ticket/{id}")]
+        [HttpGet("ticket/{id}", Name = "GetTicket")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseTicketDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -72,7 +72,7 @@ namespace qwitix_api.Infrastructure.Controllers
             return Ok(ticket);
         }
 
-        [HttpPatch("ticket/{id}")]
+        [HttpPatch("ticket/{id}", Name = "UpdateTicket")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -86,7 +86,7 @@ namespace qwitix_api.Infrastructure.Controllers
             return Ok();
         }
 
-        [HttpDelete("ticket/{id}")]
+        [HttpDelete("ticket/{id}", Name = "DeleteTicket")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

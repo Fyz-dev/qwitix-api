@@ -17,7 +17,7 @@ namespace qwitix_api.Infrastructure.Controllers
             _organizerService = organizerService;
         }
 
-        [HttpPost("organizer")]
+        [HttpPost("organizer", Name = "CreateOrganizer")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -36,7 +36,7 @@ namespace qwitix_api.Infrastructure.Controllers
             return Created();
         }
 
-        [HttpGet("organizer/list")]
+        [HttpGet("organizer/list", Name = "GetOrganizerList")]
         [ProducesResponseType(
             StatusCodes.Status200OK,
             Type = typeof(IEnumerable<ResponseOrganizerDTO>)
@@ -52,7 +52,7 @@ namespace qwitix_api.Infrastructure.Controllers
             return Ok(organizers);
         }
 
-        [HttpGet("organizer/{id}")]
+        [HttpGet("organizer/{id}", Name = "GetOrganizer")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseOrganizerDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -63,7 +63,7 @@ namespace qwitix_api.Infrastructure.Controllers
             return Ok(organizer);
         }
 
-        [HttpPatch("organizer/{id}")]
+        [HttpPatch("organizer/{id}", Name = "UpdateOrganizer")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]

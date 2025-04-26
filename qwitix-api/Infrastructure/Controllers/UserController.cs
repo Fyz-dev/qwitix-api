@@ -12,7 +12,7 @@ namespace qwitix_api.Infrastructure.Controllers
     {
         private readonly UserService _userService = userService;
 
-        [HttpGet("user/{id}")]
+        [HttpGet("user/{id}", Name = "GetUser")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseUserDTO))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -24,7 +24,7 @@ namespace qwitix_api.Infrastructure.Controllers
             return Ok(user);
         }
 
-        [HttpPatch("user/{id}")]
+        [HttpPatch("user/{id}", Name = "UpdateUser")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

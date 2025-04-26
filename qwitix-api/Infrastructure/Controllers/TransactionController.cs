@@ -18,7 +18,7 @@ namespace qwitix_api.Infrastructure.Controllers
             _transactionService = transactionService;
         }
 
-        [HttpGet("transaction/list")]
+        [HttpGet("transaction/list", Name = "GetTransactionList")]
         [ProducesResponseType(
             StatusCodes.Status200OK,
             Type = typeof(IEnumerable<ResponseTransactionDTO>)
@@ -38,7 +38,7 @@ namespace qwitix_api.Infrastructure.Controllers
             return Ok(transactions);
         }
 
-        [HttpGet("transaction/{id}")]
+        [HttpGet("transaction/{id}", Name = "GetTransaction")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseTransactionDTO))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

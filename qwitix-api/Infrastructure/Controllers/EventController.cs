@@ -17,7 +17,7 @@ namespace qwitix_api.Infrastructure.Controllers
             _eventService = eventService;
         }
 
-        [HttpPost("event")]
+        [HttpPost("event", Name = "CreateEvent")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -31,7 +31,7 @@ namespace qwitix_api.Infrastructure.Controllers
             return Created();
         }
 
-        [HttpPost("event/{id}/publish")]
+        [HttpPost("event/{id}/publish", Name = "PublishEvent")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -45,7 +45,7 @@ namespace qwitix_api.Infrastructure.Controllers
             return Ok();
         }
 
-        [HttpGet("event/list")]
+        [HttpGet("event/list", Name = "GetEventList")]
         [ProducesResponseType(
             StatusCodes.Status200OK,
             Type = typeof(IEnumerable<ResponseEventDTO>)
@@ -66,7 +66,7 @@ namespace qwitix_api.Infrastructure.Controllers
             return Ok(events);
         }
 
-        [HttpGet("event/{id}")]
+        [HttpGet("event/{id}", Name = "GetEvent")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseEventDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -77,7 +77,7 @@ namespace qwitix_api.Infrastructure.Controllers
             return Ok(eventDto);
         }
 
-        [HttpPatch("event/{id}")]
+        [HttpPatch("event/{id}", Name = "UpdateEvent")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -91,7 +91,7 @@ namespace qwitix_api.Infrastructure.Controllers
             return Ok();
         }
 
-        [HttpDelete("event/{id}")]
+        [HttpDelete("event/{id}", Name = "DeleteEvent")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
