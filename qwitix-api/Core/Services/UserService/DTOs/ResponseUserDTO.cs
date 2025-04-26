@@ -1,5 +1,4 @@
-﻿using qwitix_api.Core.Enums;
-using qwitix_api.Core.Services.DTOs;
+﻿using qwitix_api.Core.Services.DTOs;
 
 namespace qwitix_api.Core.Services.UserService.DTOs
 {

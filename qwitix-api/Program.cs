@@ -32,6 +32,7 @@ using qwitix_api.Core.Services.UserService;
 using qwitix_api.Core.Services.UserService.DTOs;
 using qwitix_api.Infrastructure.Configs;
 using qwitix_api.Infrastructure.Handlers;
+using qwitix_api.Infrastructure.Helpers;
 using qwitix_api.Infrastructure.Integration.StripeIntegration;
 using qwitix_api.Infrastructure.Processors;
 using qwitix_api.Infrastructure.Repositories;
@@ -177,6 +178,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
+    options.SupportNonNullableReferenceTypes();
+
+    options.SchemaFilter<NonNullableSchemaFilter>();
+
     options.AddSecurityDefinition(
         "Bearer",
         new OpenApiSecurityScheme
