@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using qwitix_api.Core.Enums;
 using qwitix_api.Core.Services.TransactionService;
@@ -26,7 +27,7 @@ namespace qwitix_api.Infrastructure.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetByUserId(
-            string userId,
+            [Required] string userId,
             int offset,
             int limit,
             TransactionStatus? status = null

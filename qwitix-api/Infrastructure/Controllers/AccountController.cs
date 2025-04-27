@@ -1,8 +1,10 @@
-﻿using System.Diagnostics;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using qwitix_api.Core.Services.AccountService;
 using qwitix_api.Core.Services.DTOs;
 using qwitix_api.Core.Services.UserService.DTOs;
@@ -66,7 +68,7 @@ namespace qwitix_api.Infrastructure.Controllers
 
         [HttpGet("registration/google", Name = "GetGoogleLoginUrl")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UrlResponseDTO))]
-        public IActionResult GetGoogleRegistrationUrl([FromQuery] string returnUrl)
+        public IActionResult GetGoogleRegistrationUrl([Required] string returnUrl)
         {
             var loginUrl = Url.Link("GoogleLogin", new { returnUrl });
 

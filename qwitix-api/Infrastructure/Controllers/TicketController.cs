@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using qwitix_api.Core.Services.TicketService;
 using qwitix_api.Core.Services.TicketService.DTOs;
@@ -54,7 +55,7 @@ namespace qwitix_api.Infrastructure.Controllers
             Type = typeof(IEnumerable<ResponseTicketDTO>)
         )]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAll(string eventId)
+        public async Task<IActionResult> GetAll([Required] string eventId)
         {
             IEnumerable<ResponseTicketDTO> tickets = await _ticketService.GetAll(eventId);
 
