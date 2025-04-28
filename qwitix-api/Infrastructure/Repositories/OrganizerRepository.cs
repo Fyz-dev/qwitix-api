@@ -30,6 +30,13 @@ namespace qwitix_api.Infrastructure.Repositories
             return await _collection.Find(filter).FirstOrDefaultAsync();
         }
 
+        public async Task<Organizer?> GetByUserId(string id)
+        {
+            var filter = Builders<Organizer>.Filter.Eq(o => o.UserId, id);
+
+            return await _collection.Find(filter).FirstOrDefaultAsync();
+        }
+
         public async Task UpdateById(string id, Organizer organizer)
         {
             organizer.UpdatedAt = DateTime.UtcNow;

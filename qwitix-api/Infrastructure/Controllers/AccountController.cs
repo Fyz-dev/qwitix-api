@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using qwitix_api.Core.Services.AccountService;
 using qwitix_api.Core.Services.DTOs;
+using qwitix_api.Core.Services.OrganizerService.DTOs;
 using qwitix_api.Core.Services.UserService.DTOs;
 
 namespace qwitix_api.Infrastructure.Controllers
@@ -42,6 +43,23 @@ namespace qwitix_api.Infrastructure.Controllers
             ResponseAccountDTO response = new() { User = user, Token = accessToken };
 
             return Ok(response);
+        }
+
+        [HttpGet("organizer", Name = "GetOrganizerAccount")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseOrganizerDTO))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetByUserId()
+        {
+            var userId = User.FindFirst("user_id")?.Value;
+
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+            ResponseOrganizerDTO organizer = await _accountService.GetOrganizerById(userId);
+
+            return Ok(organizer);
         }
 
         [HttpPost("refresh", Name = "UpdateRefreshToken")]

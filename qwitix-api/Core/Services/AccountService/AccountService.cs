@@ -6,6 +6,7 @@ using qwitix_api.Core.Mappers.UserMappers;
 using qwitix_api.Core.Models;
 using qwitix_api.Core.Processors;
 using qwitix_api.Core.Repositories;
+using qwitix_api.Core.Services.OrganizerService.DTOs;
 using qwitix_api.Core.Services.UserService.DTOs;
 using qwitix_api.Infrastructure.Integration.StripeIntegration;
 
@@ -15,20 +16,26 @@ namespace qwitix_api.Core.Services.AccountService
     {
         private readonly IAuthTokenProcessor _authTokenProcessor;
         private readonly IUserRepository _userRepository;
+        private readonly IOrganizerRepository _organizerRepository;
         private readonly StripeIntegration _stripeIntegration;
         private readonly IMapper<ResponseUserDTO, User> _responseUserMapper;
+        private readonly IMapper<ResponseOrganizerDTO, Organizer> _responseOrganizerMapper;
 
         public AccountService(
             IAuthTokenProcessor authTokenProcessor,
             IUserRepository userRepository,
+            IOrganizerRepository organizerRepository,
             StripeIntegration stripeIntegration,
-            IMapper<ResponseUserDTO, User> responseUserMapper
+            IMapper<ResponseUserDTO, User> responseUserMapper,
+            IMapper<ResponseOrganizerDTO, Organizer> responseOrganizerMapper
         )
         {
             _authTokenProcessor = authTokenProcessor;
             _userRepository = userRepository;
+            _organizerRepository = organizerRepository;
             _stripeIntegration = stripeIntegration;
             _responseUserMapper = responseUserMapper;
+            _responseOrganizerMapper = responseOrganizerMapper;
         }
 
         public async Task<ResponseUserDTO> GetById(string id)
@@ -38,6 +45,15 @@ namespace qwitix_api.Core.Services.AccountService
                 ?? throw new NotFoundException($"User not found.");
 
             return _responseUserMapper.ToDto(user);
+        }
+
+        public async Task<ResponseOrganizerDTO> GetOrganizerById(string id)
+        {
+            var organizer =
+                await _organizerRepository.GetByUserId(id)
+                ?? throw new NotFoundException($"Organizer not found.");
+
+            return _responseOrganizerMapper.ToDto(organizer);
         }
 
         public async Task RefreshTokenAsync(string? refreshToken)
