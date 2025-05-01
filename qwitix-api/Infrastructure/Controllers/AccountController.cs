@@ -46,6 +46,7 @@ namespace qwitix_api.Infrastructure.Controllers
         }
 
         [HttpGet("organizer", Name = "GetOrganizerAccount")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseOrganizerDTO))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
