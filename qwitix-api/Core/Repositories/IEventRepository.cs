@@ -1,4 +1,5 @@
-﻿using qwitix_api.Core.Models;
+﻿using qwitix_api.Core.Enums;
+using qwitix_api.Core.Models;
 
 namespace qwitix_api.Core.Repositories.EventRepository
 {
@@ -6,7 +7,13 @@ namespace qwitix_api.Core.Repositories.EventRepository
     {
         Task Create(Event eventModel);
 
-        Task<IEnumerable<Event>> GetAll(string organizerId, int offset, int limit);
+        Task<(IEnumerable<Event> Items, int TotalCount)> GetAll(
+            string organizerId,
+            int offset,
+            int limit,
+            EventStatus? status = null,
+            string? searchQuery = null
+        );
 
         Task<Event?> GetById(string id);
 

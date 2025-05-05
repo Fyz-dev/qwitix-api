@@ -73,15 +73,30 @@ namespace qwitix_api.Core.Services.EventService
             await _ticketRepository.UpdateById(tickets);
         }
 
-        public async Task<IEnumerable<ResponseEventDTO>> GetAll(
+        public async Task<PaginationResponse<ResponseEventDTO>> GetAll(
             string organizerId,
             int offset,
-            int limit
+            int limit,
+            EventStatus? status = null,
+            string? searchQuery = null
         )
         {
-            var events = await _eventRepository.GetAll(organizerId, offset, limit);
+            var (events, totalCount) = await _eventRepository.GetAll(
+                organizerId,
+                offset,
+                limit,
+                status,
+                searchQuery
+            );
 
-            return _responseEventMapper.ToDtoList(events);
+            bool hasNextPage = (limit > 0) && (offset + limit < totalCount);
+
+            return new PaginationResponse<ResponseEventDTO>
+            {
+                Items = _responseEventMapper.ToDtoList(events),
+                TotalCount = totalCount,
+                HasNextPage = hasNextPage,
+            };
         }
 
         public async Task<ResponseEventDTO> GetById(string id)

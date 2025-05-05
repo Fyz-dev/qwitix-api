@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using qwitix_api.Core.Enums;
+using qwitix_api.Core.Helpers;
 using qwitix_api.Core.Services.EventService;
 using qwitix_api.Core.Services.EventService.DTOs;
 
@@ -48,19 +50,23 @@ namespace qwitix_api.Infrastructure.Controllers
         [HttpGet("event/list", Name = "GetEventList")]
         [ProducesResponseType(
             StatusCodes.Status200OK,
-            Type = typeof(IEnumerable<ResponseEventDTO>)
+            Type = typeof(PaginationResponse<ResponseEventDTO>)
         )]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAll(
             [Required] string organizerId,
             int offset,
-            int limit
+            int limit,
+            EventStatus? status = null,
+            string? searchQuery = null
         )
         {
-            IEnumerable<ResponseEventDTO> events = await _eventService.GetAll(
+            PaginationResponse<ResponseEventDTO> events = await _eventService.GetAll(
                 organizerId,
                 offset,
-                limit
+                limit,
+                status,
+                searchQuery
             );
 
             return Ok(events);

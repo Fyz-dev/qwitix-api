@@ -1,5 +1,8 @@
-﻿using Microsoft.Extensions.Options;
+﻿using System.Diagnostics;
+using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using MongoDB.Driver;
+using qwitix_api.Core.Enums;
 using qwitix_api.Core.Models;
 using qwitix_api.Core.Repositories.EventRepository;
 using qwitix_api.Infrastructure.Configs;
@@ -16,14 +19,45 @@ namespace qwitix_api.Infrastructure.Repositories
             await _collection.InsertOneAsync(eventModel);
         }
 
-        public async Task<IEnumerable<Event>> GetAll(string organizerId, int offset, int limit)
+        public async Task<(IEnumerable<Event> Items, int TotalCount)> GetAll(
+            string organizerId,
+            int offset,
+            int limit,
+            EventStatus? status = null,
+            string? searchQuery = null
+        )
         {
-            var filter = Builders<Event>.Filter.And(
-                Builders<Event>.Filter.Eq(e => e.OrganizerId, organizerId),
-                Builders<Event>.Filter.Eq(e => e.IsDeleted, false)
-            );
+            Debug.WriteLine(limit);
 
-            return await _collection.Find(filter).Skip(offset).Limit(limit).ToListAsync();
+            var filters = new List<FilterDefinition<Event>>
+            {
+                Builders<Event>.Filter.Eq(e => e.OrganizerId, organizerId),
+                Builders<Event>.Filter.Eq(e => e.IsDeleted, false),
+            };
+
+            if (status.HasValue)
+                filters.Add(Builders<Event>.Filter.Eq(e => e.Status, status.Value));
+
+            if (!string.IsNullOrWhiteSpace(searchQuery))
+                filters.Add(
+                    Builders<Event>.Filter.Regex(
+                        e => e.Title,
+                        new BsonRegularExpression(searchQuery, "i")
+                    )
+                );
+
+            var filter = Builders<Event>.Filter.And(filters);
+
+            var totalCount = await _collection.CountDocumentsAsync(filter);
+
+            var items = await _collection
+                .Find(filter)
+                .SortByDescending(e => e.CreatedAt)
+                .Skip(offset)
+                .Limit(limit)
+                .ToListAsync();
+
+            return (items, (int)totalCount);
         }
 
         public async Task<Event?> GetById(string id)
