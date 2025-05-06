@@ -30,15 +30,12 @@ namespace qwitix_api.Infrastructure.Integration.StripeIntegration
             string currency
         )
         {
-            var productOptions = new ProductCreateOptions
-            {
-                Id = productId,
-                Name = name,
-                Description = description,
-            };
+            var productOptions = new ProductCreateOptions { Id = productId, Name = name };
+
+            if (!string.IsNullOrWhiteSpace(description))
+                productOptions.Description = description;
 
             var productService = new ProductService();
-
             var product = await productService.CreateAsync(productOptions);
 
             return product;
