@@ -74,7 +74,7 @@ namespace qwitix_api.Core.Services.EventService
         }
 
         public async Task<PaginationResponse<ResponseEventDTO>> GetAll(
-            string organizerId,
+            string? organizerId,
             int offset,
             int limit,
             EventStatus? status = null,
@@ -139,6 +139,13 @@ namespace qwitix_api.Core.Services.EventService
                 );
 
             await _eventRepository.DeleteById(id);
+        }
+
+        public async Task<IEnumerable<string>> GetUniqueCategories()
+        {
+            var categories = await _eventRepository.GetUniqueCategories();
+
+            return categories;
         }
     }
 }

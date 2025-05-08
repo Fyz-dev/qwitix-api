@@ -54,7 +54,7 @@ namespace qwitix_api.Infrastructure.Controllers
         )]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAll(
-            [Required] string organizerId,
+            string? organizerId,
             int offset,
             int limit,
             EventStatus? status = null,
@@ -109,6 +109,16 @@ namespace qwitix_api.Infrastructure.Controllers
             await _eventService.DeleteById(id);
 
             return NoContent();
+        }
+
+        [HttpGet("event/categories", Name = "GetEventCategories")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<string>))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetUniqueCategories()
+        {
+            IEnumerable<string> categories = await _eventService.GetUniqueCategories();
+
+            return Ok(categories);
         }
     }
 }

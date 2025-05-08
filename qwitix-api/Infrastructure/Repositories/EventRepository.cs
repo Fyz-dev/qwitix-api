@@ -20,7 +20,7 @@ namespace qwitix_api.Infrastructure.Repositories
         }
 
         public async Task<(IEnumerable<Event> Items, int TotalCount)> GetAll(
-            string organizerId,
+            string? organizerId,
             int offset,
             int limit,
             EventStatus? status = null,
@@ -31,9 +31,11 @@ namespace qwitix_api.Infrastructure.Repositories
 
             var filters = new List<FilterDefinition<Event>>
             {
-                Builders<Event>.Filter.Eq(e => e.OrganizerId, organizerId),
                 Builders<Event>.Filter.Eq(e => e.IsDeleted, false),
             };
+
+            if (!string.IsNullOrWhiteSpace(organizerId))
+                filters.Add(Builders<Event>.Filter.Eq(e => e.OrganizerId, organizerId));
 
             if (status.HasValue)
                 filters.Add(Builders<Event>.Filter.Eq(e => e.Status, status.Value));
@@ -91,6 +93,17 @@ namespace qwitix_api.Infrastructure.Repositories
 
             if (result.ModifiedCount == 0)
                 throw new Exception("Event not found or already deleted.");
+        }
+
+        public async Task<IEnumerable<string>> GetUniqueCategories()
+        {
+            var categories = await _collection
+                .Aggregate()
+                .Group(e => e.Category, g => new { Category = g.Key })
+                .Project(e => e.Category)
+                .ToListAsync();
+
+            return categories;
         }
     }
 }

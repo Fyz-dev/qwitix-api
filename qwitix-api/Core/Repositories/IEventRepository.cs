@@ -8,7 +8,7 @@ namespace qwitix_api.Core.Repositories.EventRepository
         Task Create(Event eventModel);
 
         Task<(IEnumerable<Event> Items, int TotalCount)> GetAll(
-            string organizerId,
+            string? organizerId,
             int offset,
             int limit,
             EventStatus? status = null,
@@ -20,5 +20,7 @@ namespace qwitix_api.Core.Repositories.EventRepository
         Task UpdateById(string id, Event eventModel);
 
         Task DeleteById(string id);
+
+        Task<IEnumerable<string>> GetUniqueCategories();
     }
 }
