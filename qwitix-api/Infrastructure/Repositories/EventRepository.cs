@@ -100,11 +100,22 @@ namespace qwitix_api.Infrastructure.Repositories
             var categories = await _collection
                 .Aggregate()
                 .Match(e => !e.IsDeleted)
-                .Group(e => e.Category, g => new { Category = g.Key })
-                .Project(e => e.Category)
+                .AppendStage<BsonDocument>(
+                    new BsonDocument
+                    {
+                        {
+                            "$group",
+                            new BsonDocument
+                            {
+                                { "_id", new BsonDocument("$toLower", "$category") },
+                            }
+                        },
+                    }
+                )
+                .Project<BsonDocument>(new BsonDocument { { "Category", "$_id" }, { "_id", 0 } })
                 .ToListAsync();
 
-            return categories;
+            return categories.Select(c => c["Category"].AsString);
         }
     }
 }
