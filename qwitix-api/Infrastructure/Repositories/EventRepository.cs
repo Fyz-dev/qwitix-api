@@ -99,6 +99,7 @@ namespace qwitix_api.Infrastructure.Repositories
         {
             var categories = await _collection
                 .Aggregate()
+                .Match(e => !e.IsDeleted)
                 .Group(e => e.Category, g => new { Category = g.Key })
                 .Project(e => e.Category)
                 .ToListAsync();
