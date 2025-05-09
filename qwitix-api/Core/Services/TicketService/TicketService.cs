@@ -97,20 +97,53 @@ namespace qwitix_api.Core.Services.TicketService
             return new ResponseBuyTicketDTO { url = session.Url };
         }
 
-        public async Task<IEnumerable<ResponseTicketDTO>> GetAll(string eventId)
+        public async Task<IEnumerable<ResponseTicketWithSoldDTO>> GetAll(string eventId)
         {
             var tickets = await _ticketRepository.GetAll(eventId);
+            var ticketIds = tickets.Select(t => t.Id);
+            var soldQuantities = await _transactionRepository.GetTotalSoldQuantityForTickets(
+                ticketIds
+            );
 
-            return _responseTicketMapper.ToDtoList(tickets);
+            return tickets.Select(ticket =>
+            {
+                var dto = new ResponseTicketWithSoldDTO
+                {
+                    Id = ticket.Id,
+                    Name = ticket.Name,
+                    Details = ticket.Details,
+                    Quantity = ticket.Quantity,
+                    Price = ticket.Price,
+                    EventId = ticket.EventId,
+                    Sold = soldQuantities.GetValueOrDefault(ticket.Id, 0),
+                    UpdatedAt = ticket.UpdatedAt,
+                    CreatedAt = ticket.CreatedAt,
+                };
+
+                return dto;
+            });
         }
 
-        public async Task<ResponseTicketDTO> GetById(string id)
+        public async Task<ResponseTicketWithSoldDTO> GetById(string id)
         {
             var ticket =
                 await _ticketRepository.GetById(id)
                 ?? throw new NotFoundException($"Ticket not found.");
 
-            return _responseTicketMapper.ToDto(ticket);
+            var soldQuantities = await _transactionRepository.GetTotalSoldQuantityForTickets([id]);
+
+            return new ResponseTicketWithSoldDTO
+            {
+                Id = ticket.Id,
+                Name = ticket.Name,
+                Details = ticket.Details,
+                Quantity = ticket.Quantity,
+                Price = ticket.Price,
+                EventId = ticket.EventId,
+                Sold = soldQuantities.GetValueOrDefault(id, 0),
+                UpdatedAt = ticket.UpdatedAt,
+                CreatedAt = ticket.CreatedAt,
+            };
         }
 
         public async Task UpdateById(string id, UpdateTicketDTO ticketDTO)

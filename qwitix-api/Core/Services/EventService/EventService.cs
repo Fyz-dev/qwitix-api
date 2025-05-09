@@ -2,10 +2,12 @@
 using qwitix_api.Core.Exceptions;
 using qwitix_api.Core.Helpers;
 using qwitix_api.Core.Mappers;
+using qwitix_api.Core.Mappers.TicketMappers;
 using qwitix_api.Core.Models;
 using qwitix_api.Core.Repositories;
 using qwitix_api.Core.Repositories.EventRepository;
 using qwitix_api.Core.Services.EventService.DTOs;
+using qwitix_api.Core.Services.TicketService.DTOs;
 using qwitix_api.Infrastructure.Integration.StripeIntegration;
 
 namespace qwitix_api.Core.Services.EventService
@@ -16,7 +18,8 @@ namespace qwitix_api.Core.Services.EventService
         IOrganizerRepository organizerRepository,
         StripeIntegration stripeIntegration,
         IMapper<CreateEventDTO, Event> createEventMapper,
-        IMapper<ResponseEventDTO, Event> responseEventMapper
+        IMapper<ResponseEventDTO, Event> responseEventMapper,
+        IMapper<ResponseTicketDTO, Ticket> responseTicketMapper
     )
     {
         private readonly IEventRepository _eventRepository = eventRepository;
@@ -26,6 +29,8 @@ namespace qwitix_api.Core.Services.EventService
         private readonly IMapper<CreateEventDTO, Event> _createEventMapper = createEventMapper;
         private readonly IMapper<ResponseEventDTO, Event> _responseEventMapper =
             responseEventMapper;
+        private readonly IMapper<ResponseTicketDTO, Ticket> _responseTicketMapper =
+            responseTicketMapper;
 
         public async Task Create(CreateEventDTO eventDTO)
         {
@@ -91,9 +96,17 @@ namespace qwitix_api.Core.Services.EventService
 
             bool hasNextPage = (limit > 0) && (offset + limit < totalCount);
 
+            var eventDTOs = _responseEventMapper.ToDtoList(events);
+
+            foreach (var eventDTO in eventDTOs)
+            {
+                var tickets = await _ticketRepository.GetAll(eventDTO.Id);
+                eventDTO.Tickets = tickets.Select(ticket => _responseTicketMapper.ToDto(ticket));
+            }
+
             return new PaginationResponse<ResponseEventDTO>
             {
-                Items = _responseEventMapper.ToDtoList(events),
+                Items = eventDTOs,
                 TotalCount = totalCount,
                 HasNextPage = hasNextPage,
             };
@@ -105,7 +118,12 @@ namespace qwitix_api.Core.Services.EventService
                 await _eventRepository.GetById(id)
                 ?? throw new NotFoundException($"Event not found.");
 
-            return _responseEventMapper.ToDto(eventModel);
+            var dto = _responseEventMapper.ToDto(eventModel);
+
+            var tickets = await _ticketRepository.GetAll(id);
+            dto.Tickets = tickets.Select(ticket => _responseTicketMapper.ToDto(ticket));
+
+            return dto;
         }
 
         public async Task UpdateById(string id, UpdateEventDTO eventDTO)

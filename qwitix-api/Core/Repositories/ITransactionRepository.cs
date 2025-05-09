@@ -18,6 +18,7 @@ namespace qwitix_api.Core.Repositories
             TransactionStatus? status = null
         );
 
+        Task<IEnumerable<Transaction>> GetByTicketId(string ticketId);
         Task<Dictionary<string, int>> GetTotalSoldQuantityForTickets(IEnumerable<string> ticketIds);
 
         Task UpdateById(string id, Transaction transaction);

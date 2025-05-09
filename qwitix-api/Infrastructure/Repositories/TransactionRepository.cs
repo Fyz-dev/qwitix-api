@@ -50,6 +50,16 @@ namespace qwitix_api.Infrastructure.Repositories
             return await _collection.Find(filter).Skip(offset).Limit(limit).ToListAsync();
         }
 
+        public async Task<IEnumerable<Transaction>> GetByTicketId(string ticketId)
+        {
+            var filter = Builders<Transaction>.Filter.ElemMatch(
+                t => t.Tickets,
+                tp => tp.TicketId == ticketId
+            );
+
+            return await _collection.Find(filter).ToListAsync();
+        }
+
         public async Task<Dictionary<string, int>> GetTotalSoldQuantityForTickets(
             IEnumerable<string> ticketIds
         )
