@@ -52,23 +52,23 @@ namespace qwitix_api.Infrastructure.Controllers
         [HttpGet("ticket/list", Name = "GetTicketList")]
         [ProducesResponseType(
             StatusCodes.Status200OK,
-            Type = typeof(IEnumerable<ResponseTicketDTO>)
+            Type = typeof(IEnumerable<ResponseTicketWithSoldDTO>)
         )]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAll([Required] string eventId)
         {
-            IEnumerable<ResponseTicketDTO> tickets = await _ticketService.GetAll(eventId);
+            IEnumerable<ResponseTicketWithSoldDTO> tickets = await _ticketService.GetAll(eventId);
 
             return Ok(tickets);
         }
 
         [HttpGet("ticket/{id}", Name = "GetTicket")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseTicketDTO))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseTicketWithSoldDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetById(string id)
         {
-            ResponseTicketDTO ticket = await _ticketService.GetById(id);
+            ResponseTicketWithSoldDTO ticket = await _ticketService.GetById(id);
 
             return Ok(ticket);
         }
