@@ -25,7 +25,9 @@ namespace qwitix_api.Infrastructure.Controllers
         public async Task<IActionResult> Index()
         {
             var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
-            var signatureHeader = Request.Headers["Stripe-Signature"];
+
+            if (!Request.Headers.TryGetValue("Stripe-Signature", out var signatureHeader))
+                return BadRequest("Stripe-Signature header is missing");
 
             try
             {
