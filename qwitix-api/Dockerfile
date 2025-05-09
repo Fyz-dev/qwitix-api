@@ -13,6 +13,7 @@ ARG JwtSettings__Audience
 ARG JwtSettings__Secret
 ARG StripeSettings__PublishableKey
 ARG StripeSettings__SecretKey
+ARG StripeSettings__WebhookSecret
 ARG Authentication__Google__ClientId
 ARG Authentication__Google__ClientSecret
 ARG CorsOptions__AllowedOriginsRaw
@@ -24,6 +25,7 @@ ENV JwtSettings__Audience=$JwtSettings__Audience
 ENV JwtSettings__Secret=$JwtSettings__Secret
 ENV StripeSettings__PublishableKey=$StripeSettings__PublishableKey
 ENV StripeSettings__SecretKey=$StripeSettings__SecretKey
+ENV StripeSettings__WebhookSecret=$StripeSettings__WebhookSecret
 ENV Authentication__Google__ClientId=$Authentication__Google__ClientId
 ENV Authentication__Google__ClientSecret=$Authentication__Google__ClientSecret
 ENV CorsOptions__AllowedOriginsRaw=$CorsOptions__AllowedOriginsRaw

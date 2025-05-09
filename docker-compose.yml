@@ -14,6 +14,7 @@ services:
         - JwtSettings__Secret
         - StripeSettings__PublishableKey
         - StripeSettings__SecretKey
+        - StripeSettings__WebhookSecret
         - Authentication__Google__ClientId
         - Authentication__Google__ClientSecret
         - CorsOptions__AllowedOriginsRaw
