@@ -72,6 +72,19 @@ namespace qwitix_api.Infrastructure.Repositories
             return await _collection.Find(filter).FirstOrDefaultAsync();
         }
 
+        public async Task<IEnumerable<Event>> GetById(params string[] ids)
+        {
+            if (ids == null || ids.Length == 0)
+                return Enumerable.Empty<Event>();
+
+            var filter = Builders<Event>.Filter.And(
+                Builders<Event>.Filter.In(e => e.Id, ids),
+                Builders<Event>.Filter.Eq(e => e.IsDeleted, false)
+            );
+
+            return await _collection.Find(filter).ToListAsync();
+        }
+
         public async Task UpdateById(string id, Event eventModel)
         {
             eventModel.UpdatedAt = DateTime.UtcNow;

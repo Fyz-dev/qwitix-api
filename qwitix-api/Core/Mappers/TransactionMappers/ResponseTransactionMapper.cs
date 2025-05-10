@@ -18,16 +18,7 @@ namespace qwitix_api.Core.Mappers.TransactionMappers
 
         public override ResponseTransactionDTO ToDto(Transaction entity)
         {
-            return new ResponseTransactionDTO
-            {
-                Id = entity.Id,
-                UserId = entity.UserId,
-                Tickets = _ticketPurchaseMapper.ToDtoList(entity.Tickets),
-                Currency = entity.Currency,
-                Status = entity.Status,
-                CreatedAt = entity.CreatedAt,
-                UpdatedAt = entity.UpdatedAt,
-            };
+            throw new NotImplementedException();
         }
     }
 }

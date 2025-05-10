@@ -8,7 +8,7 @@ namespace qwitix_api.Core.Services.TransactionService.DTOs
     {
         public required string UserId { get; set; }
 
-        public required List<TicketPurchaseDTO> Tickets { get; set; }
+        public required List<ResponseTicketDTO> Tickets { get; set; }
 
         public required string Currency { get; set; }
 

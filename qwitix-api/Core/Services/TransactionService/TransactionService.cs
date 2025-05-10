@@ -4,23 +4,32 @@ using qwitix_api.Core.Exceptions;
 using qwitix_api.Core.Mappers;
 using qwitix_api.Core.Models;
 using qwitix_api.Core.Repositories;
+using qwitix_api.Core.Repositories.EventRepository;
+using qwitix_api.Core.Services.EventService.DTOs;
+using qwitix_api.Core.Services.TicketService.DTOs;
 using qwitix_api.Core.Services.TransactionService.DTOs;
+using qwitix_api.Infrastructure.Repositories;
 
 namespace qwitix_api.Core.Services.TransactionService
 {
     public class TransactionService
     {
         private readonly ITransactionRepository _transactonRepository;
-        private readonly IMapper<ResponseTransactionDTO, Transaction> _responseTransactionMapper;
+        private readonly ITicketRepository _ticketRepository;
+        private readonly IMapper<ResponseTicketDTO, Ticket> _responseTicketMapper;
 
         public TransactionService(
             ITransactionRepository transactonRepository,
             IUserRepository userRepository,
-            IMapper<ResponseTransactionDTO, Transaction> responseTransactionMapper
+            ITicketRepository ticketRepository,
+            IEventRepository eventRepository,
+            IMapper<ResponseTicketDTO, Ticket> responseTicketMapper,
+            IMapper<ResponseEventDTO, Event> responseEventMapper
         )
         {
             _transactonRepository = transactonRepository;
-            _responseTransactionMapper = responseTransactionMapper;
+            _ticketRepository = ticketRepository;
+            _responseTicketMapper = responseTicketMapper;
         }
 
         public async Task<IEnumerable<ResponseTransactionDTO>> GetByUserId(
@@ -30,14 +39,43 @@ namespace qwitix_api.Core.Services.TransactionService
             TransactionStatus? status = null
         )
         {
-            var transactions = await _transactonRepository.GetByUserId(
-                userId,
-                offset,
-                limit,
-                status
-            );
+            var transactions = (
+                await _transactonRepository.GetByUserId(userId, offset, limit, status)
+            ).ToList();
 
-            return _responseTransactionMapper.ToDtoList(transactions);
+            var allTicketIds = transactions
+                .SelectMany(t => t.Tickets)
+                .Select(t => t.TicketId)
+                .Distinct()
+                .ToArray();
+
+            var tickets = (await _ticketRepository.GetById(allTicketIds)).ToDictionary(t => t.Id);
+
+            var transactionDtos = transactions.Select(transaction =>
+            {
+                var ticketDtos = transaction
+                    .Tickets.Select(t =>
+                    {
+                        if (!tickets.TryGetValue(t.TicketId, out var ticket))
+                            throw new NotFoundException($"Ticket with ID {t.TicketId} not found.");
+
+                        return _responseTicketMapper.ToDto(ticket);
+                    })
+                    .ToList();
+
+                return new ResponseTransactionDTO
+                {
+                    Id = transaction.Id,
+                    CreatedAt = transaction.CreatedAt,
+                    UpdatedAt = transaction.UpdatedAt,
+                    UserId = transaction.UserId,
+                    Currency = transaction.Currency,
+                    Status = transaction.Status,
+                    Tickets = ticketDtos,
+                };
+            });
+
+            return transactionDtos;
         }
 
         public async Task<ResponseTransactionDTO> GetByTransactionId(string id)
@@ -46,7 +84,29 @@ namespace qwitix_api.Core.Services.TransactionService
                 await _transactonRepository.GetByTransactionId(id)
                 ?? throw new NotFoundException("Transaction not found.");
 
-            return _responseTransactionMapper.ToDto(transaction);
+            var ticketIds = transaction.Tickets.Select(t => t.TicketId).ToArray();
+            var tickets = (await _ticketRepository.GetById(ticketIds)).ToDictionary(t => t.Id);
+
+            var ticketDtos = transaction
+                .Tickets.Select(t =>
+                {
+                    if (!tickets.TryGetValue(t.TicketId, out var ticket))
+                        throw new NotFoundException($"Ticket with ID {t.TicketId} not found.");
+
+                    return _responseTicketMapper.ToDto(ticket);
+                })
+                .ToList();
+
+            return new ResponseTransactionDTO
+            {
+                Id = transaction.Id,
+                CreatedAt = transaction.CreatedAt,
+                UpdatedAt = transaction.UpdatedAt,
+                UserId = transaction.UserId,
+                Currency = transaction.Currency,
+                Status = transaction.Status,
+                Tickets = ticketDtos,
+            };
         }
     }
 }

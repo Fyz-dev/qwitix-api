@@ -27,12 +27,16 @@ namespace qwitix_api.Infrastructure.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetByUserId(
-            [Required] string userId,
             int offset,
             int limit,
             TransactionStatus? status = null
         )
         {
+            var userId = User.FindFirst("user_id")?.Value;
+
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
             IEnumerable<ResponseTransactionDTO> transactions =
                 await _transactionService.GetByUserId(userId, offset, limit, status);
 

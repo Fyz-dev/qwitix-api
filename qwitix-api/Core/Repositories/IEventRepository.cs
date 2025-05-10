@@ -17,6 +17,8 @@ namespace qwitix_api.Core.Repositories.EventRepository
 
         Task<Event?> GetById(string id);
 
+        Task<IEnumerable<Event>> GetById(params string[] ids);
+
         Task UpdateById(string id, Event eventModel);
 
         Task DeleteById(string id);
