@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using qwitix_api.Core.Services.AccountService;
 using qwitix_api.Core.Services.DTOs;
 using qwitix_api.Core.Services.OrganizerService.DTOs;
+using qwitix_api.Core.Services.UserService;
 using qwitix_api.Core.Services.UserService.DTOs;
 
 namespace qwitix_api.Infrastructure.Controllers
@@ -89,6 +90,25 @@ namespace qwitix_api.Infrastructure.Controllers
 
             Response.Cookies.Delete("ACCESS_TOKEN", cookieOptions);
             Response.Cookies.Delete("REFRESH_TOKEN", cookieOptions);
+
+            return Ok();
+        }
+
+        [HttpPatch(Name = "UpdateAccount")]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateById(UpdateUserDTO userDTO)
+        {
+            var userId = User.FindFirst("user_id")?.Value;
+
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+            await _accountService.UpdateById(userId, userDTO);
 
             return Ok();
         }

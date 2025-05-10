@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Security.Claims;
 using qwitix_api.Core.Exceptions;
+using qwitix_api.Core.Helpers;
 using qwitix_api.Core.Mappers;
 using qwitix_api.Core.Mappers.UserMappers;
 using qwitix_api.Core.Models;
@@ -69,6 +70,16 @@ namespace qwitix_api.Core.Services.AccountService
                 throw new RefreshTokenException("Refresh token is expired.");
 
             await SetAuthTokensAsync(user);
+        }
+
+        public async Task UpdateById(string id, UpdateUserDTO userDTO)
+        {
+            var user =
+                await _userRepository.GetById(id) ?? throw new NotFoundException("User not found.");
+
+            PatchHelper.ApplyPatch(userDTO, user);
+
+            await _userRepository.UpdateById(id, user);
         }
 
         public async Task LoginWithGoogleAsync(ClaimsPrincipal? claimsPrincipal)
