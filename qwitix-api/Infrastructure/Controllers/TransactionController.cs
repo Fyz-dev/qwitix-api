@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using qwitix_api.Core.Enums;
+using qwitix_api.Core.Helpers;
 using qwitix_api.Core.Services.TransactionService;
 using qwitix_api.Core.Services.TransactionService.DTOs;
 
@@ -22,7 +23,7 @@ namespace qwitix_api.Infrastructure.Controllers
         [HttpGet("transaction/list", Name = "GetTransactionList")]
         [ProducesResponseType(
             StatusCodes.Status200OK,
-            Type = typeof(IEnumerable<ResponseTransactionDTO>)
+            Type = typeof(PaginationResponse<ResponseTransactionDTO>)
         )]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -37,10 +38,10 @@ namespace qwitix_api.Infrastructure.Controllers
             if (string.IsNullOrEmpty(userId))
                 return Unauthorized();
 
-            IEnumerable<ResponseTransactionDTO> transactions =
+            PaginationResponse<ResponseTransactionDTO> response =
                 await _transactionService.GetByUserId(userId, offset, limit, status);
 
-            return Ok(transactions);
+            return Ok(response);
         }
 
         [HttpGet("transaction/{id}", Name = "GetTransaction")]

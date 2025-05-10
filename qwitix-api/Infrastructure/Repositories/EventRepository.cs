@@ -27,8 +27,6 @@ namespace qwitix_api.Infrastructure.Repositories
             string? searchQuery = null
         )
         {
-            Debug.WriteLine(limit);
-
             var filters = new List<FilterDefinition<Event>>
             {
                 Builders<Event>.Filter.Eq(e => e.IsDeleted, false),

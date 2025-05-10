@@ -32,22 +32,35 @@ namespace qwitix_api.Infrastructure.Repositories
             return await _collection.Find(filter).FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<Transaction>> GetByUserId(
+        public async Task<(IEnumerable<Transaction> Items, int TotalCount)> GetByUserId(
             string userId,
             int offset,
             int limit,
             TransactionStatus? status = null
         )
         {
-            var filter = Builders<Transaction>.Filter.Eq(t => t.UserId, userId);
+            var filters = new List<FilterDefinition<Transaction>>
+            {
+                Builders<Transaction>.Filter.Eq(t => t.UserId, userId),
+            };
 
             if (status.HasValue)
-                filter = Builders<Transaction>.Filter.And(
-                    filter,
-                    Builders<Transaction>.Filter.Eq(t => t.Status, status.Value)
-                );
+            {
+                filters.Add(Builders<Transaction>.Filter.Eq(t => t.Status, status.Value));
+            }
 
-            return await _collection.Find(filter).Skip(offset).Limit(limit).ToListAsync();
+            var filter = Builders<Transaction>.Filter.And(filters);
+
+            var totalCount = await _collection.CountDocumentsAsync(filter);
+
+            var items = await _collection
+                .Find(filter)
+                .SortByDescending(t => t.CreatedAt)
+                .Skip(offset)
+                .Limit(limit)
+                .ToListAsync();
+
+            return (items, (int)totalCount);
         }
 
         public async Task<IEnumerable<Transaction>> GetByTicketId(string ticketId)

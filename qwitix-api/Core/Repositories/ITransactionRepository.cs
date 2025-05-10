@@ -11,7 +11,7 @@ namespace qwitix_api.Core.Repositories
 
         Task<Transaction?> GetByCheckoutSessionId(string id);
 
-        Task<IEnumerable<Transaction>> GetByUserId(
+        Task<(IEnumerable<Transaction> Items, int TotalCount)> GetByUserId(
             string userId,
             int offset,
             int limit,
