@@ -79,8 +79,16 @@ namespace qwitix_api.Infrastructure.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult Logout()
         {
-            Response.Cookies.Delete("ACCESS_TOKEN");
-            Response.Cookies.Delete("REFRESH_TOKEN");
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = DateTimeOffset.UnixEpoch,
+                Secure = true,
+                SameSite = SameSiteMode.None,
+            };
+
+            Response.Cookies.Delete("ACCESS_TOKEN", cookieOptions);
+            Response.Cookies.Delete("REFRESH_TOKEN", cookieOptions);
 
             return Ok();
         }
