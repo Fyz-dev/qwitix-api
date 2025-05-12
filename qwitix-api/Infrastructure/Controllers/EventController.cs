@@ -58,7 +58,8 @@ namespace qwitix_api.Infrastructure.Controllers
             int offset,
             int limit,
             EventStatus? status = null,
-            string? searchQuery = null
+            string? searchQuery = null,
+            [FromQuery(Name = "categories")] List<string>? categories = null
         )
         {
             PaginationResponse<ResponseEventDTO> events = await _eventService.GetAll(
@@ -66,7 +67,8 @@ namespace qwitix_api.Infrastructure.Controllers
                 offset,
                 limit,
                 status,
-                searchQuery
+                searchQuery,
+                categories
             );
 
             return Ok(events);

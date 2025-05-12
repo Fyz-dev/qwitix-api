@@ -24,7 +24,8 @@ namespace qwitix_api.Infrastructure.Repositories
             int offset,
             int limit,
             EventStatus? status = null,
-            string? searchQuery = null
+            string? searchQuery = null,
+            List<string>? categories = null
         )
         {
             var filters = new List<FilterDefinition<Event>>
@@ -45,6 +46,9 @@ namespace qwitix_api.Infrastructure.Repositories
                         new BsonRegularExpression(searchQuery, "i")
                     )
                 );
+
+            if (categories is { Count: > 0 })
+                filters.Add(Builders<Event>.Filter.In(e => e.Category, categories));
 
             var filter = Builders<Event>.Filter.And(filters);
 

@@ -83,7 +83,8 @@ namespace qwitix_api.Core.Services.EventService
             int offset,
             int limit,
             EventStatus? status = null,
-            string? searchQuery = null
+            string? searchQuery = null,
+            List<string>? categories = null
         )
         {
             var (events, totalCount) = await _eventRepository.GetAll(
@@ -91,7 +92,8 @@ namespace qwitix_api.Core.Services.EventService
                 offset,
                 limit,
                 status,
-                searchQuery
+                searchQuery,
+                categories
             );
 
             bool hasNextPage = (limit > 0) && (offset + limit < totalCount);

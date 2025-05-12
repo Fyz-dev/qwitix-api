@@ -12,7 +12,8 @@ namespace qwitix_api.Core.Repositories.EventRepository
             int offset,
             int limit,
             EventStatus? status = null,
-            string? searchQuery = null
+            string? searchQuery = null,
+            List<string>? categories = null
         );
 
         Task<Event?> GetById(string id);
