@@ -26,6 +26,26 @@ namespace qwitix_api.Infrastructure.Controllers
             _linkGenerator = linkGenerator;
         }
 
+        [HttpGet("authorize", Name = "IsAuthorized")]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> IsAuthorized()
+        {
+            var userId = User.FindFirst("user_id")?.Value;
+
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+            var user = await _accountService.GetById(userId);
+
+            if (user == null)
+                return NotFound();
+
+            return Ok();
+        }
+
         [HttpGet(Name = "GetAccount")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ResponseAccountDTO))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
