@@ -13,5 +13,7 @@ namespace qwitix_api.Core.Services.TransactionService.DTOs
         public required string Currency { get; set; }
 
         public required TransactionStatus Status { get; set; }
+
+        public string? StripePaymentLink { get; set; }
     }
 }

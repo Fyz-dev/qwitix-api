@@ -78,6 +78,7 @@ namespace qwitix_api.Core.Services.TransactionService
                         UserId = transaction.UserId,
                         Currency = transaction.Currency,
                         Status = transaction.Status,
+                        StripePaymentLink = transaction.StripePaymentLink,
                         Tickets = ticketDTOs,
                     };
                 })
@@ -120,6 +121,7 @@ namespace qwitix_api.Core.Services.TransactionService
                 UserId = transaction.UserId,
                 Currency = transaction.Currency,
                 Status = transaction.Status,
+                StripePaymentLink = transaction.StripePaymentLink,
                 Tickets = ticketDtos,
             };
         }
