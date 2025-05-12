@@ -123,6 +123,9 @@ namespace qwitix_api.Infrastructure.Repositories
                         },
                     }
                 )
+                .AppendStage<BsonDocument>(
+                    new BsonDocument { { "$sort", new BsonDocument("_id", 1) } }
+                )
                 .Project<BsonDocument>(new BsonDocument { { "Category", "$_id" }, { "_id", 0 } })
                 .ToListAsync();
 
