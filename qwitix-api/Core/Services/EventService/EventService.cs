@@ -116,7 +116,17 @@ namespace qwitix_api.Core.Services.EventService
 
             bool hasNextPage = (limit > 0) && (offset + limit < totalCount);
 
-            var eventDTOs = _responseEventMapper.ToDtoList(events);
+            var eventDTOs = events
+                .Select(eventModel =>
+                {
+                    var eventDto = _responseEventMapper.ToDto(eventModel);
+
+                    if (!string.IsNullOrEmpty(eventModel.ImgBlobName))
+                        eventDto.ImgUrl = _urlProcessor.GetMediaUrl(eventModel.ImgBlobName);
+
+                    return eventDto;
+                })
+                .ToList();
 
             foreach (var eventDTO in eventDTOs)
             {
