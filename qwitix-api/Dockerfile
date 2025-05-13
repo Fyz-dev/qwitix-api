@@ -8,6 +8,8 @@ EXPOSE 8080
 
 ARG ASPNETCORE_ENVIRONMENT
 ARG DatabaseSettings__ConnectionString
+ARG AzureBlobStorage__ConnectionString
+ARG AzureBlobStorage__ContainerName
 ARG JwtSettings__Issuer
 ARG JwtSettings__Audience
 ARG JwtSettings__Secret
@@ -20,6 +22,8 @@ ARG CorsOptions__AllowedOriginsRaw
 
 ENV ASPNETCORE_ENVIRONMENT=$ASPNETCORE_ENVIRONMENT
 ENV DatabaseSettings__ConnectionString=$DatabaseSettings__ConnectionString
+ENV AzureBlobStorage__ConnectionString=$AzureBlobStorage__ConnectionString
+ENV AzureBlobStorage__ContainerName=$AzureBlobStorage__ContainerName
 ENV JwtSettings__Issuer=$JwtSettings__Issuer
 ENV JwtSettings__Audience=$JwtSettings__Audience
 ENV JwtSettings__Secret=$JwtSettings__Secret

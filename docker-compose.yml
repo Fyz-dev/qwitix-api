@@ -9,6 +9,8 @@ services:
         - ASPNETCORE_HTTP_PORTS=8080
         - ASPNETCORE_ENVIRONMENT
         - DatabaseSettings__ConnectionString
+        - AzureBlobStorage__ConnectionString
+        - AzureBlobStorage__ContainerName   
         - JwtSettings__Issuer
         - JwtSettings__Audience
         - JwtSettings__Secret
