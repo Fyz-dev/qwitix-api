@@ -27,7 +27,7 @@ namespace qwitix_api.Infrastructure.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Create([FromForm] CreateEventDTO eventDTO)
+        public async Task<IActionResult> Create([FromBody] CreateEventDTO eventDTO)
         {
             await _eventService.Create(eventDTO);
 
@@ -93,7 +93,7 @@ namespace qwitix_api.Infrastructure.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateById(string id, [FromForm] UpdateEventDTO eventDTO)
+        public async Task<IActionResult> UpdateById(string id, [FromBody] UpdateEventDTO eventDTO)
         {
             await _eventService.UpdateById(id, eventDTO);
 
