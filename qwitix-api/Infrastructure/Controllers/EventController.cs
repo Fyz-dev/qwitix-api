@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using qwitix_api.Core.Enums;
@@ -19,14 +20,14 @@ namespace qwitix_api.Infrastructure.Controllers
             _eventService = eventService;
         }
 
-        [HttpPost("event", Name = "CreateEvent")]
+        [HttpPost("event", Name = "CreateEvent"), DisableRequestSizeLimit]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Create(CreateEventDTO eventDTO)
+        public async Task<IActionResult> Create([FromForm] CreateEventDTO eventDTO)
         {
             await _eventService.Create(eventDTO);
 
@@ -85,14 +86,14 @@ namespace qwitix_api.Infrastructure.Controllers
             return Ok(eventDto);
         }
 
-        [HttpPatch("event/{id}", Name = "UpdateEvent")]
+        [HttpPatch("event/{id}", Name = "UpdateEvent"), DisableRequestSizeLimit]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateById(string id, UpdateEventDTO eventDTO)
+        public async Task<IActionResult> UpdateById(string id, [FromForm] UpdateEventDTO eventDTO)
         {
             await _eventService.UpdateById(id, eventDTO);
 

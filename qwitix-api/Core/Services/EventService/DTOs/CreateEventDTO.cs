@@ -8,6 +8,8 @@
 
         public string? Description { get; set; }
 
+        public IFormFile? ImgFile { get; set; }
+
         public required string Category { get; set; }
 
         public required CreateVenueDTO Venue { get; set; }

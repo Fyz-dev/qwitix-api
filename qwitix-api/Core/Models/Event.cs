@@ -59,6 +59,9 @@ namespace qwitix_api.Core.Models
             }
         }
 
+        [BsonElement("img_blob_name")]
+        public string? ImgBlobName { get; set; }
+
         [BsonRequired]
         [BsonElement("category")]
         public string Category

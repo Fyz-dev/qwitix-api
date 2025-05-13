@@ -13,6 +13,8 @@ namespace qwitix_api.Core.Services.EventService.DTOs
 
         public string? Description { get; set; }
 
+        public string? ImgUrl { get; set; }
+
         public required string Category { get; set; }
 
         public required EventStatus Status { get; set; }

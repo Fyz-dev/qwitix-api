@@ -21,6 +21,7 @@ using qwitix_api.Core.Repositories.EventRepository;
 using qwitix_api.Core.Services.AccountService;
 using qwitix_api.Core.Services.EventService;
 using qwitix_api.Core.Services.EventService.DTOs;
+using qwitix_api.Core.Services.MediaService;
 using qwitix_api.Core.Services.OrganizerService;
 using qwitix_api.Core.Services.OrganizerService.DTOs;
 using qwitix_api.Core.Services.StripeService;
@@ -42,6 +43,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Configs
 builder.Services.Configure<DatabaseSettings>(
     builder.Configuration.GetSection(nameof(DatabaseSettings))
+);
+builder.Services.Configure<AzureBlobStorage>(
+    builder.Configuration.GetSection(nameof(AzureBlobStorage))
 );
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(nameof(JwtSettings)));
 builder.Services.Configure<StripeSettings>(
@@ -106,6 +110,11 @@ builder.Services.AddScoped<IAuthTokenProcessor, AuthTokenProcessor>();
 builder.Services.AddScoped<AccountService>();
 
 builder.Services.AddScoped<StripeService>();
+
+builder.Services.AddScoped<IUrlProcessor, UrlProcessor>();
+
+builder.Services.AddScoped<IBlobStorageRepository, BlobStorageRepository>();
+builder.Services.AddScoped<MediaService>();
 
 // Authentication
 builder

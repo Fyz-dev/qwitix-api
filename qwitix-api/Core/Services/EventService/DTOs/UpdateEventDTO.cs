@@ -8,6 +8,8 @@ namespace qwitix_api.Core.Services.EventService.DTOs
 
         public string? Description { get; set; }
 
+        public IFormFile? ImgFile { get; set; }
+
         public string? Category { get; set; }
 
         public UpdateVenueDTO? Venue { get; set; }

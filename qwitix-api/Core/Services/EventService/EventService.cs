@@ -1,9 +1,11 @@
-﻿using qwitix_api.Core.Enums;
+﻿using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
+using qwitix_api.Core.Enums;
 using qwitix_api.Core.Exceptions;
 using qwitix_api.Core.Helpers;
 using qwitix_api.Core.Mappers;
-using qwitix_api.Core.Mappers.TicketMappers;
 using qwitix_api.Core.Models;
+using qwitix_api.Core.Processors;
 using qwitix_api.Core.Repositories;
 using qwitix_api.Core.Repositories.EventRepository;
 using qwitix_api.Core.Services.EventService.DTOs;
@@ -16,6 +18,8 @@ namespace qwitix_api.Core.Services.EventService
         IEventRepository eventRepository,
         ITicketRepository ticketRepository,
         IOrganizerRepository organizerRepository,
+        IBlobStorageRepository blobStorageRepository,
+        IUrlProcessor urlProcessor,
         StripeIntegration stripeIntegration,
         IMapper<CreateEventDTO, Event> createEventMapper,
         IMapper<ResponseEventDTO, Event> responseEventMapper,
@@ -25,6 +29,8 @@ namespace qwitix_api.Core.Services.EventService
         private readonly IEventRepository _eventRepository = eventRepository;
         private readonly ITicketRepository _ticketRepository = ticketRepository;
         private readonly IOrganizerRepository _organizerRepository = organizerRepository;
+        private readonly IBlobStorageRepository _blobStorageRepository = blobStorageRepository;
+        private readonly IUrlProcessor _urlProcessor = urlProcessor;
         private readonly StripeIntegration _stripeIntegration = stripeIntegration;
         private readonly IMapper<CreateEventDTO, Event> _createEventMapper = createEventMapper;
         private readonly IMapper<ResponseEventDTO, Event> _responseEventMapper =
@@ -41,6 +47,18 @@ namespace qwitix_api.Core.Services.EventService
             var eventModel = _createEventMapper.ToEntity(eventDTO);
 
             await _eventRepository.Create(eventModel);
+
+            if (eventDTO.ImgFile != null)
+            {
+                string blobName = await _blobStorageRepository.UploadFileAsync(
+                    eventDTO.ImgFile,
+                    eventModel.Id
+                );
+
+                eventModel.ImgBlobName = blobName;
+            }
+
+            await _eventRepository.UpdateById(eventModel.Id, eventModel);
         }
 
         public async Task Publish(string id, PublishEventDTO publishEventDTO)
@@ -122,6 +140,9 @@ namespace qwitix_api.Core.Services.EventService
 
             var dto = _responseEventMapper.ToDto(eventModel);
 
+            if (!string.IsNullOrEmpty(eventModel.ImgBlobName))
+                dto.ImgUrl = _urlProcessor.GetMediaUrl(eventModel.ImgBlobName);
+
             var tickets = await _ticketRepository.GetAll(id);
             dto.Tickets = tickets.Select(ticket => _responseTicketMapper.ToDto(ticket));
 
@@ -143,6 +164,16 @@ namespace qwitix_api.Core.Services.EventService
 
             if (eventDTO.Venue is not null)
                 PatchHelper.ApplyPatch(eventDTO.Venue, eventModel.Venue);
+
+            if (eventDTO.ImgFile != null)
+            {
+                string blobName = await _blobStorageRepository.UploadFileAsync(
+                    eventDTO.ImgFile,
+                    eventModel.Id
+                );
+
+                eventModel.ImgBlobName = blobName;
+            }
 
             await _eventRepository.UpdateById(id, eventModel);
         }
