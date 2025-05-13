@@ -22,7 +22,7 @@ namespace qwitix_api.Infrastructure.Controllers
 
         [HttpPost("event", Name = "CreateEvent"), DisableRequestSizeLimit]
         [Authorize]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status204NoContent, Type = typeof(CreateEventDTO))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -88,7 +88,7 @@ namespace qwitix_api.Infrastructure.Controllers
 
         [HttpPatch("event/{id}", Name = "UpdateEvent"), DisableRequestSizeLimit]
         [Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UpdateEventDTO))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
