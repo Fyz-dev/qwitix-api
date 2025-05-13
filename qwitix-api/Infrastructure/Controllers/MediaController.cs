@@ -4,12 +4,12 @@ using qwitix_api.Core.Services.MediaService;
 namespace qwitix_api.Infrastructure.Controllers
 {
     [ApiController]
-    [Route("media")]
+    [Route("api/")]
     public class MediaController(MediaService mediaService) : ControllerBase
     {
         private readonly MediaService _mediaService = mediaService;
 
-        [HttpGet("{**blobName}")]
+        [HttpGet("media/{**blobName}")]
         public async Task<IActionResult> Get(string blobName)
         {
             var file = await _mediaService.GetFileAsync(blobName);
