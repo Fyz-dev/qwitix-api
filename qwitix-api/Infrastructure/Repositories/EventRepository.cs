@@ -47,7 +47,18 @@ namespace qwitix_api.Infrastructure.Repositories
                 );
 
             if (categories is { Count: > 0 })
-                filters.Add(Builders<Event>.Filter.In(e => e.Category, categories));
+            {
+                var categoryFilters = categories
+                    .Select(category =>
+                        Builders<Event>.Filter.Regex(
+                            e => e.Category,
+                            new BsonRegularExpression(category, "i")
+                        )
+                    )
+                    .ToList();
+
+                filters.Add(Builders<Event>.Filter.Or(categoryFilters));
+            }
 
             var filter = Builders<Event>.Filter.And(filters);
 
