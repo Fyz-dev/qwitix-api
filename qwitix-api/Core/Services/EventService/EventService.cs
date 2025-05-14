@@ -189,7 +189,7 @@ namespace qwitix_api.Core.Services.EventService
             return categories;
         }
 
-        public async Task<string> UploadImage(string eventId, IFormFile imageFile)
+        public async Task<string> UploadImage(string eventId, UploadImageDTO imageDTO)
         {
             var eventModel =
                 await _eventRepository.GetById(eventId)
@@ -198,7 +198,7 @@ namespace qwitix_api.Core.Services.EventService
             if (eventModel.Status != EventStatus.Draft)
                 throw new ValidationException("You can only upload an image for a draft event.");
 
-            var blobName = await _blobStorageRepository.UploadFileAsync(imageFile, eventId);
+            var blobName = await _blobStorageRepository.UploadFileAsync(imageDTO.Image, eventId);
             eventModel.ImgBlobName = blobName;
 
             await _eventRepository.UpdateById(eventId, eventModel);

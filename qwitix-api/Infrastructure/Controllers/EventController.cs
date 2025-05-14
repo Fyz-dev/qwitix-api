@@ -132,7 +132,7 @@ namespace qwitix_api.Infrastructure.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UploadImage(string id, [FromForm] IFormFile image)
+        public async Task<IActionResult> UploadImage(string id, UploadImageDTO image)
         {
             string imageUrl = await _eventService.UploadImage(id, image);
 
