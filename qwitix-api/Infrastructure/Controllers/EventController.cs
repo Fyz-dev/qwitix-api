@@ -20,18 +20,18 @@ namespace qwitix_api.Infrastructure.Controllers
             _eventService = eventService;
         }
 
-        [HttpPost("event", Name = "CreateEvent"), DisableRequestSizeLimit]
+        [HttpPost("event", Name = "CreateEvent")]
         [Authorize]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ResponseEventDTO))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Create([FromBody] CreateEventDTO eventDTO)
+        public async Task<IActionResult> Create(CreateEventDTO eventDTO)
         {
-            await _eventService.Create(eventDTO);
+            ResponseEventDTO createdEvent = await _eventService.Create(eventDTO);
 
-            return Created();
+            return CreatedAtRoute("GetEvent", new { id = createdEvent.Id }, createdEvent);
         }
 
         [HttpPost("event/{id}/publish", Name = "PublishEvent")]
@@ -93,7 +93,7 @@ namespace qwitix_api.Infrastructure.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateById(string id, [FromBody] UpdateEventDTO eventDTO)
+        public async Task<IActionResult> UpdateById(string id, UpdateEventDTO eventDTO)
         {
             await _eventService.UpdateById(id, eventDTO);
 
@@ -122,6 +122,35 @@ namespace qwitix_api.Infrastructure.Controllers
             IEnumerable<string> categories = await _eventService.GetUniqueCategories();
 
             return Ok(categories);
+        }
+
+        [HttpPost("event/{id}/upload-image", Name = "UploadEventImage")]
+        [Authorize]
+        [Consumes("multipart/form-data")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UploadImage(string id, [FromForm] IFormFile image)
+        {
+            string imageUrl = await _eventService.UploadImage(id, image);
+
+            return Ok(new { imageUrl });
+        }
+
+        [HttpDelete("event/{id}/delete-image", Name = "DeleteEventImage")]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> DeleteImage(string id)
+        {
+            await _eventService.DeleteImage(id);
+
+            return NoContent();
         }
     }
 }

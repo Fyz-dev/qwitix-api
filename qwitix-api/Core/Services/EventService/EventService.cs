@@ -38,7 +38,7 @@ namespace qwitix_api.Core.Services.EventService
         private readonly IMapper<ResponseTicketDTO, Ticket> _responseTicketMapper =
             responseTicketMapper;
 
-        public async Task Create(CreateEventDTO eventDTO)
+        public async Task<ResponseEventDTO> Create(CreateEventDTO eventDTO)
         {
             var organizer =
                 await _organizerRepository.GetById(eventDTO.OrganizerId)
@@ -48,17 +48,7 @@ namespace qwitix_api.Core.Services.EventService
 
             await _eventRepository.Create(eventModel);
 
-            if (eventDTO.ImgFile != null)
-            {
-                string blobName = await _blobStorageRepository.UploadFileAsync(
-                    eventDTO.ImgFile,
-                    eventModel.Id
-                );
-
-                eventModel.ImgBlobName = blobName;
-            }
-
-            await _eventRepository.UpdateById(eventModel.Id, eventModel);
+            return _responseEventMapper.ToDto(eventModel);
         }
 
         public async Task Publish(string id, PublishEventDTO publishEventDTO)
@@ -175,16 +165,6 @@ namespace qwitix_api.Core.Services.EventService
             if (eventDTO.Venue is not null)
                 PatchHelper.ApplyPatch(eventDTO.Venue, eventModel.Venue);
 
-            if (eventDTO.ImgFile != null)
-            {
-                string blobName = await _blobStorageRepository.UploadFileAsync(
-                    eventDTO.ImgFile,
-                    eventModel.Id
-                );
-
-                eventModel.ImgBlobName = blobName;
-            }
-
             await _eventRepository.UpdateById(id, eventModel);
         }
 
@@ -207,6 +187,42 @@ namespace qwitix_api.Core.Services.EventService
             var categories = await _eventRepository.GetUniqueCategories();
 
             return categories;
+        }
+
+        public async Task<string> UploadImage(string eventId, IFormFile imageFile)
+        {
+            var eventModel =
+                await _eventRepository.GetById(eventId)
+                ?? throw new NotFoundException("Event not found.");
+
+            if (eventModel.Status != EventStatus.Draft)
+                throw new ValidationException("You can only upload an image for a draft event.");
+
+            var blobName = await _blobStorageRepository.UploadFileAsync(imageFile, eventId);
+            eventModel.ImgBlobName = blobName;
+
+            await _eventRepository.UpdateById(eventId, eventModel);
+
+            return _urlProcessor.GetMediaUrl(blobName);
+        }
+
+        public async Task DeleteImage(string eventId)
+        {
+            var eventModel =
+                await _eventRepository.GetById(eventId)
+                ?? throw new NotFoundException("Event not found.");
+
+            if (eventModel.Status != EventStatus.Draft)
+                throw new ValidationException("You can only delete an image from a draft event.");
+
+            if (!string.IsNullOrEmpty(eventModel.ImgBlobName))
+            {
+                await _blobStorageRepository.DeleteFileAsync(eventModel.ImgBlobName);
+
+                eventModel.ImgBlobName = null;
+
+                await _eventRepository.UpdateById(eventId, eventModel);
+            }
         }
     }
 }

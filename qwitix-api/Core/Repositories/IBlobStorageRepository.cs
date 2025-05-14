@@ -5,5 +5,7 @@
         Task<string> UploadFileAsync(IFormFile file, string eventId);
 
         Task<(Stream stream, string contentType)?> GetFileAsync(string blobPath);
+
+        Task DeleteFileAsync(string blobName);
     }
 }

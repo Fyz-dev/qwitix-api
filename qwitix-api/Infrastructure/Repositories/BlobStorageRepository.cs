@@ -47,5 +47,11 @@ namespace qwitix_api.Infrastructure.Repositories
                 response.Value.Details.ContentType ?? "application/octet-stream"
             );
         }
+
+        public async Task DeleteFileAsync(string blobName)
+        {
+            var blobClient = _containerClient.GetBlobClient(blobName);
+            await blobClient.DeleteIfExistsAsync();
+        }
     }
 }
