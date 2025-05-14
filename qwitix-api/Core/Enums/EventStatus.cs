@@ -6,5 +6,7 @@
         Scheduled,
         Postponed,
         Canceled,
+        Live,
+        Ended,
     }
 }

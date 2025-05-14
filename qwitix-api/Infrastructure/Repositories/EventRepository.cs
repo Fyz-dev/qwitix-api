@@ -36,7 +36,29 @@ namespace qwitix_api.Infrastructure.Repositories
                 filters.Add(Builders<Event>.Filter.Eq(e => e.OrganizerId, organizerId));
 
             if (status.HasValue)
-                filters.Add(Builders<Event>.Filter.Eq(e => e.Status, status.Value));
+            {
+                switch (status.Value)
+                {
+                    case EventStatus.Live:
+                        filters.Add(
+                            Builders<Event>.Filter.Eq(e => e.Status, EventStatus.Scheduled)
+                        );
+                        filters.Add(Builders<Event>.Filter.Lte(e => e.StartDate, DateTime.UtcNow));
+                        filters.Add(Builders<Event>.Filter.Gte(e => e.EndDate, DateTime.UtcNow));
+                        break;
+
+                    case EventStatus.Ended:
+                        filters.Add(
+                            Builders<Event>.Filter.Eq(e => e.Status, EventStatus.Scheduled)
+                        );
+                        filters.Add(Builders<Event>.Filter.Lte(e => e.EndDate, DateTime.UtcNow));
+                        break;
+
+                    default:
+                        filters.Add(Builders<Event>.Filter.Eq(e => e.Status, status.Value));
+                        break;
+                }
+            }
 
             if (!string.IsNullOrWhiteSpace(searchQuery))
                 filters.Add(
