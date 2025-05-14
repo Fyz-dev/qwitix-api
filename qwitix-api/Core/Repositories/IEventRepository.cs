@@ -11,7 +11,7 @@ namespace qwitix_api.Core.Repositories.EventRepository
             string? organizerId,
             int offset,
             int limit,
-            EventStatus? status = null,
+            List<EventStatus>? statuses = null,
             string? searchQuery = null,
             List<string>? categories = null
         );

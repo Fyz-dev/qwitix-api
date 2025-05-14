@@ -22,7 +22,7 @@ namespace qwitix_api.Infrastructure.Repositories
             string? organizerId,
             int offset,
             int limit,
-            EventStatus? status = null,
+            List<EventStatus>? statuses = null,
             string? searchQuery = null,
             List<string>? categories = null
         )
@@ -35,37 +35,49 @@ namespace qwitix_api.Infrastructure.Repositories
             if (!string.IsNullOrWhiteSpace(organizerId))
                 filters.Add(Builders<Event>.Filter.Eq(e => e.OrganizerId, organizerId));
 
-            if (status.HasValue)
+            if (statuses is { Count: > 0 })
             {
-                switch (status.Value)
+                var statusFilters = new List<FilterDefinition<Event>>();
+
+                foreach (var status in statuses)
                 {
-                    case EventStatus.Live:
-                        filters.Add(
-                            Builders<Event>.Filter.Eq(e => e.Status, EventStatus.Scheduled)
-                        );
-                        filters.Add(Builders<Event>.Filter.Lte(e => e.StartDate, DateTime.UtcNow));
-                        filters.Add(Builders<Event>.Filter.Gte(e => e.EndDate, DateTime.UtcNow));
-                        break;
+                    switch (status)
+                    {
+                        case EventStatus.Live:
+                            statusFilters.Add(
+                                Builders<Event>.Filter.And(
+                                    Builders<Event>.Filter.Eq(e => e.Status, EventStatus.Scheduled),
+                                    Builders<Event>.Filter.Lte(e => e.StartDate, DateTime.UtcNow),
+                                    Builders<Event>.Filter.Gte(e => e.EndDate, DateTime.UtcNow)
+                                )
+                            );
+                            break;
 
-                    case EventStatus.Ended:
-                        filters.Add(
-                            Builders<Event>.Filter.Eq(e => e.Status, EventStatus.Scheduled)
-                        );
-                        filters.Add(Builders<Event>.Filter.Lte(e => e.EndDate, DateTime.UtcNow));
-                        break;
+                        case EventStatus.Ended:
+                            statusFilters.Add(
+                                Builders<Event>.Filter.And(
+                                    Builders<Event>.Filter.Eq(e => e.Status, EventStatus.Scheduled),
+                                    Builders<Event>.Filter.Lte(e => e.EndDate, DateTime.UtcNow)
+                                )
+                            );
+                            break;
 
-                    case EventStatus.Scheduled:
-                        filters.Add(
-                            Builders<Event>.Filter.Eq(e => e.Status, EventStatus.Scheduled)
-                        );
-                        filters.Add(Builders<Event>.Filter.Gte(e => e.StartDate, DateTime.UtcNow));
+                        case EventStatus.Scheduled:
+                            statusFilters.Add(
+                                Builders<Event>.Filter.And(
+                                    Builders<Event>.Filter.Eq(e => e.Status, EventStatus.Scheduled),
+                                    Builders<Event>.Filter.Gte(e => e.StartDate, DateTime.UtcNow)
+                                )
+                            );
+                            break;
 
-                        break;
-
-                    default:
-                        filters.Add(Builders<Event>.Filter.Eq(e => e.Status, status.Value));
-                        break;
+                        default:
+                            statusFilters.Add(Builders<Event>.Filter.Eq(e => e.Status, status));
+                            break;
+                    }
                 }
+
+                filters.Add(Builders<Event>.Filter.Or(statusFilters));
             }
 
             if (!string.IsNullOrWhiteSpace(searchQuery))

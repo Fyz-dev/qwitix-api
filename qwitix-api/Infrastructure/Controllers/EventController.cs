@@ -58,7 +58,7 @@ namespace qwitix_api.Infrastructure.Controllers
             string? organizerId,
             int offset,
             int limit,
-            EventStatus? status = null,
+            [FromQuery(Name = "statuses")] List<EventStatus>? statuses = null,
             string? searchQuery = null,
             [FromQuery(Name = "categories")] List<string>? categories = null
         )
@@ -67,7 +67,7 @@ namespace qwitix_api.Infrastructure.Controllers
                 organizerId,
                 offset,
                 limit,
-                status,
+                statuses,
                 searchQuery,
                 categories
             );

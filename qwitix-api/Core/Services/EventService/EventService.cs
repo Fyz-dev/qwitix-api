@@ -90,7 +90,7 @@ namespace qwitix_api.Core.Services.EventService
             string? organizerId,
             int offset,
             int limit,
-            EventStatus? status = null,
+            List<EventStatus>? statuses = null,
             string? searchQuery = null,
             List<string>? categories = null
         )
@@ -99,7 +99,7 @@ namespace qwitix_api.Core.Services.EventService
                 organizerId,
                 offset,
                 limit,
-                status,
+                statuses,
                 searchQuery,
                 categories
             );
