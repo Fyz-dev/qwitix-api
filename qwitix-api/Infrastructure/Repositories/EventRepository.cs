@@ -58,7 +58,8 @@ namespace qwitix_api.Infrastructure.Repositories
                         filters.Add(
                             Builders<Event>.Filter.Eq(e => e.Status, EventStatus.Scheduled)
                         );
-                        filters.Add(Builders<Event>.Filter.Exists(e => e.StartDate, false));
+                        filters.Add(Builders<Event>.Filter.Gte(e => e.StartDate, DateTime.UtcNow));
+
                         break;
 
                     default:
