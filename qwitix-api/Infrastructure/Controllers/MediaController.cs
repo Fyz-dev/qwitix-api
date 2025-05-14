@@ -10,6 +10,8 @@ namespace qwitix_api.Infrastructure.Controllers
         private readonly MediaService _mediaService = mediaService;
 
         [HttpGet("media/{**blobName}")]
+        [ProducesResponseType(typeof(FileStreamResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Get(string blobName)
         {
             var file = await _mediaService.GetFileAsync(blobName);
