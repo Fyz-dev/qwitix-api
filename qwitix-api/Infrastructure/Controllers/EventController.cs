@@ -124,7 +124,7 @@ namespace qwitix_api.Infrastructure.Controllers
             return Ok(categories);
         }
 
-        [HttpPost("event/{id}/upload-image", Name = "UploadEventImage")]
+        [HttpPost("event/{id}/upload-image", Name = "UploadEventImage"), DisableRequestSizeLimit]
         [Authorize]
         [Consumes("multipart/form-data")]
         [ProducesResponseType(StatusCodes.Status200OK)]
