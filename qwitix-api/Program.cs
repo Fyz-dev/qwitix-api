@@ -233,6 +233,13 @@ builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
+app.UseForwardedHeaders(
+    new ForwardedHeadersOptions
+    {
+        ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
+    }
+);
+
 app.UseCors("CorsPolicy");
 
 app.UseExceptionHandler(_ => { });
@@ -251,12 +258,7 @@ if (app.Environment.IsDevelopment())
         c.RoutePrefix = "api/swagger";
     });
 }
-app.UseForwardedHeaders(
-    new ForwardedHeadersOptions
-    {
-        ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
-    }
-);
+;
 
 app.MapControllers();
 
