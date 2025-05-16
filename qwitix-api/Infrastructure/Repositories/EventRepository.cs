@@ -166,7 +166,7 @@ namespace qwitix_api.Infrastructure.Repositories
         {
             var categories = await _collection
                 .Aggregate()
-                .Match(e => !e.IsDeleted)
+                .Match(e => !e.IsDeleted && e.Status != EventStatus.Draft)
                 .AppendStage<BsonDocument>(
                     new BsonDocument
                     {
