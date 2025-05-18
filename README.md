@@ -52,6 +52,7 @@ git clone https://github.com/Fyz-dev/qwitix-api.git
 ```
 
 2. Environment setup
+   
 Duplicate the example environment file and fill in all required variables.
 ```bash
 cp .env.example .env
@@ -59,11 +60,13 @@ cp .env.example .env
 Open .env in your favorite editor and provide the necessary configuration values (e.g. database connection string, Stripe keys, Azure credentials, JWT secrets, etc.).
 
 3. Run the project using Docker Compose
+   
 Once the .env file is configured, you can spin up the entire environment.
 ```bash
 docker compose --env-file .env up
 ```
 4. Stripe CLI for local payment testing
+   
 To test Stripe webhooks locally, make sure you have the Stripe CLI installed. Then run the following command in a separate terminal.
 ```bash
 stripe listen --forward-to localhost:8080/api/stripe/webhooks
