@@ -37,7 +37,7 @@
 - 🔐 Implements **custom Google OAuth** authentication with **JWT** token generation  
 - 🐳 Fully containerized with **Docker**, using `docker-compose` for multi-container orchestration  
 - 🧱 Designed following **SOLID principles** and **Onion Architecture** for scalability and clean separation of concerns  
-- 🚀 **Deployed to an Azure Virtual Machine**, running in a secure production-like environment  
+- 🚀 **Deployed to an Azure Virtual Machine**
 
 > 📦 For more details about deployment and infrastructure setup, see the [**Qwitix-Infra**](https://github.com/Fyz-dev/qwitix-infra) repository.
 ## 📸 Swagger UI
