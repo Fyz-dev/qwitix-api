@@ -112,7 +112,10 @@ namespace qwitix_api.Core.Services.TransactionService
                     if (!tickets.TryGetValue(t.TicketId, out var ticket))
                         throw new NotFoundException($"Ticket with ID {t.TicketId} not found.");
 
-                    return _responseTicketMapper.ToDto(ticket);
+                    var dto = _responseTicketMapper.ToDto(ticket);
+                    dto.Quantity = t.Quantity;
+
+                    return dto;
                 })
                 .ToList();
 
