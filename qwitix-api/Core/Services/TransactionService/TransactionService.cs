@@ -66,7 +66,10 @@ namespace qwitix_api.Core.Services.TransactionService
                                     $"Ticket with ID {t.TicketId} not found."
                                 );
 
-                            return _responseTicketMapper.ToDto(ticket);
+                            var dto = _responseTicketMapper.ToDto(ticket);
+                            dto.Quantity = t.Quantity;
+
+                            return dto;
                         })
                         .ToList();
 
