@@ -110,7 +110,6 @@ namespace qwitix_api_unit_tests
         }
 
         [TestMethod]
-        [DataRow(0)]
         [DataRow(1)]
         [DataRow(1000)]
         public void SetQuantity_Valid_SetsValue(int quantity)
@@ -120,6 +119,7 @@ namespace qwitix_api_unit_tests
         }
 
         [TestMethod]
+        [DataRow(0)]
         [DataRow(-1)]
         [DataRow(-100)]
         [ExpectedException(typeof(ValidationException))]
